@@ -1,0 +1,21 @@
+{
+  "author": {
+    "email": "yury@strozhevsky.com",
+    "name": "Yury Strozhevsky"
+  },
+  "description": "ByteStream is a library making possibe to manipulates single bytes and bits on pure JavaScript",
+  "contributors": [
+    {
+      "email": "rmh@unmitigatedrisk.com",
+      "name": "Ryan Hurst"
+    }
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/PeculiarVenturess/ByteStream.js.git"
+  },
+  "name": "bytestreamjs",
+  "version": "1.0.0",
+  "main": "src/bytestream.js",
+  "license": "MIT"
+}
