@@ -426,9 +426,6 @@ export class ByteStream
 	findPattern(pattern, start = null, length = null, backward = false)
 	{
 		//region Check input variables
-		if(typeof backward == "undefined")
-			backward = false;
-		
 		if(start == null)
 			start = (backward) ? this.buffer.byteLength : 0;
 		
@@ -499,9 +496,6 @@ export class ByteStream
 	findFirstIn(patterns, start = null, length = null, backward = false)
 	{
 		//region Initial variables
-		if(typeof backward == "undefined")
-			backward = false;
-		
 		if(start == null)
 			start = (backward) ? this.buffer.byteLength : 0;
 		
@@ -679,7 +673,7 @@ export class ByteStream
 	 * @param {number|null} [start] Start position to search from
 	 * @param {number|null} [length] Length of byte block to search at
 	 * @param {boolean} [backward=false] Flag to search in backward order
-	 * @returns {{left: {id: number, position: *}, right: {id: number, position: number}, value: in_window.org.pkijs.ByteStream}}
+	 * @returns {{left: {id: number, position: *}, right: {id: number, position: number}, value: ByteStream}}
 	 */
 	findFirstNotIn(patterns, start = null, length = null, backward = false)
 	{
@@ -1354,13 +1348,10 @@ export class ByteStream
 	 * @param backward
 	 * @returns {number}
 	 */
-	skipNotPatterns(patterns, start, length, backward)
+	skipNotPatterns(patterns, start = null, length = null, backward = false)
 	{
 		//region Initial variables
-		if(typeof backward == "undefined")
-			backward = false;
-		
-		if((typeof start == "undefined") || (start == null))
+		if(start == null)
 			start = (backward) ? this.buffer.byteLength : 0;
 		
 		if(start > this.buffer.byteLength)
@@ -1368,7 +1359,7 @@ export class ByteStream
 		
 		if(backward)
 		{
-			if((typeof length == "undefined") || (length == null))
+			if(length == null)
 				length = start;
 			
 			if(length > start)
@@ -1376,7 +1367,7 @@ export class ByteStream
 		}
 		else
 		{
-			if((typeof length == "undefined") || (length == null))
+			if(length == null)
 				length = this.buffer.byteLength - start;
 			
 			if(length > (this.buffer.byteLength - start))
@@ -1439,7 +1430,7 @@ export class SeqStream
 		 * Length of the major stream
 		 * @type {number}
 		 */
-		this.length = 0;
+		this._length = 0;
 		/**
 		 * Flag to search in backward direction
 		 * @type {boolean}
@@ -1449,12 +1440,15 @@ export class SeqStream
 		 * Start position to search
 		 * @type {number}
 		 */
-		this.start = 0;
+		this._start = 0;
 		/**
 		 * Length of a block when append information to major stream
 		 * @type {number}
 		 */
 		this.appendBlock = 0;
+		
+		this.prevLength = 0;
+		this.prevStart = 0;
 		
 		for(const key of Object.keys(parameters))
 		{
@@ -1467,10 +1461,10 @@ export class SeqStream
 					this.backward = parameters.backward;
 					break;
 				case "length":
-					this.length = parameters.length;
+					this._length = parameters.length;
 					break;
 				case "start":
-					this.start = parameters.start;
+					this._start = parameters.start;
 					break;
 				case "appendBlock":
 					this.appendBlock = parameters.appendBlock;
@@ -1487,8 +1481,12 @@ export class SeqStream
 	set stream(value)
 	{
 		this._stream = value;
-		this.length = value._buffer.byteLength;
-		this.start = 0;
+		
+		this.prevLength = this._length;
+		this._length = value._buffer.byteLength;
+		
+		this.prevStart = this._start;
+		this._start = 0;
 	}
 	//**********************************************************************************
 	/**
@@ -1583,11 +1581,6 @@ export class SeqStream
 		//endregion
 		
 		//region Create new values
-		if(this.backward)
-			this.length -= (this.start - result);
-		else
-			this.length -= (result - this.start);
-		
 		this.start = result;
 		//endregion ;
 		
@@ -1635,11 +1628,6 @@ export class SeqStream
 		//endregion
 		
 		//region Create new values
-		if(this.backward)
-			this.length -= (this.start - result.position);
-		else
-			this.length -= (result.position - this.start);
-		
 		this.start = result.position;
 		//endregion ;
 		
@@ -1725,28 +1713,16 @@ export class SeqStream
 		if(this.backward)
 		{
 			if(result.left.id == (-1))
-			{
-				this.length = 0;
 				this.start = 0;
-			}
 			else
-			{
-				this.length -= (this.start - result.left.position);
 				this.start = result.left.position;
-			}
 		}
 		else
 		{
 			if(result.right.id == (-1))
-			{
 				this.start = (this.start + this.length);
-				this.length = 0;
-			}
 			else
-			{
-				this.length -= (result.right.position - this.start);
 				this.start = result.right.position;
-			}
 		}
 		//endregion ;
 		
@@ -1813,11 +1789,6 @@ export class SeqStream
 		//endregion
 		
 		//region Create new values
-		if(this.backward)
-			this.length -= (this.start - result.position);
-		else
-			this.length -= (result.position - this.start);
-		
 		this.start = result.position;
 		//endregion ;
 		
@@ -1943,11 +1914,6 @@ export class SeqStream
 		const result = this.stream.skipPatterns(patterns, this.start, this.length, this.backward);
 		
 		//region Create new values
-		if(this.backward)
-			this.length -= (this.start - result);
-		else
-			this.length -= (result - this.start);
-		
 		this.start = result;
 		//endregion ;
 		
@@ -1966,11 +1932,6 @@ export class SeqStream
 			return (-1);
 		
 		//region Create new values
-		if(this.backward)
-			this.length -= (this.start - result);
-		else
-			this.length -= (result - this.start);
-		
 		this.start = result;
 		//endregion ;
 		
@@ -2530,7 +2491,7 @@ export class BitStream
 		if((start < 0) || (start > ((this.view.length << 3) - 1)))
 			return new BitStream(); //("Wrong start position: " + start);
 		
-		if((typeof end == "undefined") || (end == null))
+		if(end == null)
 			end = (this.view.length << 3) - 1;
 		
 		if((end < 0) || (end > ((this.view.length << 3) - 1)))
@@ -2626,6 +2587,437 @@ export class BitStream
 		}
 	}
 	//**********************************************************************************
+	/**
+	 * Reverse bits order in each byte in the stream
+	 * Got it from here: http://graphics.stanford.edu/~seander/bithacks.html#ReverseByteWith32Bits
+	 */
+	reverseBytes()
+	{
+		//region Reverse bits order in each byte in the stream
+		for(let i = 0; i < this.view.length; i++)
+			this.view[i] = ((this.view[i] * 0x0802 & 0x22110) | (this.view[i] * 0x8020 & 0x88440)) * 0x10101 >> 16;
+		//endregion
+		
+		//region Shift "most significant" byte
+		if(this.bitsCount % 8)
+		{
+			let currentLength = (this.bitsCount >> 3) + ((this.bitsCount % 8) ? 1 : 0);
+			this.view[this.view.length - currentLength] >>= (8 - (this.bitsCount & 0x07));
+		}
+		//endregion
+	}
+	//**********************************************************************************
+	reverseValue()
+	{
+		let initialValue = this.toString();
+		let initialValueLength = initialValue.length;
+		
+		let reversedValue = new Array(initialValueLength);
+		
+		for(let i = 0; i < initialValueLength; i++)
+			reversedValue[initialValueLength - 1 - i] = initialValue[i];
+		
+		this.fromString(reversedValue.join(''));
+	}
+	//**********************************************************************************
+	getNumberValue()
+	{
+		//region Initial variables
+		let byteLength = (this.buffer.byteLength - 1);
+		//endregion
+		
+		//region Check posibility for convertion
+		if(byteLength > 3)
+			return (-1);
+		
+		if(byteLength == (-1))
+			return 0;
+		//endregion
+		
+		//region Convert byte array to "Uint32Array" value
+		let value = new Uint32Array(1);
+		let view = new Uint8Array(value.buffer, 0, 4);
+		
+		for(let i = byteLength ; i >= 0; i--)
+			view[byteLength - i] = this.view[i];
+		//endregion
+		
+		return value[0];
+	}
+	//**********************************************************************************
+	/**
+	 * Find any byte pattern in "ArrayBuffer"
+	 * @param {BitStream} pattern Stream having pattern value
+	 * @param {number|null} [start=null] Start position to search from
+	 * @param {number|null} [length=null] Length of byte block to search at
+	 * @param {boolean} [backward=false] Flag to search in backward order
+	 * @returns {number}
+	 */
+	findPattern(pattern, start = null, length = null, backward = false)
+	{
+		//region Convert "BitStream" values to "ByteStream"
+		let stringStream = new ByteStream({
+			string: this.toString()
+		});
+		let stringPattern = new ByteStream({
+			string: pattern.toString()
+		});
+		//endregion
+		
+		return stringStream.findPattern(stringPattern, start, length, backward);
+	}
+	//**********************************************************************************
+	/**
+	 * Find first position of any pattern from input array
+	 * @param {Array.<BitStream>} patterns Array with patterns which should be found
+	 * @param {number|null} [start=null] Start position to search from
+	 * @param {number|null} [length=null] Length of byte block to search at
+	 * @param {boolean} [backward=false] Flag to search in backward order
+	 * @returns {{id: number, position: number}}
+	 */
+	findFirstIn(patterns, start = null, length = null, backward = false)
+	{
+		//region Convert "BitStream" values to "ByteStream"
+		let stringStream = new ByteStream({
+			string: this.toString()
+		});
+		
+		let stringPatterns = new Array(patterns.length);
+		
+		for(let i = 0; i < patterns.length; i++)
+		{
+			stringPatterns[i] = new ByteStream({
+				string: patterns[i].toString()
+			});
+		}
+		//endregion
+		
+		return stringStream.findFirstIn(stringPatterns, start, length, backward);
+	}
+	//**********************************************************************************
+	/**
+	 * Find all positions of any pattern from input array
+	 * @param {Array.<BitStream>} patterns Array with patterns which should be found
+	 * @param {number|null} [start=null] Start position to search from
+	 * @param {number|null} [length=null] Length of byte block to search at
+	 * @returns {Array}
+	 */
+	findAllIn(patterns, start = null, length = null)
+	{
+		//region Convert "BitStream" values to "ByteStream"
+		let stringStream = new ByteStream({
+			string: this.toString()
+		});
+		
+		let stringPatterns = new Array(patterns.length);
+		
+		for(let i = 0; i < patterns.length; i++)
+		{
+			stringPatterns[i] = new ByteStream({
+				string: patterns[i].toString()
+			});
+		}
+		//endregion
+		
+		return stringStream.findAllIn(stringPatterns, start, length);
+	}
+	//**********************************************************************************
+	/**
+	 * Find all positions of a pattern
+	 * @param {BitStream} pattern Stream having pattern value
+	 * @param {number|null} [start=null] Start position to search from
+	 * @param {number|null} [length=null] Length of byte block to search at
+	 * @returns {Array|number}
+	 */
+	findAllPatternIn(pattern, start = null, length = null)
+	{
+		//region Convert "BitStream" values to "ByteStream" 
+		let stringStream = new ByteStream({
+			string: this.toString()
+		});
+		let stringPattern = new ByteStream({
+			string: pattern.toString()
+		});
+		//endregion 
+		
+		return stringStream.findAllPatternIn(stringPattern, start, length);
+	}
+	//**********************************************************************************
+	/**
+	 * Find first position of data, not included in patterns from input array
+	 * @param {Array.<BitStream>} patterns Array with patterns which should be found
+	 * @param {number|null} [start=null] Start position to search from
+	 * @param {number|null} [length=null] Length of byte block to search at
+	 * @param {boolean} [backward=false] Flag to search in backward order
+	 * @returns {{left: {id: number, position: *}, right: {id: number, position: number}, value: ByteStream}}
+	 */
+	findFirstNotIn(patterns, start = null, length = null, backward = false)
+	{
+		//region Convert "BitStream" values to "ByteStream"
+		let stringStream = new ByteStream({
+			string: this.toString()
+		});
+		
+		let stringPatterns = new Array(patterns.length);
+		
+		for(let i = 0; i < patterns.length; i++)
+		{
+			stringPatterns[i] = new ByteStream({
+				string: patterns[i].toString()
+			});
+		}
+		//endregion
+		
+		return stringStream.findFirstNotIn(stringPatterns, start, length, backward);
+	}
+	//**********************************************************************************
+	/**
+	 * Find all positions of data, not included in patterns from input array
+	 * @param {Array.<BitStream>} patterns Array with patterns which should be found
+	 * @param {number|null} [start=null] Start position to search from
+	 * @param {number|null} [length=null] Length of byte block to search at
+	 * @returns {Array}
+	 */
+	findAllNotIn(patterns, start = null, length = null)
+	{
+		//region Convert "BitStream" values to "ByteStream"
+		let stringStream = new ByteStream({
+			string: this.toString()
+		});
+		
+		let stringPatterns = new Array(patterns.length);
+		
+		for(let i = 0; i < patterns.length; i++)
+		{
+			stringPatterns[i] = new ByteStream({
+				string: patterns[i].toString()
+			});
+		}
+		//endregion
+		
+		return stringStream.findAllNotIn(stringPatterns, start, length);
+	}
+	//**********************************************************************************
+	/**
+	 * Find position of a sequence of any patterns from input array
+	 * @param {Array.<BitStream>} patterns Array with patterns which should be found
+	 * @param {number|null} [start=null] Start position to search from
+	 * @param {number|null} [length=null] Length of byte block to search at
+	 * @param {boolean} [backward=false] Flag to search in backward order
+	 * @returns {{position, value}|*}
+	 */
+	findFirstSequence(patterns, start = null, length = null, backward = false)
+	{
+		//region Convert "BitStream" values to "ByteStream"
+		let stringStream = new ByteStream({
+			string: this.toString()
+		});
+		
+		let stringPatterns = new Array(patterns.length);
+		
+		for(let i = 0; i < patterns.length; i++)
+		{
+			stringPatterns[i] = new ByteStream({
+				string: patterns[i].toString()
+			});
+		}
+		//endregion
+		
+		return stringStream.findFirstSequence(stringPatterns, start, length, backward);
+	}
+	//**********************************************************************************
+	/**
+	 * Find position of a sequence of any patterns from input array
+	 * @param {Array.<BitStream>} patterns Array with patterns which should be found
+	 * @param {number|null} [start=null] Start position to search from
+	 * @param {number|null} [length=null] Length of byte block to search at
+	 * @returns {Array}
+	 */
+	findAllSequences(patterns, start, length)
+	{
+		//region Convert "BitStream" values to "ByteStream"
+		let stringStream = new ByteStream({
+			string: this.toString()
+		});
+		
+		let stringPatterns = new Array(patterns.length);
+		
+		for(let i = 0; i < patterns.length; i++)
+		{
+			stringPatterns[i] = new ByteStream({
+				string: patterns[i].toString()
+			});
+		}
+		//endregion
+		
+		return stringStream.findAllSequences(stringPatterns, start, length);
+	}
+	//**********************************************************************************
+	/**
+	 * Find all paired patterns in the stream
+	 * @param {BitStream} leftPattern Left pattern to search for
+	 * @param {BitStream} rightPattern Right pattern to search for
+	 * @param {number|null} [start=null] Start position to search from
+	 * @param {number|null} [length=null] Length of byte block to search at
+	 * @returns {Array}
+	 */
+	findPairedPatterns(leftPattern, rightPattern, start = null, length = null)
+	{
+		//region Convert "BitStream" values to "ByteStream"
+		let stringStream = new ByteStream({
+			string: this.toString()
+		});
+		let stringLeftPattern = new ByteStream({
+			string: leftPattern.toString()
+		});
+		let stringRightPattern = new ByteStream({
+			string: rightPattern.toString()
+		});
+		//endregion
+		
+		return stringStream.findPairedPatterns(stringLeftPattern, stringRightPattern, start, length);
+	}
+	//**********************************************************************************
+	/**
+	 * Find all paired patterns in the stream
+	 * @param {Array.<BitStream>} inputLeftPatterns Array of left patterns to search for
+	 * @param {Array.<BitStream>} inputRightPatterns Array of right patterns to search for
+	 * @param {number|null} [start=null] Start position to search from
+	 * @param {number|null} [length=null] Length of byte block to search at
+	 * @returns {Array}
+	 */
+	findPairedArrays(inputLeftPatterns, inputRightPatterns, start = null, length = null)
+	{
+		//region Convert "BitStream" values to "ByteStream"
+		let stringStream = new ByteStream({
+			string: this.toString()
+		});
+		
+		let stringLeftPatterns = new Array(inputLeftPatterns.length);
+		
+		for(let i = 0; i < inputLeftPatterns.length; i++)
+		{
+			stringLeftPatterns[i] = new ByteStream({
+				string: inputLeftPatterns[i].toString()
+			});
+		}
+		
+		let stringRightPatterns = new Array(inputRightPatterns.length);
+		
+		for(let i = 0; i < inputRightPatterns.length; i++)
+		{
+			stringRightPatterns[i] = new ByteStream({
+				string: inputRightPatterns[i].toString()
+			});
+		}
+		//endregion
+		
+		return stringStream.findPairedArrays(stringLeftPatterns, stringRightPatterns, start, length);
+	}
+	//**********************************************************************************
+	/**
+	 * Replace one pattern with other
+	 * @param {BitStream} searchPattern The pattern to search for
+	 * @param {BitStream} replacePattern The pattern to replace initial pattern
+	 * @param {number|null} [start=null] Start position to search from
+	 * @param {number|null} [length=null] Length of byte block to search at
+	 * @returns {boolean}
+	 */
+	replacePattern(searchPattern, replacePattern, start = null, length = null)
+	{
+		//region Convert "BitStream" values to "ByteStream"
+		let stringStream = new ByteStream({
+			string: this.toString()
+		});
+		let stringSearchPattern = new ByteStream({
+			string: searchPattern.toString()
+		});
+		let stringReplacePattern = new ByteStream({
+			string: replacePattern.toString()
+		});
+		//endregion
+		
+		//region Re-initialize existing data
+		if(stringStream.findPairedPatterns(stringSearchPattern, stringReplacePattern, start, length))
+		{
+			this.fromString(stringStream.toString());
+			return true;
+		}
+		//endregion
+		
+		return false;
+	}
+	//**********************************************************************************
+	/**
+	 * Skip any pattern from input array
+	 * @param {Array.<BitStream>} patterns Array with patterns which should be ommited
+	 * @param {number|null} [start=null] Start position to search from
+	 * @param {number|null} [length=null] Length of byte block to search at
+	 * @param {boolean} [backward=false] Flag to search in backward order
+	 * @returns {*}
+	 */
+	skipPatterns(patterns, start, length, backward)
+	{
+		//region Convert "BitStream" values to "ByteStream"
+		let stringStream = new ByteStream({
+			string: this.toString()
+		});
+		
+		let stringPatterns = new Array(patterns.length);
+		
+		for(let i = 0; i < patterns.length; i++)
+		{
+			stringPatterns[i] = new ByteStream({
+				string: patterns[i].toString()
+			});
+		}
+		//endregion
+		
+		return stringStream.skipPatterns(stringPatterns, start, length, backward);
+	}
+	//**********************************************************************************
+	/**
+	 * Skip any pattern not from input array
+	 * @param {Array.<BitStream>} patterns Array with patterns which should be ommited
+	 * @param {number|null} [start=null] Start position to search from
+	 * @param {number|null} [length=null] Length of byte block to search at
+	 * @param {boolean} [backward=false] Flag to search in backward order
+	 * @returns {number}
+	 */
+	skipNotPatterns(patterns, start, length, backward)
+	{
+		//region Convert "BitStream" values to "ByteStream"
+		let stringStream = new ByteStream({
+			string: this.toString()
+		});
+		
+		let stringPatterns = new Array(patterns.length);
+		
+		for(let i = 0; i < patterns.length; i++)
+		{
+			stringPatterns[i] = new ByteStream({
+				string: patterns[i].toString()
+			});
+		}
+		//endregion
+		
+		return stringStream.skipNotPatterns(stringPatterns, start, length, backward);
+	}
+	//**********************************************************************************
+	/**
+	 * Append a new "stream" content to the current "stream"
+	 * @param {BitStream} stream A new "stream" to append to current "stream"
+	 */
+	append(stream)
+	{
+		//region Initialize current stream with new data
+		this.fromString([
+			this.toString(),
+			stream.toString()
+		].join(""));
+		//endregion
+	}
+	//**********************************************************************************
 }
 //**************************************************************************************
 export class SeqBitStream
@@ -2636,8 +3028,8 @@ export class SeqBitStream
 		//region Internal variables
 		this.stream = new BitStream();
 		
-		this.start = 0;
-		this.length = this.stream.bitsCount;
+		this._start = 0;
+		this._length = this.stream.bitsCount;
 		
 		this.backward = false;
 		
@@ -2691,6 +3083,22 @@ export class SeqBitStream
 	get length()
 	{
 		return this._length;
+	}
+	//**********************************************************************************
+	set stream(value)
+	{
+		this._stream = value;
+
+		this.prevLength = this._length;
+		this._length = value.bitsCount;
+		
+		this.prevStart = this._start;
+		this._start = (this.backward) ? this.length : 0;
+	}
+	//**********************************************************************************
+	get stream()
+	{
+		return this._stream;
 	}
 	//**********************************************************************************
 	/**
