@@ -1514,6 +1514,9 @@ export class SeqStream
 	 */
 	get length()
 	{
+		if(this.appendBlock)
+			return this.start;
+		
 		return this._length;
 	}
 	//**********************************************************************************
@@ -1953,7 +1956,7 @@ export class SeqStream
 		}
 		
 		this.stream.view.set(stream.view, this.start);
-		this.start += stream.buffer.byteLength;
+		this.start = (this._start + stream.buffer.byteLength);
 	}
 	//**********************************************************************************
 	/**
@@ -1971,7 +1974,7 @@ export class SeqStream
 		}
 		
 		this.stream.view.set(view, this.start);
-		this.start += view.length;
+		this.start = (this._start + view.length);
 	}
 	//**********************************************************************************
 	/**
@@ -1984,7 +1987,7 @@ export class SeqStream
 			this.stream.realloc(this.stream.buffer.byteLength + this.appendBlock);
 		
 		this.stream.view[this.start] = char;
-		this.start += 1;
+		this.start = (this._start + 1);
 	}
 	//**********************************************************************************
 }
