@@ -1459,6 +1459,7 @@ export class SeqStream
 					break;
 				case "backward":
 					this.backward = parameters.backward;
+					this._start = this.stream.buffer.byteLength;
 					break;
 				case "length":
 					this._length = parameters.length;
@@ -1988,6 +1989,69 @@ export class SeqStream
 		
 		this.stream.view[this.start] = char;
 		this.start = (this._start + 1);
+	}
+	//**********************************************************************************
+	/**
+	 * Get a block of data
+	 * @param {number} size Size of the data block to get
+	 * @param {boolean} [changeLength=true] Should we change "length" and "start" value after reading the data block
+	 * @returns {ByteStream}
+	 */
+	getBlock(size, changeLength = true)
+	{
+		//region Check input parameters
+		if(this._length < size)
+			size = this._length;
+		//endregion
+		
+		//region Initial variables
+		let result;
+		//endregion
+		
+		//region Getting result depends on "backward" flag
+		if(this.backward)
+		{
+			const backwardResult = this.stream.copy(this._length - size, size);
+			result = new ByteStream({ length: size });
+			
+			for(let i = 0; i < size; i++)
+				result._view[size - 1 - i] = backwardResult._view[i];
+		}
+		else
+			result = this.stream.copy(this._start, size);
+		//endregion
+		
+		//region Change "length" value if needed
+		if(changeLength)
+			this.start = this.start + ((this.backward) ? ((-1) * size) : size);
+		//endregion
+		
+		return result;
+	}
+	//**********************************************************************************
+	/**
+	 * Get unsigned 4-byte integer value
+	 * @param {boolean} [changeLength=true] Should we change "length" and "start" value after reading the data block
+	 * @returns {number}
+	 */
+	getUint32(changeLength = true)
+	{
+		const block = this.getBlock(4, changeLength);
+		
+		//region Check posibility for convertion
+		if(block._buffer.byteLength < 4)
+			return 0;
+		//endregion
+		
+		//region Convert byte array to "Uint32Array" value
+		let value = new Uint32Array(1);
+		let view = new Uint8Array(value.buffer);
+		
+		for(let i = 3 ; i >= 0; i--)
+			view[3 - i] = block._view[i];
+		//endregion
+		
+		return value[0];
 	}
 	//**********************************************************************************
 }
@@ -2639,7 +2703,7 @@ export class BitStream
 		
 		//region Convert byte array to "Uint32Array" value
 		let value = new Uint32Array(1);
-		let view = new Uint8Array(value.buffer, 0, 4);
+		let view = new Uint8Array(value.buffer);
 		
 		for(let i = byteLength ; i >= 0; i--)
 			view[byteLength - i] = this.view[i];
