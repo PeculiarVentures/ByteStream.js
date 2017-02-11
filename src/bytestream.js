@@ -701,7 +701,7 @@ export class ByteStream
 				length = this.buffer.byteLength - start;
 		}
 		
-		let result = {
+		const result = {
 			left: {
 				id: (-1),
 				position: start
@@ -1382,8 +1382,8 @@ export class ByteStream
 		{
 			for(let k = 0; k < patterns.length; k++)
 			{
-				let patternLength = patterns[k].buffer.byteLength;
-				let equalStart = (backward) ? (start - i - patternLength) : (start + i);
+				const patternLength = patterns[k].buffer.byteLength;
+				const equalStart = (backward) ? (start - i - patternLength) : (start + i);
 				let equal = true;
 				
 				for(let j = 0; j < patternLength; j++)
@@ -2044,10 +2044,10 @@ export class SeqStream
 		//endregion
 		
 		//region Convert byte array to "Uint32Array" value
-		let value = new Uint32Array(1);
-		let view = new Uint8Array(value.buffer);
+		const value = new Uint32Array(1);
+		const view = new Uint8Array(value.buffer);
 		
-		for(let i = 3 ; i >= 0; i--)
+		for(let i = 3; i >= 0; i--)
 			view[3 - i] = block._view[i];
 		//endregion
 		
@@ -2177,7 +2177,7 @@ export function parseByteMap(stream, map, elements, start = null, length = null)
 			structureLength += result.length;
 		}
 		
-		(resultArray[elementsCount++])["structureLength"] = structureLength;
+		(resultArray[elementsCount++]).structureLength = structureLength;
 	}
 	//endregion
 	
@@ -2330,7 +2330,7 @@ export class BitStream
 	 */
 	fromByteStream(stream)
 	{
-		this.buffer = stream.buffer.slice();
+		this.buffer = stream.buffer.slice(0);
 		this.view = new Uint8Array(this.buffer);
 		
 		this.bitsCount = this.view.length << 3;
@@ -2521,7 +2521,7 @@ export class BitStream
 			//endregion
 			
 			//region Store final array into current stream
-			this.buffer = buffer.slice();
+			this.buffer = buffer.slice(0);
 			this.view = new Uint8Array(this.buffer);
 			//endregion
 		}
@@ -2668,7 +2668,7 @@ export class BitStream
 		//region Shift "most significant" byte
 		if(this.bitsCount % 8)
 		{
-			let currentLength = (this.bitsCount >> 3) + ((this.bitsCount % 8) ? 1 : 0);
+			const currentLength = (this.bitsCount >> 3) + ((this.bitsCount % 8) ? 1 : 0);
 			this.view[this.view.length - currentLength] >>= (8 - (this.bitsCount & 0x07));
 		}
 		//endregion
@@ -2676,21 +2676,21 @@ export class BitStream
 	//**********************************************************************************
 	reverseValue()
 	{
-		let initialValue = this.toString();
-		let initialValueLength = initialValue.length;
+		const initialValue = this.toString();
+		const initialValueLength = initialValue.length;
 		
-		let reversedValue = new Array(initialValueLength);
+		const reversedValue = new Array(initialValueLength);
 		
 		for(let i = 0; i < initialValueLength; i++)
 			reversedValue[initialValueLength - 1 - i] = initialValue[i];
 		
-		this.fromString(reversedValue.join(''));
+		this.fromString(reversedValue.join(""));
 	}
 	//**********************************************************************************
 	getNumberValue()
 	{
 		//region Initial variables
-		let byteLength = (this.buffer.byteLength - 1);
+		const byteLength = (this.buffer.byteLength - 1);
 		//endregion
 		
 		//region Check posibility for convertion
@@ -2702,10 +2702,10 @@ export class BitStream
 		//endregion
 		
 		//region Convert byte array to "Uint32Array" value
-		let value = new Uint32Array(1);
-		let view = new Uint8Array(value.buffer);
+		const value = new Uint32Array(1);
+		const view = new Uint8Array(value.buffer);
 		
-		for(let i = byteLength ; i >= 0; i--)
+		for(let i = byteLength; i >= 0; i--)
 			view[byteLength - i] = this.view[i];
 		//endregion
 		
@@ -2723,10 +2723,10 @@ export class BitStream
 	findPattern(pattern, start = null, length = null, backward = false)
 	{
 		//region Convert "BitStream" values to "ByteStream"
-		let stringStream = new ByteStream({
+		const stringStream = new ByteStream({
 			string: this.toString()
 		});
-		let stringPattern = new ByteStream({
+		const stringPattern = new ByteStream({
 			string: pattern.toString()
 		});
 		//endregion
@@ -2745,11 +2745,11 @@ export class BitStream
 	findFirstIn(patterns, start = null, length = null, backward = false)
 	{
 		//region Convert "BitStream" values to "ByteStream"
-		let stringStream = new ByteStream({
+		const stringStream = new ByteStream({
 			string: this.toString()
 		});
 		
-		let stringPatterns = new Array(patterns.length);
+		const stringPatterns = new Array(patterns.length);
 		
 		for(let i = 0; i < patterns.length; i++)
 		{
@@ -2772,11 +2772,11 @@ export class BitStream
 	findAllIn(patterns, start = null, length = null)
 	{
 		//region Convert "BitStream" values to "ByteStream"
-		let stringStream = new ByteStream({
+		const stringStream = new ByteStream({
 			string: this.toString()
 		});
 		
-		let stringPatterns = new Array(patterns.length);
+		const stringPatterns = new Array(patterns.length);
 		
 		for(let i = 0; i < patterns.length; i++)
 		{
@@ -2799,10 +2799,10 @@ export class BitStream
 	findAllPatternIn(pattern, start = null, length = null)
 	{
 		//region Convert "BitStream" values to "ByteStream" 
-		let stringStream = new ByteStream({
+		const stringStream = new ByteStream({
 			string: this.toString()
 		});
-		let stringPattern = new ByteStream({
+		const stringPattern = new ByteStream({
 			string: pattern.toString()
 		});
 		//endregion 
@@ -2821,11 +2821,11 @@ export class BitStream
 	findFirstNotIn(patterns, start = null, length = null, backward = false)
 	{
 		//region Convert "BitStream" values to "ByteStream"
-		let stringStream = new ByteStream({
+		const stringStream = new ByteStream({
 			string: this.toString()
 		});
 		
-		let stringPatterns = new Array(patterns.length);
+		const stringPatterns = new Array(patterns.length);
 		
 		for(let i = 0; i < patterns.length; i++)
 		{
@@ -2848,11 +2848,11 @@ export class BitStream
 	findAllNotIn(patterns, start = null, length = null)
 	{
 		//region Convert "BitStream" values to "ByteStream"
-		let stringStream = new ByteStream({
+		const stringStream = new ByteStream({
 			string: this.toString()
 		});
 		
-		let stringPatterns = new Array(patterns.length);
+		const stringPatterns = new Array(patterns.length);
 		
 		for(let i = 0; i < patterns.length; i++)
 		{
@@ -2876,11 +2876,11 @@ export class BitStream
 	findFirstSequence(patterns, start = null, length = null, backward = false)
 	{
 		//region Convert "BitStream" values to "ByteStream"
-		let stringStream = new ByteStream({
+		const stringStream = new ByteStream({
 			string: this.toString()
 		});
 		
-		let stringPatterns = new Array(patterns.length);
+		const stringPatterns = new Array(patterns.length);
 		
 		for(let i = 0; i < patterns.length; i++)
 		{
@@ -2903,11 +2903,11 @@ export class BitStream
 	findAllSequences(patterns, start, length)
 	{
 		//region Convert "BitStream" values to "ByteStream"
-		let stringStream = new ByteStream({
+		const stringStream = new ByteStream({
 			string: this.toString()
 		});
 		
-		let stringPatterns = new Array(patterns.length);
+		const stringPatterns = new Array(patterns.length);
 		
 		for(let i = 0; i < patterns.length; i++)
 		{
@@ -2931,13 +2931,13 @@ export class BitStream
 	findPairedPatterns(leftPattern, rightPattern, start = null, length = null)
 	{
 		//region Convert "BitStream" values to "ByteStream"
-		let stringStream = new ByteStream({
+		const stringStream = new ByteStream({
 			string: this.toString()
 		});
-		let stringLeftPattern = new ByteStream({
+		const stringLeftPattern = new ByteStream({
 			string: leftPattern.toString()
 		});
-		let stringRightPattern = new ByteStream({
+		const stringRightPattern = new ByteStream({
 			string: rightPattern.toString()
 		});
 		//endregion
@@ -2956,11 +2956,11 @@ export class BitStream
 	findPairedArrays(inputLeftPatterns, inputRightPatterns, start = null, length = null)
 	{
 		//region Convert "BitStream" values to "ByteStream"
-		let stringStream = new ByteStream({
+		const stringStream = new ByteStream({
 			string: this.toString()
 		});
 		
-		let stringLeftPatterns = new Array(inputLeftPatterns.length);
+		const stringLeftPatterns = new Array(inputLeftPatterns.length);
 		
 		for(let i = 0; i < inputLeftPatterns.length; i++)
 		{
@@ -2969,7 +2969,7 @@ export class BitStream
 			});
 		}
 		
-		let stringRightPatterns = new Array(inputRightPatterns.length);
+		const stringRightPatterns = new Array(inputRightPatterns.length);
 		
 		for(let i = 0; i < inputRightPatterns.length; i++)
 		{
@@ -2993,13 +2993,13 @@ export class BitStream
 	replacePattern(searchPattern, replacePattern, start = null, length = null)
 	{
 		//region Convert "BitStream" values to "ByteStream"
-		let stringStream = new ByteStream({
+		const stringStream = new ByteStream({
 			string: this.toString()
 		});
-		let stringSearchPattern = new ByteStream({
+		const stringSearchPattern = new ByteStream({
 			string: searchPattern.toString()
 		});
-		let stringReplacePattern = new ByteStream({
+		const stringReplacePattern = new ByteStream({
 			string: replacePattern.toString()
 		});
 		//endregion
@@ -3026,11 +3026,11 @@ export class BitStream
 	skipPatterns(patterns, start, length, backward)
 	{
 		//region Convert "BitStream" values to "ByteStream"
-		let stringStream = new ByteStream({
+		const stringStream = new ByteStream({
 			string: this.toString()
 		});
 		
-		let stringPatterns = new Array(patterns.length);
+		const stringPatterns = new Array(patterns.length);
 		
 		for(let i = 0; i < patterns.length; i++)
 		{
@@ -3054,11 +3054,11 @@ export class BitStream
 	skipNotPatterns(patterns, start, length, backward)
 	{
 		//region Convert "BitStream" values to "ByteStream"
-		let stringStream = new ByteStream({
+		const stringStream = new ByteStream({
 			string: this.toString()
 		});
 		
-		let stringPatterns = new Array(patterns.length);
+		const stringPatterns = new Array(patterns.length);
 		
 		for(let i = 0; i < patterns.length; i++)
 		{
@@ -3306,7 +3306,7 @@ export class SeqBitStream
 		//region Convert byte array to "Uint32Array" value 
 		for(let i = initialOffset; i < (initialOffset + initialValueLength); i++)
 		{
-			if(reversedValue[i - initialOffset] == '1')
+			if(reversedValue[i - initialOffset] == "1")
 				valueView[byteIndex] |= 0x01 << (7 - (i % 8));
 			
 			if(i && (((i + 1) % 8) == 0))
