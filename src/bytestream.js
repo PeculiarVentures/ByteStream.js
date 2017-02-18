@@ -2648,7 +2648,7 @@ export class BitStream
 			//endregion
 			
 			//region Store final array into current stream
-			this.buffer = buffer.slice();
+			this.buffer = buffer.slice(0);
 			this.view = new Uint8Array(this.buffer);
 			//endregion
 		}
