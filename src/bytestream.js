@@ -123,7 +123,10 @@ export class ByteStream
 	 */
 	fromUint8Array(array)
 	{
-		this.view = array;
+		this._buffer = new ArrayBuffer(array.length);
+		this._view = new Uint8Array(this._buffer);
+		
+		this._view.set(array);
 	}
 	//**********************************************************************************
 	/**
@@ -1995,11 +1998,14 @@ export class SeqStream
 	 * Get a block of data
 	 * @param {number} size Size of the data block to get
 	 * @param {boolean} [changeLength=true] Should we change "length" and "start" value after reading the data block
-	 * @returns {ByteStream}
+	 * @returns {Array}
 	 */
 	getBlock(size, changeLength = true)
 	{
 		//region Check input parameters
+		if(this._length <= 0)
+			return [];
+		
 		if(this._length < size)
 			size = this._length;
 		//endregion
@@ -2011,14 +2017,20 @@ export class SeqStream
 		//region Getting result depends on "backward" flag
 		if(this.backward)
 		{
-			const backwardResult = this.stream.copy(this._length - size, size);
-			result = new ByteStream({ length: size });
+			const _buffer = this._stream._buffer.slice(this._length - size, this._length);
+			const _view = new Uint8Array(_buffer);
+			
+			result = new Array(size);
 			
 			for(let i = 0; i < size; i++)
-				result._view[size - 1 - i] = backwardResult._view[i];
+				result[size - 1 - i] = _view[i];
 		}
 		else
-			result = this.stream.copy(this._start, size);
+		{
+			const _buffer = this._stream._buffer.slice(this._start, this._start + size);
+			
+			result = Array.from(new Uint8Array(_buffer));
+		}
 		//endregion
 		
 		//region Change "length" value if needed
@@ -2039,7 +2051,7 @@ export class SeqStream
 		const block = this.getBlock(4, changeLength);
 		
 		//region Check posibility for convertion
-		if(block._buffer.byteLength < 4)
+		if(block.length < 4)
 			return 0;
 		//endregion
 		
@@ -2048,7 +2060,7 @@ export class SeqStream
 		const view = new Uint8Array(value.buffer);
 		
 		for(let i = 3; i >= 0; i--)
-			view[3 - i] = block._view[i];
+			view[3 - i] = block[i];
 		//endregion
 		
 		return value[0];
