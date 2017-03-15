@@ -528,9 +528,9 @@ export class ByteStream
 		};
 		//endregion
 		
-		for(const [i, pattern] of patterns.entries())
+		for(let i = 0; i < patterns.length; i++)
 		{
-			const position = this.findPattern(pattern, start, length, backward);
+			const position = this.findPattern(patterns[i], start, length, backward);
 			if(position != (-1))
 			{
 				let valid = false;
