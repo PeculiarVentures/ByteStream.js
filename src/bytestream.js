@@ -2171,7 +2171,12 @@ export function parseByteMap(stream, map, elements, start = null, length = null)
 		for(let i = 0; i < mapLength; i++)
 		{
 			if(map[i].maxlength == 0)
+			{
+				if("defaultValue" in map[i])
+					(resultArray[elementsCount])[map[i].name] = map[i].defaultValue;
+					
 				continue;
+			}
 			
 			const array = new Array(map[i].maxlength);
 			
