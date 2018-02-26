@@ -15,7 +15,7 @@
     "url": "git://github.com/PeculiarVenturess/ByteStream.js.git"
   },
   "name": "bytestreamjs",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "main": "src/bytestream.js",
   "license": "MIT"
 }

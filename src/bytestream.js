@@ -266,6 +266,9 @@ export class ByteStream
 	copy(start = 0, length = (this._buffer.byteLength - start))
 	{
 		//region Check input parameters
+		if((start === 0) && (this._buffer.byteLength === 0))
+			return new ByteStream();
+		
 		if((start < 0) || (start > (this._buffer.byteLength - 1)))
 			throw new Error(`Wrong start position: ${start}`);
 		//endregion
@@ -287,6 +290,9 @@ export class ByteStream
 	slice(start = 0, end = this._buffer.byteLength)
 	{
 		//region Check input parameters
+		if((start === 0) && (this._buffer.byteLength === 0))
+			return new ByteStream();
+		
 		if((start < 0) || (start > (this._buffer.byteLength - 1)))
 			throw new Error(`Wrong start position: ${start}`);
 		//endregion
