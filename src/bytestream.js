@@ -2,6 +2,7 @@
 export class ByteStream
 {
 	//**********************************************************************************
+	// noinspection FunctionWithMultipleLoopsJS
 	/**
 	 * Constructor for ByteStream class
 	 * @param {{[length]: number, [stub]: number, [view]: Uint8Array, [buffer]: ArrayBuffer, [string]: string, [hexstring]: string}}parameters
@@ -18,10 +19,9 @@ export class ByteStream
 					this.length = parameters.length;
 					break;
 				case "stub":
-					{
-						for(let i = 0; i < this._view.length; i++)
-							this._view[i] = parameters.stub;
-					}
+					// noinspection NonBlockStatementBodyJS
+					for(let i = 0; i < this._view.length; i++)
+						this._view[i] = parameters.stub;
 					break;
 				case "view":
 					this.fromUint8Array(parameters.view);
@@ -117,6 +117,7 @@ export class ByteStream
 		this.buffer = array;
 	}
 	//**********************************************************************************
+	// noinspection FunctionNamingConventionJS
 	/**
 	 * Initialize "Stream" object from existing "Uint8Array"
 	 * @param {!Uint8Array} array The Uint8Array to copy from
@@ -139,6 +140,7 @@ export class ByteStream
 		
 		this.length = stringLength;
 		
+		// noinspection NonBlockStatementBodyJS
 		for(let i = 0; i < stringLength; i++)
 			this.view[i] = string.charCodeAt(i);
 	}
@@ -156,21 +158,31 @@ export class ByteStream
 		//endregion
 		
 		//region Check input parameters
+		// noinspection ConstantOnRightSideOfComparisonJS, ConstantOnLeftSideOfComparisonJS
 		if((start >= this.view.length) || (start < 0))
+		{
+			// noinspection AssignmentToFunctionParameterJS
 			start = 0;
+		}
 		
+		// noinspection ConstantOnRightSideOfComparisonJS, ConstantOnLeftSideOfComparisonJS
 		if((length >= this.view.length) || (length < 0))
+		{
+			// noinspection AssignmentToFunctionParameterJS
 			length = this.view.length - start;
+		}
 		//endregion
 		
 		//region Convert array of bytes to string
+		// noinspection NonBlockStatementBodyJS
 		for(let i = start; i < (start + length); i++)
-			result = result + String.fromCharCode(this.view[i]);
+			result += String.fromCharCode(this.view[i]);
 		//endregion
 		
 		return result;
 	}
 	//**********************************************************************************
+	// noinspection FunctionTooLongJS
 	/**
 	 * Initialize "Stream" object from existing hexdecimal string
 	 * @param {string} hexString String to initialize from
@@ -185,40 +197,68 @@ export class ByteStream
 		
 		const hexMap = new Map();
 		
+		// noinspection MagicNumberJS
 		hexMap.set("0", 0x00);
+		// noinspection MagicNumberJS
 		hexMap.set("1", 0x01);
+		// noinspection MagicNumberJS
 		hexMap.set("2", 0x02);
+		// noinspection MagicNumberJS
 		hexMap.set("3", 0x03);
+		// noinspection MagicNumberJS
 		hexMap.set("4", 0x04);
+		// noinspection MagicNumberJS
 		hexMap.set("5", 0x05);
+		// noinspection MagicNumberJS
 		hexMap.set("6", 0x06);
+		// noinspection MagicNumberJS
 		hexMap.set("7", 0x07);
+		// noinspection MagicNumberJS
 		hexMap.set("8", 0x08);
+		// noinspection MagicNumberJS
 		hexMap.set("9", 0x09);
+		// noinspection MagicNumberJS
 		hexMap.set("A", 0x0A);
+		// noinspection MagicNumberJS
 		hexMap.set("a", 0x0A);
+		// noinspection MagicNumberJS
 		hexMap.set("B", 0x0B);
+		// noinspection MagicNumberJS
 		hexMap.set("b", 0x0B);
+		// noinspection MagicNumberJS
 		hexMap.set("C", 0x0C);
+		// noinspection MagicNumberJS
 		hexMap.set("c", 0x0C);
+		// noinspection MagicNumberJS
 		hexMap.set("D", 0x0D);
+		// noinspection MagicNumberJS
 		hexMap.set("d", 0x0D);
+		// noinspection MagicNumberJS
 		hexMap.set("E", 0x0E);
+		// noinspection MagicNumberJS
 		hexMap.set("e", 0x0E);
+		// noinspection MagicNumberJS
 		hexMap.set("F", 0x0F);
+		// noinspection MagicNumberJS
 		hexMap.set("f", 0x0F);
 		
 		let j = 0;
+		// noinspection MagicNumberJS
 		let temp = 0x00;
 		//endregion
 		
 		//region Convert char-by-char
 		for(let i = 0; i < stringLength; i++)
 		{
+			// noinspection NegatedIfStatementJS
 			if(!(i % 2))
+			{
+				// noinspection NestedFunctionCallJS
 				temp = hexMap.get(hexString.charAt(i)) << 4;
+			}
 			else
 			{
+				// noinspection NestedFunctionCallJS
 				temp |= hexMap.get(hexString.charAt(i));
 				
 				this.view[j] = temp;
@@ -228,6 +268,7 @@ export class ByteStream
 		//endregion
 	}
 	//**********************************************************************************
+	// noinspection JSUnusedGlobalSymbols
 	/**
 	 * Represent "Stream" object content as a hexdecimal string
 	 * @param {number} [start=0] Start position to convert to string
@@ -241,22 +282,33 @@ export class ByteStream
 		//endregion
 		
 		//region Check input parameters
+		// noinspection ConstantOnRightSideOfComparisonJS, ConstantOnLeftSideOfComparisonJS
 		if((start >= this.view.length) || (start < 0))
+		{
+			// noinspection AssignmentToFunctionParameterJS
 			start = 0;
+		}
 		
+		// noinspection ConstantOnRightSideOfComparisonJS, ConstantOnLeftSideOfComparisonJS
 		if((length >= this.view.length) || (length < 0))
+		{
+			// noinspection AssignmentToFunctionParameterJS
 			length = this.view.length - start;
+		}
 		//endregion
 
 		for(let i = start; i < (start + length); i++)
 		{
+			// noinspection ChainedFunctionCallJS
 			const str = this.view[i].toString(16).toUpperCase();
+			// noinspection ConstantOnRightSideOfComparisonJS, ConstantOnLeftSideOfComparisonJS, ConditionalExpressionJS, EqualityComparisonWithCoercionJS
 			result = result + ((str.length == 1) ? "0" : "") + str;
 		}
 		
 		return result;
 	}
 	//**********************************************************************************
+	// noinspection FunctionWithMultipleReturnPointsJS
 	/**
 	 * Return copy of existing "ArrayBuffer"
 	 * @param {number} [start=0] Start position of the copy
@@ -266,9 +318,11 @@ export class ByteStream
 	copy(start = 0, length = (this._buffer.byteLength - start))
 	{
 		//region Check input parameters
+		// noinspection ConstantOnRightSideOfComparisonJS, ConstantOnLeftSideOfComparisonJS, NonBlockStatementBodyJS
 		if((start === 0) && (this._buffer.byteLength === 0))
 			return new ByteStream();
 		
+		// noinspection ConstantOnRightSideOfComparisonJS, ConstantOnLeftSideOfComparisonJS, NonBlockStatementBodyJS
 		if((start < 0) || (start > (this._buffer.byteLength - 1)))
 			throw new Error(`Wrong start position: ${start}`);
 		//endregion
@@ -281,6 +335,7 @@ export class ByteStream
 		return stream;
 	}
 	//**********************************************************************************
+	// noinspection JSUnusedGlobalSymbols, FunctionWithMultipleReturnPointsJS
 	/**
 	 * Return slice of existing "ArrayBuffer"
 	 * @param {number} [start=0] Start position of the slice
@@ -290,9 +345,11 @@ export class ByteStream
 	slice(start = 0, end = this._buffer.byteLength)
 	{
 		//region Check input parameters
+		// noinspection ConstantOnRightSideOfComparisonJS, ConstantOnLeftSideOfComparisonJS, NonBlockStatementBodyJS
 		if((start === 0) && (this._buffer.byteLength === 0))
 			return new ByteStream();
 		
+		// noinspection ConstantOnRightSideOfComparisonJS, ConstantOnLeftSideOfComparisonJS, NonBlockStatementBodyJS
 		if((start < 0) || (start > (this._buffer.byteLength - 1)))
 			throw new Error(`Wrong start position: ${start}`);
 		//endregion
@@ -317,10 +374,14 @@ export class ByteStream
 		//endregion
 		
 		//region Create a new ArrayBuffer content
+		// noinspection NonBlockStatementBodyJS
 		if(size > this._view.length)
 			view.set(this._view);
 		else
+		{
+			// noinspection NestedFunctionCallJS
 			view.set(new Uint8Array(this._buffer, 0, size));
+		}
 		//endregion
 		
 		//region Initialize "Stream" with new "ArrayBuffer"
@@ -329,6 +390,7 @@ export class ByteStream
 		//endregion
 	}
 	//**********************************************************************************
+	// noinspection JSUnusedGlobalSymbols
 	/**
 	 * Append a new "stream" content to the current "stream"
 	 * @param {ByteStream} stream A new "stream" to append to current "stream"
@@ -349,6 +411,7 @@ export class ByteStream
 		//endregion
 	}
 	//**********************************************************************************
+	// noinspection JSUnusedGlobalSymbols, FunctionWithMultipleReturnPointsJS
 	/**
 	 * Insert "stream" content to the current "stream" at specific position
 	 * @param {ByteStream} stream A new "stream" to insert to current "stream"
@@ -359,25 +422,40 @@ export class ByteStream
 	insert(stream, start = 0, length = (this._buffer.byteLength - start))
 	{
 		//region Initial variables
+		// noinspection NonBlockStatementBodyJS
 		if(start > (this._buffer.byteLength - 1))
 			return false;
 		
 		if(length > (this._buffer.byteLength - start))
+		{
+			// noinspection AssignmentToFunctionParameterJS
 			length = this._buffer.byteLength - start;
+		}
 		//endregion
 		
 		//region Check input variables
 		if(length > stream._buffer.byteLength)
+		{
+			// noinspection AssignmentToFunctionParameterJS
 			length = stream._buffer.byteLength;
+		}
 		//endregion
 		
 		//region Update content of the current stream
-		this._view.set(stream._view, start);
+		// noinspection NonBlockStatementBodyJS, EqualityComparisonWithCoercionJS
+		if(length == stream._buffer.byteLength)
+			this._view.set(stream._view, start);
+		else
+		{
+			// noinspection NestedFunctionCallJS
+			this._view.set(stream._view.slice(0, length), start);
+		}
 		//endregion
 		
 		return true;
 	}
 	//**********************************************************************************
+	// noinspection FunctionWithMultipleReturnPointsJS
 	/**
 	 * Check that two "Stream" objects has equal content
 	 * @param {ByteStream} stream Stream to compare with
@@ -386,6 +464,7 @@ export class ByteStream
 	isEqual(stream)
 	{
 		//region Check length of both buffers
+		// noinspection NonBlockStatementBodyJS, EqualityComparisonWithCoercionJS
 		if(this._buffer.byteLength != stream._buffer.byteLength)
 			return false;
 		//endregion
@@ -393,6 +472,7 @@ export class ByteStream
 		//region Compare each byte of both buffers
 		for(let i = 0; i < stream._buffer.byteLength; i++)
 		{
+			// noinspection NonBlockStatementBodyJS, EqualityComparisonWithCoercionJS
 			if(this.view[i] != stream.view[i])
 				return false;
 		}
@@ -401,6 +481,7 @@ export class ByteStream
 		return true;
 	}
 	//**********************************************************************************
+	// noinspection JSUnusedGlobalSymbols, FunctionWithMultipleReturnPointsJS
 	/**
 	 * Check that current "Stream" objects has equal content with input "Uint8Array"
 	 * @param {Uint8Array} view View to compare with
@@ -409,6 +490,7 @@ export class ByteStream
 	isEqualView(view)
 	{
 		//region Check length of both buffers
+		// noinspection NonBlockStatementBodyJS, EqualityComparisonWithCoercionJS
 		if(view.length != this.view.length)
 			return false;
 		//endregion
@@ -416,6 +498,7 @@ export class ByteStream
 		//region Compare each byte of both buffers
 		for(let i = 0; i < view.length; i++)
 		{
+			// noinspection NonBlockStatementBodyJS, EqualityComparisonWithCoercionJS
 			if(this.view[i] != view[i])
 				return false;
 		}
@@ -424,49 +507,73 @@ export class ByteStream
 		return true;
 	}
 	//**********************************************************************************
+	// noinspection JSUnusedGlobalSymbols, FunctionWithMultipleLoopsJS, FunctionWithMultipleReturnPointsJS, OverlyComplexFunctionJS, FunctionTooLongJS
 	/**
 	 * Find any byte pattern in "Stream"
 	 * @param {ByteStream} pattern Stream having pattern value
-	 * @param {number|null} [start] Start position to search from
-	 * @param {number|null} [length] Length of byte block to search at
+	 * @param {?number} [start] Start position to search from
+	 * @param {?number} [length] Length of byte block to search at
 	 * @param {boolean} [backward] Flag to search in backward order
 	 * @returns {number}
 	 */
 	findPattern(pattern, start = null, length = null, backward = false)
 	{
 		//region Check input variables
+		// noinspection ConstantOnRightSideOfComparisonJS, ConstantOnLeftSideOfComparisonJS
 		if(start == null)
+		{
+			// noinspection AssignmentToFunctionParameterJS, ConditionalExpressionJS
 			start = (backward) ? this.buffer.byteLength : 0;
+		}
 		
 		if(start > this.buffer.byteLength)
+		{
+			// noinspection AssignmentToFunctionParameterJS
 			start = this.buffer.byteLength;
+		}
 		
 		if(backward)
 		{
+			// noinspection ConstantOnRightSideOfComparisonJS, ConstantOnLeftSideOfComparisonJS
 			if(length == null)
+			{
+				// noinspection AssignmentToFunctionParameterJS
 				length = start;
+			}
 			
 			if(length > start)
+			{
+				// noinspection AssignmentToFunctionParameterJS
 				length = start;
+			}
 		}
 		else
 		{
+			// noinspection ConstantOnRightSideOfComparisonJS, ConstantOnLeftSideOfComparisonJS
 			if(length == null)
+			{
+				// noinspection AssignmentToFunctionParameterJS
 				length = this.buffer.byteLength - start;
+			}
 			
 			if(length > (this.buffer.byteLength - start))
+			{
+				// noinspection AssignmentToFunctionParameterJS
 				length = this.buffer.byteLength - start;
+			}
 		}
 		//endregion
 		
 		//region Initial variables
 		const patternLength = pattern.buffer.byteLength;
+		// noinspection NonBlockStatementBodyJS
 		if(patternLength > length)
 			return (-1);
 		//endregion
 		
 		//region Make a "pre-read" array for pattern
 		const patternArray = [];
+		// noinspection NonBlockStatementBodyJS
 		for(let i = 0; i < patternLength; i++)
 			patternArray.push(pattern.view[i]);
 		//endregion
@@ -475,59 +582,88 @@ export class ByteStream
 		for(let i = 0; i <= (length - patternLength); i++)
 		{
 			let equal = true;
+			// noinspection ConditionalExpressionJS
 			const equalStart = (backward) ? (start - patternLength - i) : (start + i);
 			
 			for(let j = 0; j < patternLength; j++)
 			{
+				// noinspection EqualityComparisonWithCoercionJS
 				if(this.view[j + equalStart] != patternArray[j])
 				{
 					equal = false;
+					// noinspection BreakStatementJS
 					break;
 				}
 			}
 			
 			if(equal)
+			{
+				// noinspection ConditionalExpressionJS
 				return (backward) ? (start - patternLength - i) : (start + patternLength + i); // Position after the pattern found
+			}
 		}
 		//endregion
 		
 		return (-1);
 	}
 	//**********************************************************************************
+	// noinspection OverlyComplexFunctionJS
 	/**
 	 * Find first position of any pattern from input array
 	 * @param {Array.<ByteStream>} patterns Array with patterns which should be found
-	 * @param {number|null} [start] Start position to search from
-	 * @param {number|null} [length] Length of byte block to search at
+	 * @param {?number} [start] Start position to search from
+	 * @param {?number} [length] Length of byte block to search at
 	 * @param {boolean} [backward=false] Flag to search in backward order
 	 * @returns {{id: number, position: number}}
 	 */
 	findFirstIn(patterns, start = null, length = null, backward = false)
 	{
 		//region Initial variables
+		// noinspection ConstantOnRightSideOfComparisonJS, ConstantOnLeftSideOfComparisonJS
 		if(start == null)
+		{
+			// noinspection AssignmentToFunctionParameterJS, ConditionalExpressionJS
 			start = (backward) ? this.buffer.byteLength : 0;
+		}
 		
 		if(start > this.buffer.byteLength)
+		{
+			// noinspection AssignmentToFunctionParameterJS
 			start = this.buffer.byteLength;
+		}
 		
 		if(backward)
 		{
+			// noinspection ConstantOnRightSideOfComparisonJS, ConstantOnLeftSideOfComparisonJS
 			if(length == null)
+			{
+				// noinspection AssignmentToFunctionParameterJS
 				length = start;
+			}
 			
 			if(length > start)
+			{
+				// noinspection AssignmentToFunctionParameterJS
 				length = start;
+			}
 		}
 		else
 		{
+			// noinspection ConstantOnRightSideOfComparisonJS, ConstantOnLeftSideOfComparisonJS
 			if(length == null)
+			{
+				// noinspection AssignmentToFunctionParameterJS
 				length = this.buffer.byteLength - start;
+			}
 			
 			if(length > (this.buffer.byteLength - start))
+			{
+				// noinspection AssignmentToFunctionParameterJS
 				length = this.buffer.byteLength - start;
+			}
 		}
 		
+		// noinspection ConditionalExpressionJS
 		const result = {
 			id: (-1),
 			position: (backward) ? 0 : (start + length)
@@ -537,17 +673,20 @@ export class ByteStream
 		for(let i = 0; i < patterns.length; i++)
 		{
 			const position = this.findPattern(patterns[i], start, length, backward);
+			// noinspection EqualityComparisonWithCoercionJS
 			if(position != (-1))
 			{
 				let valid = false;
 				
 				if(backward)
 				{
+					// noinspection NonBlockStatementBodyJS
 					if(position >= result.position)
 						valid = true;
 				}
 				else
 				{
+					// noinspection NonBlockStatementBodyJS
 					if(position <= result.position)
 						valid = true;
 				}
@@ -563,11 +702,12 @@ export class ByteStream
 		return result;
 	}
 	//**********************************************************************************
+	// noinspection FunctionWithMultipleReturnPointsJS
 	/**
 	 * Find all positions of any pattern from input array
 	 * @param {Array.<ByteStream>} patterns Array with patterns which should be found
-	 * @param {number|null} [start] Start position to search from
-	 * @param {number|null} [length] Length of byte block to search at
+	 * @param {?number} [start] Start position to search from
+	 * @param {?number} [length] Length of byte block to search at
 	 * @returns {Array}
 	 */
 	findAllIn(patterns, start = 0, length = (this.buffer.byteLength - start))
@@ -575,17 +715,29 @@ export class ByteStream
 		//region Initial variables
 		const result = [];
 		
+		// noinspection ConstantOnRightSideOfComparisonJS, ConstantOnLeftSideOfComparisonJS
 		if(start == null)
+		{
+			// noinspection AssignmentToFunctionParameterJS
 			start = 0;
+		}
 		
+		// noinspection NonBlockStatementBodyJS
 		if(start > (this.buffer.byteLength - 1))
 			return result;
 		
+		// noinspection ConstantOnRightSideOfComparisonJS, ConstantOnLeftSideOfComparisonJS
 		if(length == null)
+		{
+			// noinspection AssignmentToFunctionParameterJS
 			length = this.buffer.byteLength - start;
+		}
 
 		if(length > (this.buffer.byteLength - start))
+		{
+			// noinspection AssignmentToFunctionParameterJS
 			length = this.buffer.byteLength - start;
+		}
 		
 		let patternFound = {
 			id: (-1),
@@ -600,48 +752,69 @@ export class ByteStream
 			
 			patternFound = this.findFirstIn(patterns, patternFound.position, length);
 			
+			// noinspection EqualityComparisonWithCoercionJS
 			if(patternFound.id == (-1))
+			{
+				// noinspection BreakStatementJS
 				break;
+			}
 			
+			// noinspection AssignmentToFunctionParameterJS
 			length -= (patternFound.position - position);
 			
 			result.push({
 				id: patternFound.id,
 				position: patternFound.position
 			});
-		} while(true);
+		} while(true); // eslint-disable-line
 		//endregion
 		
 		return result;
 	}
 	//**********************************************************************************
+	// noinspection FunctionWithMultipleLoopsJS, FunctionWithMultipleReturnPointsJS
 	/**
 	 * Find all positions of a pattern
 	 * @param {ByteStream} pattern Stream having pattern value
-	 * @param {number|null} [start] Start position to search from
-	 * @param {number|null} [length] Length of byte block to search at
+	 * @param {?number} [start] Start position to search from
+	 * @param {?number} [length] Length of byte block to search at
 	 * @returns {Array|number} Array with all pattern positions or (-1) if failed
 	 */
 	findAllPatternIn(pattern, start = 0, length = (this.buffer.byteLength - start))
 	{
 		//region Check input variables
+		// noinspection ConstantOnRightSideOfComparisonJS, ConstantOnLeftSideOfComparisonJS
 		if(start == null)
+		{
+			// noinspection AssignmentToFunctionParameterJS
 			start = 0;
+		}
 		
 		if(start > this.buffer.byteLength)
+		{
+			// noinspection AssignmentToFunctionParameterJS
 			start = this.buffer.byteLength;
+		}
 		
+		// noinspection ConstantOnRightSideOfComparisonJS, ConstantOnLeftSideOfComparisonJS
 		if(length == null)
+		{
+			// noinspection AssignmentToFunctionParameterJS
 			length = this.buffer.byteLength - start;
+		}
 		
 		if(length > (this.buffer.byteLength - start))
+		{
+			// noinspection AssignmentToFunctionParameterJS
 			length = this.buffer.byteLength - start;
+		}
 		//endregion
 		
 		//region Initial variables
 		const result = [];
 		
 		const patternLength = pattern.buffer.byteLength;
+		// noinspection NonBlockStatementBodyJS
 		if(patternLength > length)
 			return (-1);
 		//endregion
@@ -658,9 +831,11 @@ export class ByteStream
 			
 			for(let j = 0; j < patternLength; j++)
 			{
+				// noinspection EqualityComparisonWithCoercionJS
 				if(this.view[j + equalStart] != patternArray[j])
 				{
 					equal = false;
+					// noinspection BreakStatementJS
 					break;
 				}
 			}
@@ -676,38 +851,60 @@ export class ByteStream
 		return result;
 	}
 	//**********************************************************************************
+	// noinspection OverlyComplexFunctionJS, FunctionTooLongJS
 	/**
 	 * Find first position of data, not included in patterns from input array
 	 * @param {Array.<ByteStream>} patterns Array with patterns which should be ommited
-	 * @param {number|null} [start] Start position to search from
-	 * @param {number|null} [length] Length of byte block to search at
+	 * @param {?number} [start] Start position to search from
+	 * @param {?number} [length] Length of byte block to search at
 	 * @param {boolean} [backward=false] Flag to search in backward order
 	 * @returns {{left: {id: number, position: *}, right: {id: number, position: number}, value: ByteStream}}
 	 */
 	findFirstNotIn(patterns, start = null, length = null, backward = false)
 	{
 		//region Initial variables
+		// noinspection ConstantOnRightSideOfComparisonJS, ConstantOnLeftSideOfComparisonJS
 		if(start == null)
+		{
+			// noinspection AssignmentToFunctionParameterJS, ConditionalExpressionJS
 			start = (backward) ? this.buffer.byteLength : 0;
+		}
 		
 		if(start > this.buffer.byteLength)
+		{
+			// noinspection AssignmentToFunctionParameterJS
 			start = this.buffer.byteLength;
+		}
 		
 		if(backward)
 		{
+			// noinspection ConstantOnRightSideOfComparisonJS, ConstantOnLeftSideOfComparisonJS
 			if(length == null)
+			{
+				// noinspection AssignmentToFunctionParameterJS
 				length = start;
+			}
 			
 			if(length > start)
+			{
+				// noinspection AssignmentToFunctionParameterJS
 				length = start;
+			}
 		}
 		else
 		{
+			// noinspection ConstantOnRightSideOfComparisonJS, ConstantOnLeftSideOfComparisonJS
 			if(length == null)
+			{
+				// noinspection AssignmentToFunctionParameterJS
 				length = this.buffer.byteLength - start;
+			}
 			
 			if(length > (this.buffer.byteLength - start))
+			{
+				// noinspection AssignmentToFunctionParameterJS
 				length = this.buffer.byteLength - start;
+			}
 		}
 		
 		const result = {
@@ -725,9 +922,11 @@ export class ByteStream
 		let currentLength = length;
 		//endregion
 		
+		// noinspection ConstantOnRightSideOfComparisonJS, ConstantOnLeftSideOfComparisonJS
 		while(currentLength > 0)
 		{
 			//region Search for nearest "pattern"
+			// noinspection ConditionalExpressionJS
 			result.right = this.findFirstIn(patterns,
 				(backward) ? (start - length + currentLength) : (start + length - currentLength),
 				currentLength,
@@ -735,35 +934,49 @@ export class ByteStream
 			//endregion
 			
 			//region No pattern at all
+			// noinspection EqualityComparisonWithCoercionJS
 			if(result.right.id == (-1))
 			{
+				// noinspection AssignmentToFunctionParameterJS
 				length = currentLength;
 				
 				if(backward)
-					start = start - length;
+				{
+					// noinspection AssignmentToFunctionParameterJS
+					start -= length;
+				}
 				else
+				{
+					// noinspection AssignmentToFunctionParameterJS
 					start = result.left.position;
+				}
 				
 				result.value = new ByteStream();
 				
 				result.value._buffer = this._buffer.slice(start, start + length);
 				result.value._view = new Uint8Array(result.value._buffer);
 				
+				// noinspection BreakStatementJS
 				break;
 			}
 			//endregion
 			
 			//region Check distance between two patterns
+			// noinspection ConditionalExpressionJS, EqualityComparisonWithCoercionJS
 			if(result.right.position != ((backward) ? (result.left.position - patterns[result.right.id].buffer.byteLength) : (result.left.position + patterns[result.right.id].buffer.byteLength)))
 			{
 				if(backward)
 				{
+					// noinspection AssignmentToFunctionParameterJS
 					start = result.right.position + patterns[result.right.id].buffer.byteLength;
+					// noinspection AssignmentToFunctionParameterJS
 					length = result.left.position - result.right.position - patterns[result.right.id].buffer.byteLength;
 				}
 				else
 				{
+					// noinspection AssignmentToFunctionParameterJS
 					start = result.left.position;
+					// noinspection AssignmentToFunctionParameterJS
 					length = result.right.position - result.left.position - patterns[result.right.id].buffer.byteLength;
 				}
 				
@@ -772,6 +985,7 @@ export class ByteStream
 				result.value._buffer = this._buffer.slice(start, start + length);
 				result.value._view = new Uint8Array(result.value._buffer);
 				
+				// noinspection BreakStatementJS
 				break;
 			}
 			//endregion
@@ -797,11 +1011,12 @@ export class ByteStream
 		return result;
 	}
 	//**********************************************************************************
+	// noinspection FunctionWithMultipleReturnPointsJS
 	/**
 	 * Find all positions of data, not included in patterns from input array
 	 * @param {Array.<ByteStream>} patterns Array with patterns which should be ommited
-	 * @param {number|null} [start] Start position to search from
-	 * @param {number|null} [length] Length of byte block to search at
+	 * @param {?number} [start] Start position to search from
+	 * @param {?number} [length] Length of byte block to search at
 	 * @returns {Array}
 	 */
 	findAllNotIn(patterns, start = null, length = null)
@@ -809,17 +1024,29 @@ export class ByteStream
 		//region Initial variables
 		const result = [];
 		
+		// noinspection ConstantOnRightSideOfComparisonJS, ConstantOnLeftSideOfComparisonJS
 		if(start == null)
+		{
+			// noinspection AssignmentToFunctionParameterJS
 			start = 0;
+		}
 		
+		// noinspection NonBlockStatementBodyJS
 		if(start > (this.buffer.byteLength - 1))
 			return result;
 		
+		// noinspection ConstantOnRightSideOfComparisonJS, ConstantOnLeftSideOfComparisonJS
 		if(length == null)
+		{
+			// noinspection AssignmentToFunctionParameterJS
 			length = this.buffer.byteLength - start;
+		}
 		
 		if(length > (this.buffer.byteLength - start))
+		{
+			// noinspection AssignmentToFunctionParameterJS
 			length = this.buffer.byteLength - start;
+		}
 		
 		let patternFound = {
 			left: {
@@ -835,12 +1062,14 @@ export class ByteStream
 		//endregion
 		
 		//region Find all accurences of patterns
+		// noinspection EqualityComparisonWithCoercionJS
 		do
 		{
 			const position = patternFound.right.position;
 			
 			patternFound = this.findFirstNotIn(patterns, patternFound.right.position, length);
 			
+			// noinspection AssignmentToFunctionParameterJS
 			length -= (patternFound.right.position - position);
 			
 			result.push({
@@ -860,43 +1089,66 @@ export class ByteStream
 		return result;
 	}
 	//**********************************************************************************
+	// noinspection FunctionWithMultipleReturnPointsJS, OverlyComplexFunctionJS
 	/**
 	 * Find position of a sequence of any patterns from input array
 	 * @param {Array.<ByteStream>} patterns Array of pattern to look for
-	 * @param {number|null} [start] Start position to search from
-	 * @param {number|null} [length] Length of byte block to search at
+	 * @param {?number} [start] Start position to search from
+	 * @param {?number} [length] Length of byte block to search at
 	 * @param {boolean} [backward=false] Flag to search in backward order
 	 * @returns {*}
 	 */
 	findFirstSequence(patterns, start = null, length = null, backward = false)
 	{
 		//region Initial variables
+		// noinspection ConstantOnRightSideOfComparisonJS, ConstantOnLeftSideOfComparisonJS
 		if(start == null)
+		{
+			// noinspection AssignmentToFunctionParameterJS, ConditionalExpressionJS
 			start = (backward) ? this.buffer.byteLength : 0;
+		}
 		
 		if(start > this.buffer.byteLength)
+		{
+			// noinspection AssignmentToFunctionParameterJS
 			start = this.buffer.byteLength;
+		}
 		
 		if(backward)
 		{
+			// noinspection ConstantOnRightSideOfComparisonJS, ConstantOnLeftSideOfComparisonJS
 			if(length == null)
+			{
+				// noinspection AssignmentToFunctionParameterJS
 				length = start;
+			}
 			
 			if(length > start)
+			{
+				// noinspection AssignmentToFunctionParameterJS
 				length = start;
+			}
 		}
 		else
 		{
+			// noinspection ConstantOnRightSideOfComparisonJS, ConstantOnLeftSideOfComparisonJS
 			if(length == null)
+			{
+				// noinspection AssignmentToFunctionParameterJS
 				length = this.buffer.byteLength - start;
+			}
 			
 			if(length > (this.buffer.byteLength - start))
+			{
+				// noinspection AssignmentToFunctionParameterJS
 				length = this.buffer.byteLength - start;
+			}
 		}
 		//endregion
 		
 		//region Find first byte from sequence
 		const firstIn = this.skipNotPatterns(patterns, start, length, backward);
+		// noinspection EqualityComparisonWithCoercionJS
 		if(firstIn == (-1))
 		{
 			return {
@@ -907,6 +1159,7 @@ export class ByteStream
 		//endregion
 		
 		//region Find first byte not in sequence
+		// noinspection ConditionalExpressionJS
 		const firstNotIn = this.skipPatterns(patterns,
 			firstIn,
 			length - ((backward) ? (start - firstIn) : (firstIn - start)),
@@ -916,12 +1169,16 @@ export class ByteStream
 		//region Make output value
 		if(backward)
 		{
+			// noinspection AssignmentToFunctionParameterJS
 			start = firstNotIn;
+			// noinspection AssignmentToFunctionParameterJS
 			length = (firstIn - firstNotIn);
 		}
 		else
 		{
+			// noinspection AssignmentToFunctionParameterJS
 			start = firstIn;
+			// noinspection AssignmentToFunctionParameterJS
 			length = (firstNotIn - firstIn);
 		}
 		
@@ -937,11 +1194,12 @@ export class ByteStream
 		};
 	}
 	//**********************************************************************************
+	// noinspection FunctionWithMultipleReturnPointsJS
 	/**
 	 * Find all positions of a sequence of any patterns from input array
 	 * @param {Array.<ByteStream>} patterns Array of patterns to search for
-	 * @param {number|null} [start] Start position to search from
-	 * @param {number|null} [length] Length of byte block to search at
+	 * @param {?number} [start] Start position to search from
+	 * @param {?number} [length] Length of byte block to search at
 	 * @returns {Array}
 	 */
 	findAllSequences(patterns, start = null, length = null)
@@ -949,17 +1207,29 @@ export class ByteStream
 		//region Initial variables
 		const result = [];
 		
+		// noinspection ConstantOnRightSideOfComparisonJS, ConstantOnLeftSideOfComparisonJS
 		if(start == null)
+		{
+			// noinspection AssignmentToFunctionParameterJS
 			start = 0;
+		}
 		
+		// noinspection NonBlockStatementBodyJS
 		if(start > (this.buffer.byteLength - 1))
 			return result;
 		
+		// noinspection ConstantOnRightSideOfComparisonJS, ConstantOnLeftSideOfComparisonJS
 		if(length == null)
+		{
+			// noinspection AssignmentToFunctionParameterJS
 			length = this.buffer.byteLength - start;
+		}
 		
 		if(length > (this.buffer.byteLength - start))
+		{
+			// noinspection AssignmentToFunctionParameterJS
 			length = this.buffer.byteLength - start;
+		}
 		
 		let patternFound = {
 			position: start,
@@ -968,14 +1238,17 @@ export class ByteStream
 		//endregion
 		
 		//region Find all accurences of patterns
+		// noinspection EqualityComparisonWithCoercionJS
 		do
 		{
 			const position = patternFound.position;
 			
 			patternFound = this.findFirstSequence(patterns, patternFound.position, length);
 			
+			// noinspection EqualityComparisonWithCoercionJS
 			if(patternFound.position != (-1))
 			{
+				// noinspection AssignmentToFunctionParameterJS
 				length -= (patternFound.position - position);
 				
 				result.push({
@@ -990,12 +1263,13 @@ export class ByteStream
 		return result;
 	}
 	//**********************************************************************************
+	// noinspection FunctionWithMultipleLoopsJS, FunctionWithMultipleReturnPointsJS, OverlyComplexFunctionJS, FunctionTooLongJS
 	/**
 	 * Find all paired patterns in the stream
 	 * @param {ByteStream} leftPattern Left pattern to search for
 	 * @param {ByteStream} rightPattern Right pattern to search for
-	 * @param {number|null} [start=null] Start position to search from
-	 * @param {number|null} [length=null] Length of byte block to search at
+	 * @param {?number} [start=null] Start position to search from
+	 * @param {?number} [length=null] Length of byte block to search at
 	 * @returns {Array}
 	 */
 	findPairedPatterns(leftPattern, rightPattern, start = null, length = null)
@@ -1003,32 +1277,47 @@ export class ByteStream
 		//region Initial variables
 		const result = [];
 		
+		// noinspection NonBlockStatementBodyJS
 		if(leftPattern.isEqual(rightPattern))
 			return result;
 		
+		// noinspection ConstantOnRightSideOfComparisonJS, ConstantOnLeftSideOfComparisonJS
 		if(start == null)
+		{
+			// noinspection AssignmentToFunctionParameterJS
 			start = 0;
+		}
 		
+		// noinspection NonBlockStatementBodyJS
 		if(start > (this.buffer.byteLength - 1))
 			return result;
 		
+		// noinspection ConstantOnRightSideOfComparisonJS, ConstantOnLeftSideOfComparisonJS
 		if(length == null)
+		{
+			// noinspection AssignmentToFunctionParameterJS
 			length = this.buffer.byteLength - start;
+		}
 		
 		if(length > (this.buffer.byteLength - start))
+		{
+			// noinspection AssignmentToFunctionParameterJS
 			length = this.buffer.byteLength - start;
+		}
 		
 		let currentPositionLeft = 0;
 		//endregion
 		
 		//region Find all "left patterns" as sorted array
 		const leftPatterns = this.findAllPatternIn(leftPattern, start, length);
+		// noinspection ConstantOnRightSideOfComparisonJS, ConstantOnLeftSideOfComparisonJS, NonBlockStatementBodyJS, EqualityComparisonWithCoercionJS
 		if(leftPatterns.length == 0)
 			return result;
 		//endregion
 		
 		//region Find all "right patterns" as sorted array
 		const rightPatterns = this.findAllPatternIn(rightPattern, start, length);
+		// noinspection ConstantOnRightSideOfComparisonJS, ConstantOnLeftSideOfComparisonJS, NonBlockStatementBodyJS, EqualityComparisonWithCoercionJS
 		if(rightPatterns.length == 0)
 			return result;
 		//endregion
@@ -1036,9 +1325,14 @@ export class ByteStream
 		//region Combine patterns
 		while(currentPositionLeft < leftPatterns.length)
 		{
+			// noinspection ConstantOnRightSideOfComparisonJS, ConstantOnLeftSideOfComparisonJS, EqualityComparisonWithCoercionJS
 			if(rightPatterns.length == 0)
+			{
+				// noinspection BreakStatementJS
 				break;
+			}
 			
+			// noinspection EqualityComparisonWithCoercionJS
 			if(leftPatterns[0] == rightPatterns[0])
 			{
 				// Possible situation when one pattern is a part of another
@@ -1054,18 +1348,25 @@ export class ByteStream
 				leftPatterns.splice(0, 1);
 				rightPatterns.splice(0, 1);
 				
+				// noinspection ContinueStatementJS
 				continue;
 			}
 			
 			if(leftPatterns[currentPositionLeft] > rightPatterns[0])
+			{
+				// noinspection BreakStatementJS
 				break;
+			}
 			
 			while(leftPatterns[currentPositionLeft] < rightPatterns[0])
 			{
 				currentPositionLeft++;
 				
 				if(currentPositionLeft >= leftPatterns.length)
+				{
+					// noinspection BreakStatementJS
 					break;
+				}
 			}
 			
 			result.push({
@@ -1087,12 +1388,13 @@ export class ByteStream
 		return result;
 	}
 	//**********************************************************************************
+	// noinspection FunctionWithMultipleLoopsJS, FunctionWithMultipleReturnPointsJS, OverlyComplexFunctionJS, FunctionTooLongJS
 	/**
 	 * Find all paired patterns in the stream
 	 * @param {Array.<ByteStream>} inputLeftPatterns Array of left patterns to search for
 	 * @param {Array.<ByteStream>} inputRightPatterns Array of right patterns to search for
-	 * @param {number|null} [start=null] Start position to search from
-	 * @param {number|null} [length=null] Length of byte block to search at
+	 * @param {?number} [start=null] Start position to search from
+	 * @param {?number} [length=null] Length of byte block to search at
 	 * @returns {Array}
 	 */
 	findPairedArrays(inputLeftPatterns, inputRightPatterns, start = null, length = null)
@@ -1100,29 +1402,43 @@ export class ByteStream
 		//region Initial variables
 		const result = [];
 		
+		// noinspection ConstantOnRightSideOfComparisonJS, ConstantOnLeftSideOfComparisonJS
 		if(start == null)
+		{
+			// noinspection AssignmentToFunctionParameterJS
 			start = 0;
+		}
 		
+		// noinspection NonBlockStatementBodyJS
 		if(start > (this.buffer.byteLength - 1))
 			return result;
 		
+		// noinspection ConstantOnRightSideOfComparisonJS, ConstantOnLeftSideOfComparisonJS
 		if(length == null)
+		{
+			// noinspection AssignmentToFunctionParameterJS
 			length = this.buffer.byteLength - start;
+		}
 		
 		if(length > (this.buffer.byteLength - start))
+		{
+			// noinspection AssignmentToFunctionParameterJS
 			length = this.buffer.byteLength - start;
+		}
 		
 		let currentPositionLeft = 0;
 		//endregion
 		
 		//region Find all "left patterns" as sorted array
 		const leftPatterns = this.findAllIn(inputLeftPatterns, start, length);
+		// noinspection ConstantOnRightSideOfComparisonJS, ConstantOnLeftSideOfComparisonJS, NonBlockStatementBodyJS, EqualityComparisonWithCoercionJS
 		if(leftPatterns.length == 0)
 			return result;
 		//endregion
 		
 		//region Find all "right patterns" as sorted array
 		const rightPatterns = this.findAllIn(inputRightPatterns, start, length);
+		// noinspection ConstantOnRightSideOfComparisonJS, ConstantOnLeftSideOfComparisonJS, NonBlockStatementBodyJS, EqualityComparisonWithCoercionJS
 		if(rightPatterns.length == 0)
 			return result;
 		//endregion
@@ -1130,9 +1446,14 @@ export class ByteStream
 		//region Combine patterns
 		while(currentPositionLeft < leftPatterns.length)
 		{
+			// noinspection ConstantOnRightSideOfComparisonJS, ConstantOnLeftSideOfComparisonJS, EqualityComparisonWithCoercionJS
 			if(rightPatterns.length == 0)
+			{
+				// noinspection BreakStatementJS
 				break;
+			}
 			
+			// noinspection EqualityComparisonWithCoercionJS
 			if(leftPatterns[0].position == rightPatterns[0].position)
 			{
 				// Possible situation when one pattern is a part of another
@@ -1148,18 +1469,25 @@ export class ByteStream
 				leftPatterns.splice(0, 1);
 				rightPatterns.splice(0, 1);
 				
+				// noinspection ContinueStatementJS
 				continue;
 			}
 			
 			if(leftPatterns[currentPositionLeft].position > rightPatterns[0].position)
+			{
+				// noinspection BreakStatementJS
 				break;
+			}
 			
 			while(leftPatterns[currentPositionLeft].position < rightPatterns[0].position)
 			{
 				currentPositionLeft++;
 				
 				if(currentPositionLeft >= leftPatterns.length)
+				{
+					// noinspection BreakStatementJS
 					break;
+				}
 			}
 			
 			result.push({
@@ -1181,12 +1509,13 @@ export class ByteStream
 		return result;
 	}
 	//**********************************************************************************
+	// noinspection FunctionWithMultipleReturnPointsJS, FunctionTooLongJS
 	/**
 	 * Replace one patter with other
 	 * @param {ByteStream} searchPattern The pattern to search for
 	 * @param {ByteStream} replacePattern The pattern to replace initial pattern
-	 * @param {number|null} [start=null] Start position to search from
-	 * @param {number|null} [length=null] Length of byte block to search at
+	 * @param {?number} [start=null] Start position to search from
+	 * @param {?number} [length=null] Length of byte block to search at
 	 * @param {Array|null} [findAllResult=null] Pre-calculated results of "findAllIn"
 	 * @returns {*}
 	 */
@@ -1195,36 +1524,51 @@ export class ByteStream
 		//region Initial variables
 		let result;
 		
-		let i = 0;
+		let i;
 		const output = {
 			status: (-1),
 			searchPatternPositions: [],
 			replacePatternPositions: []
 		};
 		
+		// noinspection ConstantOnRightSideOfComparisonJS, ConstantOnLeftSideOfComparisonJS
 		if(start == null)
+		{
+			// noinspection AssignmentToFunctionParameterJS
 			start = 0;
+		}
 		
+		// noinspection NonBlockStatementBodyJS
 		if(start > (this.buffer.byteLength - 1))
 			return false;
 		
+		// noinspection ConstantOnRightSideOfComparisonJS, ConstantOnLeftSideOfComparisonJS
 		if(length == null)
+		{
+			// noinspection AssignmentToFunctionParameterJS
 			length = this.buffer.byteLength - start;
+		}
 		
 		if(length > (this.buffer.byteLength - start))
+		{
+			// noinspection AssignmentToFunctionParameterJS
 			length = this.buffer.byteLength - start;
+		}
 		//endregion
 		
 		//region Find a pattern to search for
+		// noinspection ConstantOnRightSideOfComparisonJS, ConstantOnLeftSideOfComparisonJS, NonBlockStatementBodyJS
 		if(findAllResult == null)
 		{
 			result = this.findAllIn([searchPattern], start, length);
+			// noinspection ConstantOnRightSideOfComparisonJS, ConstantOnLeftSideOfComparisonJS, NonBlockStatementBodyJS, EqualityComparisonWithCoercionJS
 			if(result.length == 0)
 				return output;
 		}
 		else
 			result = findAllResult;
 		
+		// noinspection NestedFunctionCallJS
 		output.searchPatternPositions.push(...Array.from(result, element => element.position));
 		//endregion
 		
@@ -1236,6 +1580,7 @@ export class ByteStream
 		//endregion
 		
 		//region Copy data from 0 to start
+		// noinspection NestedFunctionCallJS
 		changedView.set(new Uint8Array(this.buffer, 0, start));
 		//endregion
 		
@@ -1243,10 +1588,12 @@ export class ByteStream
 		for(i = 0; i < result.length; i++)
 		{
 			//region Initial variables
+			// noinspection ConstantOnRightSideOfComparisonJS, ConstantOnLeftSideOfComparisonJS, ConditionalExpressionJS, EqualityComparisonWithCoercionJS
 			const currentPosition = (i == 0) ? start : result[i - 1].position;
 			//endregion
 			
 			//region Copy bytes other then search pattern
+			// noinspection NestedFunctionCallJS
 			changedView.set(new Uint8Array(this.buffer, currentPosition, result[i].position - searchPattern.buffer.byteLength - currentPosition), currentPosition - i * patternDifference);
 			//endregion
 			
@@ -1260,6 +1607,7 @@ export class ByteStream
 		
 		//region Copy data from the end of old buffer
 		i--;
+		// noinspection NestedFunctionCallJS
 		changedView.set(new Uint8Array(this.buffer, result[i].position, this.buffer.byteLength - result[i].position), result[i].position - searchPattern.buffer.byteLength + replacePattern.buffer.byteLength - i * patternDifference);
 		//endregion
 		
@@ -1273,38 +1621,60 @@ export class ByteStream
 		return output;
 	}
 	//**********************************************************************************
+	// noinspection FunctionWithMultipleLoopsJS, FunctionWithMultipleReturnPointsJS, OverlyComplexFunctionJS, FunctionTooLongJS
 	/**
 	 * Skip any pattern from input array
 	 * @param {Array.<ByteStream>} patterns Array with patterns which should be ommited
-	 * @param {number|null} [start=null] Start position to search from
-	 * @param {number|null} [length=null] Length of byte block to search at
+	 * @param {?number} [start=null] Start position to search from
+	 * @param {?number} [length=null] Length of byte block to search at
 	 * @param {boolean} [backward=false] Flag to search in backward order
 	 * @returns {*}
 	 */
 	skipPatterns(patterns, start = null, length = null, backward = false)
 	{
 		//region Initial variables
+		// noinspection ConstantOnRightSideOfComparisonJS, ConstantOnLeftSideOfComparisonJS
 		if(start == null)
+		{
+			// noinspection AssignmentToFunctionParameterJS, ConditionalExpressionJS
 			start = (backward) ? this.buffer.byteLength : 0;
+		}
 		
 		if(start > this.buffer.byteLength)
+		{
+			// noinspection AssignmentToFunctionParameterJS
 			start = this.buffer.byteLength;
+		}
 		
 		if(backward)
 		{
+			// noinspection ConstantOnRightSideOfComparisonJS, ConstantOnLeftSideOfComparisonJS
 			if(length == null)
+			{
+				// noinspection AssignmentToFunctionParameterJS
 				length = start;
+			}
 			
 			if(length > start)
+			{
+				// noinspection AssignmentToFunctionParameterJS
 				length = start;
+			}
 		}
 		else
 		{
+			// noinspection ConstantOnRightSideOfComparisonJS, ConstantOnLeftSideOfComparisonJS
 			if(length == null)
+			{
+				// noinspection AssignmentToFunctionParameterJS
 				length = this.buffer.byteLength - start;
+			}
 			
 			if(length > (this.buffer.byteLength - start))
+			{
+				// noinspection AssignmentToFunctionParameterJS
 				length = this.buffer.byteLength - start;
+			}
 		}
 		
 		let result = start;
@@ -1314,14 +1684,17 @@ export class ByteStream
 		for(let k = 0; k < patterns.length; k++)
 		{
 			const patternLength = patterns[k].buffer.byteLength;
+			// noinspection ConditionalExpressionJS
 			const equalStart = (backward) ? (result - patternLength) : (result);
 			let equal = true;
 			
 			for(let j = 0; j < patternLength; j++)
 			{
+				// noinspection EqualityComparisonWithCoercionJS
 				if(this.view[j + equalStart] != patterns[k].view[j])
 				{
 					equal = false;
+					// noinspection BreakStatementJS
 					break;
 				}
 			}
@@ -1332,13 +1705,15 @@ export class ByteStream
 				
 				if(backward)
 				{
-					result = result - patternLength;
+					result -= patternLength;
+					// noinspection ConstantOnRightSideOfComparisonJS, ConstantOnLeftSideOfComparisonJS, NonBlockStatementBodyJS
 					if(result <= 0)
 						return result;
 				}
 				else
 				{
-					result = result + patternLength;
+					result += patternLength;
+					// noinspection NonBlockStatementBodyJS
 					if(result >= (start + length))
 						return result;
 				}
@@ -1349,6 +1724,7 @@ export class ByteStream
 		return result;
 	}
 	//**********************************************************************************
+	// noinspection FunctionWithMultipleLoopsJS, OverlyComplexFunctionJS, FunctionTooLongJS
 	/**
 	 * Skip any pattern not from input array
 	 * @param {Array.<ByteStream>} patterns Array with patterns which should not be ommited
@@ -1360,27 +1736,48 @@ export class ByteStream
 	skipNotPatterns(patterns, start = null, length = null, backward = false)
 	{
 		//region Initial variables
+		// noinspection ConstantOnRightSideOfComparisonJS, ConstantOnLeftSideOfComparisonJS
 		if(start == null)
+		{
+			// noinspection AssignmentToFunctionParameterJS, ConditionalExpressionJS
 			start = (backward) ? this.buffer.byteLength : 0;
+		}
 		
 		if(start > this.buffer.byteLength)
+		{
+			// noinspection AssignmentToFunctionParameterJS
 			start = this.buffer.byteLength;
+		}
 		
 		if(backward)
 		{
+			// noinspection ConstantOnRightSideOfComparisonJS, ConstantOnLeftSideOfComparisonJS
 			if(length == null)
+			{
+				// noinspection AssignmentToFunctionParameterJS
 				length = start;
+			}
 			
 			if(length > start)
+			{
+				// noinspection AssignmentToFunctionParameterJS
 				length = start;
+			}
 		}
 		else
 		{
+			// noinspection ConstantOnRightSideOfComparisonJS, ConstantOnLeftSideOfComparisonJS
 			if(length == null)
+			{
+				// noinspection AssignmentToFunctionParameterJS
 				length = this.buffer.byteLength - start;
+			}
 			
 			if(length > (this.buffer.byteLength - start))
+			{
+				// noinspection AssignmentToFunctionParameterJS
 				length = this.buffer.byteLength - start;
+			}
 		}
 		
 		let result = (-1);
@@ -1392,27 +1789,36 @@ export class ByteStream
 			for(let k = 0; k < patterns.length; k++)
 			{
 				const patternLength = patterns[k].buffer.byteLength;
+				// noinspection ConditionalExpressionJS
 				const equalStart = (backward) ? (start - i - patternLength) : (start + i);
 				let equal = true;
 				
 				for(let j = 0; j < patternLength; j++)
 				{
+					// noinspection EqualityComparisonWithCoercionJS
 					if(this.view[j + equalStart] != patterns[k].view[j])
 					{
 						equal = false;
+						// noinspection BreakStatementJS
 						break;
 					}
 				}
 				
 				if(equal)
 				{
+					// noinspection ConditionalExpressionJS
 					result = (backward) ? (start - i) : (start + i); // Exact position of pattern found
+					// noinspection BreakStatementJS
 					break;
 				}
 			}
 			
+			// noinspection EqualityComparisonWithCoercionJS
 			if(result != (-1))
+			{
+				// noinspection BreakStatementJS
 				break;
+			}
 		}
 		//endregion
 		
@@ -1468,12 +1874,15 @@ export class SeqStream
 					break;
 				case "backward":
 					this.backward = parameters.backward;
+					// noinspection JSUnusedGlobalSymbols
 					this._start = this.stream.buffer.byteLength;
 					break;
 				case "length":
+					// noinspection JSUnusedGlobalSymbols
 					this._length = parameters.length;
 					break;
 				case "start":
+					// noinspection JSUnusedGlobalSymbols
 					this._start = parameters.start;
 					break;
 				case "appendBlock":
@@ -1493,9 +1902,11 @@ export class SeqStream
 		this._stream = value;
 		
 		this.prevLength = this._length;
+		// noinspection JSUnusedGlobalSymbols
 		this._length = value._buffer.byteLength;
 		
 		this.prevStart = this._start;
+		// noinspection JSUnusedGlobalSymbols
 		this._start = 0;
 	}
 	//**********************************************************************************
@@ -1515,27 +1926,32 @@ export class SeqStream
 	set length(value)
 	{
 		this.prevLength = this._length;
+		// noinspection JSUnusedGlobalSymbols
 		this._length = value;
 	}
 	//**********************************************************************************
+	// noinspection FunctionWithMultipleReturnPointsJS
 	/**
 	 * Getter for "length" property
 	 * @returns {number}
 	 */
 	get length()
 	{
+		// noinspection NonBlockStatementBodyJS
 		if(this.appendBlock)
 			return this.start;
 		
 		return this._length;
 	}
 	//**********************************************************************************
+	// noinspection FunctionWithMultipleReturnPointsJS
 	/**
 	 * Setter for "start" property
 	 * @param {number} value
 	 */
 	set start(value)
 	{
+		// noinspection NonBlockStatementBodyJS
 		if(value > this.stream.buffer.byteLength)
 			return;
 		
@@ -1543,8 +1959,10 @@ export class SeqStream
 		this.prevStart = this._start;
 		this.prevLength = this._length;
 		//endregion
-
+		
+		// noinspection JSUnusedGlobalSymbols, ConditionalExpressionJS
 		this._length -= ((this.backward) ? (this._start - value) : (value - this._start));
+		// noinspection JSUnusedGlobalSymbols
 		this._start = value;
 	}
 	//**********************************************************************************
@@ -1557,37 +1975,48 @@ export class SeqStream
 		return this._start;
 	}
 	//**********************************************************************************
+	// noinspection JSUnusedGlobalSymbols
 	resetPosition()
 	{
+		// noinspection JSUnusedGlobalSymbols
 		this._start = this.prevStart;
+		// noinspection JSUnusedGlobalSymbols
 		this._length = this.prevLength;
 	}
 	//**********************************************************************************
+	// noinspection JSUnusedGlobalSymbols, FunctionWithMultipleReturnPointsJS
 	/**
 	 * Find any byte pattern in "ByteStream"
 	 * @param {ByteStream} pattern Stream having pattern value
-	 * @param {number|null} [gap] Maximum gap between start position and position of nearest object
+	 * @param {?number} [gap] Maximum gap between start position and position of nearest object
 	 * @returns {number}
 	 */
 	findPattern(pattern, gap = null)
 	{
 		//region Initial variables
+		// noinspection ConstantOnRightSideOfComparisonJS, ConstantOnLeftSideOfComparisonJS
 		if((gap == null) || (gap > this.length))
+		{
+			// noinspection AssignmentToFunctionParameterJS
 			gap = this.length;
+		}
 		//endregion
 		
 		//region Find pattern
 		const result = this.stream.findPattern(pattern, this.start, this.length, this.backward);
+		// noinspection ConstantOnRightSideOfComparisonJS, ConstantOnLeftSideOfComparisonJS, NonBlockStatementBodyJS, EqualityComparisonWithCoercionJS
 		if(result == (-1))
 			return result;
 		
 		if(this.backward)
 		{
+			// noinspection NonBlockStatementBodyJS
 			if(result < (this.start - pattern.buffer.byteLength - gap))
 				return (-1);
 		}
 		else
 		{
+			// noinspection NonBlockStatementBodyJS
 			if(result > (this.start + pattern.buffer.byteLength + gap))
 				return (-1);
 		}
@@ -1600,21 +2029,27 @@ export class SeqStream
 		return result;
 	}
 	//**********************************************************************************
+	// noinspection JSUnusedGlobalSymbols, FunctionWithMultipleReturnPointsJS
 	/**
 	 * Find first position of any pattern from input array
 	 * @param {Array.<ByteStream>} patterns Array with patterns which should be found
-	 * @param {number|null} [gap] Maximum gap between start position and position of nearest object
+	 * @param {?number} [gap] Maximum gap between start position and position of nearest object
 	 * @returns {{id: number, position: number}}
 	 */
 	findFirstIn(patterns, gap = null)
 	{
 		//region Initial variables
+		// noinspection ConstantOnRightSideOfComparisonJS, ConstantOnLeftSideOfComparisonJS
 		if((gap == null) || (gap > this.length))
+		{
+			// noinspection AssignmentToFunctionParameterJS
 			gap = this.length;
+		}
 		//endregion
 		
 		//region Search for patterns
 		const result = this.stream.findFirstIn(patterns, this.start, this.length, this.backward);
+		// noinspection NonBlockStatementBodyJS, EqualityComparisonWithCoercionJS
 		if(result.id == (-1))
 			return result;
 		
@@ -1622,6 +2057,7 @@ export class SeqStream
 		{
 			if(result.position < (this.start - patterns[result.id].buffer.byteLength - gap))
 			{
+				// noinspection ConditionalExpressionJS
 				return {
 					id: (-1),
 					position: (this.backward) ? 0 : (this.start + this.length)
@@ -1632,6 +2068,7 @@ export class SeqStream
 		{
 			if(result.position > (this.start + patterns[result.id].buffer.byteLength + gap))
 			{
+				// noinspection ConditionalExpressionJS
 				return {
 					id: (-1),
 					position: (this.backward) ? 0 : (this.start + this.length)
@@ -1647,6 +2084,7 @@ export class SeqStream
 		return result;
 	}
 	//**********************************************************************************
+	// noinspection JSUnusedGlobalSymbols
 	/**
 	 * Find all positions of any pattern from input array
 	 * @param {Array.<ByteStream>} patterns Array with patterns which should be found
@@ -1657,31 +2095,39 @@ export class SeqStream
 		// In case of "backward order" the start position is at the end on stream.
 		// In case of "normal order" the start position is at the begging of the stream.
 		// But in fact for search for all patterns we need to have start position in "normal order".
+		// noinspection ConditionalExpressionJS
 		const start = (this.backward) ? (this.start - this.length) : this.start;
 		
 		return this.stream.findAllIn(patterns, start, this.length);
 	}
 	//**********************************************************************************
+	// noinspection JSUnusedGlobalSymbols, FunctionWithMultipleReturnPointsJS, OverlyComplexFunctionJS
 	/**
 	 * Find first position of data, not included in patterns from input array
 	 * @param {Array.<ByteStream>} patterns Array with patterns which should be ommited
-	 * @param {number|null} gap Maximum gap between start position and position of nearest object
+	 * @param {?number} gap Maximum gap between start position and position of nearest object
 	 * @returns {*}
 	 */
 	findFirstNotIn(patterns, gap = null)
 	{
 		//region Initial variables
-		if((gap === null) || (gap > this.length))
+		// noinspection ConstantOnRightSideOfComparisonJS, ConstantOnLeftSideOfComparisonJS
+		if((gap == null) || (gap > this.length))
+		{
+			// noinspection AssignmentToFunctionParameterJS
 			gap = this.length;
+		}
 		//endregion
 		
 		//region Search for patterns
 		const result = this.stream.findFirstNotIn(patterns, this.start, this.length, this.backward);
+		// noinspection NonBlockStatementBodyJS, EqualityComparisonWithCoercionJS
 		if((result.left.id == (-1)) && (result.right.id == (-1)))
 			return result;
 		
 		if(this.backward)
 		{
+			// noinspection EqualityComparisonWithCoercionJS
 			if(result.right.id != (-1))
 			{
 				if(result.right.position < (this.start - patterns[result.right.id].buffer.byteLength - gap))
@@ -1702,6 +2148,7 @@ export class SeqStream
 		}
 		else
 		{
+			// noinspection EqualityComparisonWithCoercionJS
 			if(result.left.id != (-1))
 			{
 				if(result.left.position > (this.start + patterns[result.left.id].buffer.byteLength + gap))
@@ -1725,6 +2172,7 @@ export class SeqStream
 		//region Create new values
 		if(this.backward)
 		{
+			// noinspection NonBlockStatementBodyJS, EqualityComparisonWithCoercionJS
 			if(result.left.id == (-1))
 				this.start = 0;
 			else
@@ -1732,6 +2180,7 @@ export class SeqStream
 		}
 		else
 		{
+			// noinspection NonBlockStatementBodyJS, EqualityComparisonWithCoercionJS
 			if(result.right.id == (-1))
 				this.start = (this.start + this.length);
 			else
@@ -1742,6 +2191,7 @@ export class SeqStream
 		return result;
 	}
 	//**********************************************************************************
+	// noinspection JSUnusedGlobalSymbols
 	/**
 	 * Find all positions of data, not included in patterns from input array
 	 * @param {Array.<ByteStream>} patterns Array with patterns which should be ommited
@@ -1752,30 +2202,41 @@ export class SeqStream
 		// In case of "backward order" the start position is at the end on stream.
 		// In case of "normal order" the start position is at the begging of the stream.
 		// But in fact for search for all patterns we need to have start position in "normal order".
+		// noinspection ConditionalExpressionJS
 		const start = (this.backward) ? (this.start - this.length) : this.start;
 		
 		return this.stream.findAllNotIn(patterns, start, this.length);
 	}
 	//**********************************************************************************
+	// noinspection JSUnusedGlobalSymbols, FunctionWithMultipleReturnPointsJS
 	/**
 	 * Find position of a sequence of any patterns from input array
 	 * @param {Array.<ByteStream>} patterns Array with patterns which should be ommited
-	 * @param {number|null} [length] Length to search sequence for
-	 * @param {number|null} [gap] Maximum gap between start position and position of nearest object
+	 * @param {?number} [length] Length to search sequence for
+	 * @param {?number} [gap] Maximum gap between start position and position of nearest object
 	 * @returns {*}
 	 */
 	findFirstSequence(patterns, length = null, gap = null)
 	{
 		//region Initial variables
-		if((length === null) || (length > this.length))
+		// noinspection ConstantOnRightSideOfComparisonJS, ConstantOnLeftSideOfComparisonJS
+		if((length == null) || (length > this.length))
+		{
+			// noinspection AssignmentToFunctionParameterJS
 			length = this.length;
+		}
 		
-		if((gap === null) || (gap > length))
+		// noinspection ConstantOnRightSideOfComparisonJS, ConstantOnLeftSideOfComparisonJS
+		if((gap == null) || (gap > length))
+		{
+			// noinspection AssignmentToFunctionParameterJS
 			gap = length;
+		}
 		//endregion
 		
 		//region Search for sequence
 		const result = this.stream.findFirstSequence(patterns, this.start, length, this.backward);
+		// noinspection ConstantOnRightSideOfComparisonJS, ConstantOnLeftSideOfComparisonJS, NonBlockStatementBodyJS, EqualityComparisonWithCoercionJS
 		if(result.value.buffer.byteLength == 0)
 			return result;
 		
@@ -1808,6 +2269,7 @@ export class SeqStream
 		return result;
 	}
 	//**********************************************************************************
+	// noinspection JSUnusedGlobalSymbols
 	/**
 	 * Find position of a sequence of any patterns from input array
 	 * @param {Array.<ByteStream>} patterns Array with patterns which should be found
@@ -1818,28 +2280,35 @@ export class SeqStream
 		// In case of "backward order" the start position is at the end on stream.
 		// In case of "normal order" the start position is at the begging of the stream.
 		// But in fact for search for all patterns we need to have start position in "normal order".
+		// noinspection ConditionalExpressionJS
 		const start = (this.backward) ? (this.start - this.length) : this.start;
 		
 		return this.stream.findAllSequences(patterns, start, this.length);
 	}
 	//**********************************************************************************
+	// noinspection JSUnusedGlobalSymbols, FunctionWithMultipleReturnPointsJS
 	/**
 	 * Find all paired patterns in the stream
 	 * @param {ByteStream} leftPattern Left pattern to search for
 	 * @param {ByteStream} rightPattern Right pattern to search for
-	 * @param {number|null} [gap] Maximum gap between start position and position of nearest object
+	 * @param {?number} [gap] Maximum gap between start position and position of nearest object
 	 * @returns {Array}
 	 */
 	findPairedPatterns(leftPattern, rightPattern, gap = null)
 	{
 		//region Initial variables
-		if((gap === null) || (gap > this.length))
+		// noinspection ConstantOnRightSideOfComparisonJS, ConstantOnLeftSideOfComparisonJS
+		if((gap == null) || (gap > this.length))
+		{
+			// noinspection AssignmentToFunctionParameterJS
 			gap = this.length;
+		}
 		//endregion
 		
 		// In case of "backward order" the start position is at the end on stream.
 		// In case of "normal order" the start position is at the begging of the stream.
 		// But in fact for search for all patterns we need to have start position in "normal order".
+		// noinspection ConditionalExpressionJS
 		const start = (this.backward) ? (this.start - this.length) : this.start;
 		
 		//region Search for patterns
@@ -1848,11 +2317,13 @@ export class SeqStream
 		{
 			if(this.backward)
 			{
+				// noinspection NonBlockStatementBodyJS
 				if(result[0].right < (this.start - rightPattern.buffer.byteLength - gap))
 					return [];
 			}
 			else
 			{
+				// noinspection NonBlockStatementBodyJS
 				if(result[0].left > (this.start + leftPattern.buffer.byteLength + gap))
 					return [];
 			}
@@ -1862,23 +2333,29 @@ export class SeqStream
 		return result;
 	}
 	//**********************************************************************************
+	// noinspection JSUnusedGlobalSymbols, FunctionWithMultipleReturnPointsJS
 	/**
 	 * Find all paired patterns in the stream
 	 * @param {Array.<ByteStream>} leftPatterns Array of left patterns to search for
 	 * @param {Array.<ByteStream>} rightPatterns Array of right patterns to search for
-	 * @param {number|null} [gap] Maximum gap between start position and position of nearest object
+	 * @param {?number} [gap] Maximum gap between start position and position of nearest object
 	 * @returns {Array}
 	 */
 	findPairedArrays(leftPatterns, rightPatterns, gap = null)
 	{
 		//region Initial variables
-		if((gap === null) || (gap > this.length))
+		// noinspection ConstantOnRightSideOfComparisonJS, ConstantOnLeftSideOfComparisonJS
+		if((gap == null) || (gap > this.length))
+		{
+			// noinspection AssignmentToFunctionParameterJS
 			gap = this.length;
+		}
 		//endregion
 		
 		// In case of "backward order" the start position is at the end on stream.
 		// In case of "normal order" the start position is at the begging of the stream.
 		// But in fact for search for all patterns we need to have start position in "normal order".
+		// noinspection ConditionalExpressionJS
 		const start = (this.backward) ? (this.start - this.length) : this.start;
 		
 		//region Search for patterns
@@ -1887,11 +2364,13 @@ export class SeqStream
 		{
 			if(this.backward)
 			{
+				// noinspection NonBlockStatementBodyJS
 				if(result[0].right.position < (this.start - rightPatterns[result[0].right.id].buffer.byteLength - gap))
 					return [];
 			}
 			else
 			{
+				// noinspection NonBlockStatementBodyJS
 				if(result[0].left.position > (this.start + leftPatterns[result[0].left.id].buffer.byteLength + gap))
 					return [];
 			}
@@ -1901,6 +2380,7 @@ export class SeqStream
 		return result;
 	}
 	//**********************************************************************************
+	// noinspection JSUnusedGlobalSymbols
 	/**
 	 * Replace one patter with other
 	 * @param {ByteStream} searchPattern The pattern to search for
@@ -1912,11 +2392,13 @@ export class SeqStream
 		// In case of "backward order" the start position is at the end on stream.
 		// In case of "normal order" the start position is at the begging of the stream.
 		// But in fact for search for all patterns we need to have start position in "normal order".
+		// noinspection ConditionalExpressionJS
 		const start = (this.backward) ? (this.start - this.length) : this.start;
 		
 		return this.stream.replacePattern(searchPattern, replacePattern, start, this.length);
 	}
 	//**********************************************************************************
+	// noinspection JSUnusedGlobalSymbols
 	/**
 	 * Skip of any pattern from input array
 	 * @param {Array.<ByteStream>} patterns Array with patterns which should be ommited
@@ -1933,6 +2415,7 @@ export class SeqStream
 		return result;
 	}
 	//**********************************************************************************
+	// noinspection JSUnusedGlobalSymbols, FunctionWithMultipleReturnPointsJS
 	/**
 	 * Skip of any pattern from input array
 	 * @param {Array.<ByteStream>} patterns Array with patterns which should be ommited
@@ -1941,6 +2424,7 @@ export class SeqStream
 	skipNotPatterns(patterns)
 	{
 		const result = this.stream.skipNotPatterns(patterns, this.start, this.length, this.backward);
+		// noinspection NonBlockStatementBodyJS, EqualityComparisonWithCoercionJS
 		if(result == (-1))
 			return (-1);
 		
@@ -1951,6 +2435,7 @@ export class SeqStream
 		return result;
 	}
 	//**********************************************************************************
+	// noinspection JSUnusedGlobalSymbols
 	/**
 	 * Append a new "stream" content to the current "stream"
 	 * @param {ByteStream} stream A new "stream" to append to current "stream"
@@ -1960,7 +2445,10 @@ export class SeqStream
 		if((this.start + stream.buffer.byteLength) > this.stream.buffer.byteLength)
 		{
 			if(stream.buffer.byteLength > this.appendBlock)
+			{
+				// noinspection MagicNumberJS
 				this.appendBlock = (stream.buffer.byteLength + 1000);
+			}
 			
 			this.stream.realloc(this.stream.buffer.byteLength + this.appendBlock);
 		}
@@ -1969,6 +2457,7 @@ export class SeqStream
 		this.start = (this._start + stream.buffer.byteLength);
 	}
 	//**********************************************************************************
+	// noinspection JSUnusedGlobalSymbols
 	/**
 	 * Append a "view" content to the current "stream"
 	 * @param {Uint8Array} view A new "view" to append to current "stream"
@@ -1978,7 +2467,10 @@ export class SeqStream
 		if((this.start + view.length) > this.stream.buffer.byteLength)
 		{
 			if(view.length > this.appendBlock)
+			{
+				// noinspection MagicNumberJS
 				this.appendBlock = (view.length + 1000);
+			}
 			
 			this.stream.realloc(this.stream.buffer.byteLength + this.appendBlock);
 		}
@@ -1987,12 +2479,14 @@ export class SeqStream
 		this.start = (this._start + view.length);
 	}
 	//**********************************************************************************
+	// noinspection JSUnusedGlobalSymbols
 	/**
 	 * Append a new char to the current "stream"
 	 * @param {number} char A new char to append to current "stream"
 	 */
 	appendChar(char)
 	{
+		// noinspection NonBlockStatementBodyJS
 		if((this.start + 1) > this.stream.buffer.byteLength)
 			this.stream.realloc(this.stream.buffer.byteLength + this.appendBlock);
 		
@@ -2000,6 +2494,7 @@ export class SeqStream
 		this.start = (this._start + 1);
 	}
 	//**********************************************************************************
+	// noinspection FunctionWithMultipleReturnPointsJS
 	/**
 	 * Get a block of data
 	 * @param {number} size Size of the data block to get
@@ -2009,11 +2504,15 @@ export class SeqStream
 	getBlock(size, changeLength = true)
 	{
 		//region Check input parameters
+		// noinspection ConstantOnRightSideOfComparisonJS, ConstantOnLeftSideOfComparisonJS, NonBlockStatementBodyJS
 		if(this._length <= 0)
 			return [];
 		
 		if(this._length < size)
+		{
+			// noinspection AssignmentToFunctionParameterJS
 			size = this._length;
+		}
 		//endregion
 		
 		//region Initial variables
@@ -2023,30 +2522,36 @@ export class SeqStream
 		//region Getting result depends on "backward" flag
 		if(this.backward)
 		{
-			const _buffer = this._stream._buffer.slice(this._length - size, this._length);
-			const _view = new Uint8Array(_buffer);
+			const buffer = this._stream._buffer.slice(this._length - size, this._length);
+			const view = new Uint8Array(buffer);
 			
 			result = new Array(size);
 			
+			// noinspection NonBlockStatementBodyJS
 			for(let i = 0; i < size; i++)
-				result[size - 1 - i] = _view[i];
+				result[size - 1 - i] = view[i];
 		}
 		else
 		{
-			const _buffer = this._stream._buffer.slice(this._start, this._start + size);
+			const buffer = this._stream._buffer.slice(this._start, this._start + size);
 			
-			result = Array.from(new Uint8Array(_buffer));
+			// noinspection NestedFunctionCallJS
+			result = Array.from(new Uint8Array(buffer));
 		}
 		//endregion
 		
 		//region Change "length" value if needed
 		if(changeLength)
-			this.start = this.start + ((this.backward) ? ((-1) * size) : size);
+		{
+			// noinspection ConditionalExpressionJS
+			this.start += ((this.backward) ? ((-1) * size) : size);
+		}
 		//endregion
 		
 		return result;
 	}
 	//**********************************************************************************
+	// noinspection JSUnusedGlobalSymbols, FunctionWithMultipleReturnPointsJS, FunctionNamingConventionJS
 	/**
 	 * Get unsigned 4-byte integer value
 	 * @param {boolean} [changeLength=true] Should we change "length" and "start" value after reading the data block
@@ -2057,6 +2562,7 @@ export class SeqStream
 		const block = this.getBlock(4, changeLength);
 		
 		//region Check posibility for convertion
+		// noinspection ConstantOnRightSideOfComparisonJS, ConstantOnLeftSideOfComparisonJS, NonBlockStatementBodyJS
 		if(block.length < 4)
 			return 0;
 		//endregion
@@ -2065,6 +2571,7 @@ export class SeqStream
 		const value = new Uint32Array(1);
 		const view = new Uint8Array(value.buffer);
 		
+		// noinspection ConstantOnRightSideOfComparisonJS, ConstantOnLeftSideOfComparisonJS, NonBlockStatementBodyJS
 		for(let i = 3; i >= 0; i--)
 			view[3 - i] = block[i];
 		//endregion
@@ -2074,13 +2581,14 @@ export class SeqStream
 	//**********************************************************************************
 }
 //**************************************************************************************
+// noinspection FunctionWithMultipleLoopsJS, FunctionWithMultipleReturnPointsJS, OverlyComplexFunctionJS, FunctionTooLongJS
 /**
  * Get parsed values from "byte map"
  * @param {ByteStream} stream Stream to parse data from
  * @param {Object} map Object with information how to parse "byte map"
  * @param {number} elements Number of elements in parsing byte map
- * @param {number|null} [start=null] Start position to parse from
- * @param {number|null} [length=null] Length of byte block to parse from
+ * @param {?number} [start=null] Start position to parse from
+ * @param {?number} [length=null] Length of byte block to parse from
  * @returns {*}
  */
 export function parseByteMap(stream, map, elements, start = null, length = null)
@@ -2141,20 +2649,33 @@ export function parseByteMap(stream, map, elements, start = null, length = null)
 	 */
 	
 	//region Initial variables
+	// noinspection ConstantOnRightSideOfComparisonJS, ConstantOnLeftSideOfComparisonJS
 	if(start === null)
+	{
+		// noinspection AssignmentToFunctionParameterJS
 		start = 0;
+	}
 	
+	// noinspection NonBlockStatementBodyJS
 	if(start > (stream.buffer.byteLength - 1))
 		return false;
 	
+	// noinspection ConstantOnRightSideOfComparisonJS, ConstantOnLeftSideOfComparisonJS
 	if(length === null)
+	{
+		// noinspection AssignmentToFunctionParameterJS
 		length = stream.buffer.byteLength - start;
+	}
 	
 	if(length > (stream.buffer.byteLength - start))
+	{
+		// noinspection AssignmentToFunctionParameterJS
 		length = stream.buffer.byteLength - start;
+	}
 	
 	let dataView;
 	
+	// noinspection ConstantOnRightSideOfComparisonJS, ConstantOnLeftSideOfComparisonJS, EqualityComparisonWithCoercionJS, NonBlockStatementBodyJS
 	if((start == 0) && (length == stream.buffer.byteLength))
 		dataView = stream.view;
 	else
@@ -2176,30 +2697,43 @@ export function parseByteMap(stream, map, elements, start = null, length = null)
 		
 		for(let i = 0; i < mapLength; i++)
 		{
+			// noinspection ConstantOnRightSideOfComparisonJS, ConstantOnLeftSideOfComparisonJS, JSUnresolvedVariable, EqualityComparisonWithCoercionJS
 			if(map[i].maxlength == 0)
 			{
+				// noinspection NonBlockStatementBodyJS
 				if("defaultValue" in map[i])
 					(resultArray[elementsCount])[map[i].name] = map[i].defaultValue;
-					
+				
+				// noinspection ContinueStatementJS
 				continue;
 			}
 			
+			// noinspection JSUnresolvedVariable
 			const array = new Array(map[i].maxlength);
 			
+			// noinspection JSUnresolvedVariable
 			for(let j = 0; j < map[i].maxlength; j++)
+			{
+				// noinspection IncrementDecrementResultUsedJS
 				array[j] = dataView[count++];
+			}
 			
+			// noinspection JSUnresolvedVariable
 			const result = (map[i].func)(array);
+			// noinspection EqualityComparisonWithCoercionJS, NonBlockStatementBodyJS
 			if(result.status == (-1))
 				return result;
 			
+			// noinspection ConstantOnRightSideOfComparisonJS, ConstantOnLeftSideOfComparisonJS, EqualityComparisonWithCoercionJS, NonBlockStatementBodyJS
 			if(map[i].type != "check")
 				(resultArray[elementsCount])[map[i].name] = result.value;
 			
+			// noinspection JSUnresolvedVariable
 			count -= (map[i].maxlength - result.length);
 			structureLength += result.length;
 		}
 		
+		// noinspection IncrementDecrementResultUsedJS
 		(resultArray[elementsCount++]).structureLength = structureLength;
 	}
 	//endregion
@@ -2371,6 +2905,7 @@ export class BitStream
 		this.bitsCount = this.view.length << 3;
 	}
 	//**********************************************************************************
+	// noinspection FunctionNamingConventionJS
 	/**
 	 * Initialize "BitStream" object from existing "Uint8Array"
 	 * @param {Uint8Array} array The Uint8Array to copy from
@@ -2394,6 +2929,7 @@ export class BitStream
 		//region Initial variables
 		const stringLength = string.length;
 		
+		// noinspection ConditionalExpressionJS
 		this.buffer = new ArrayBuffer((stringLength >> 3) + ((stringLength % 8) ? 1 : 0));
 		this.view = new Uint8Array(this.buffer);
 		
@@ -2405,15 +2941,18 @@ export class BitStream
 		//region Convert from "bit string" to bytes
 		for(let i = 0; i < stringLength; i++)
 		{
+			// noinspection ConstantOnRightSideOfComparisonJS, ConstantOnLeftSideOfComparisonJS, EqualityComparisonWithCoercionJS, NonBlockStatementBodyJS
 			if(string[i] == "1")
 				this.view[byteIndex] |= 1 << (7 - (i % 8));
 			
+			// noinspection ConstantOnRightSideOfComparisonJS, ConstantOnLeftSideOfComparisonJS, EqualityComparisonWithCoercionJS, NonBlockStatementBodyJS
 			if(i && (((i + 1) % 8) == 0))
 				byteIndex++;
 		}
 		//endregion
 		
 		//region Shift "BitStream" into correct position
+		// noinspection NonBlockStatementBodyJS
 		if(stringLength % 8)
 			this.shiftRight(8 - (stringLength % 8));
 		//endregion
@@ -2425,24 +2964,40 @@ export class BitStream
 	//**********************************************************************************
 	/**
 	 * Represent "BitStream" object content as a string
-	 * @param {number|null} [start=null] Start number to convert to string from
-	 * @param {number|null} [length=null] Length of BitStream to convert to string
+	 * @param {?number} [start=null] Start number to convert to string from
+	 * @param {?number} [length=null] Length of BitStream to convert to string
 	 * @returns {string}
 	 */
 	toString(start = null, length = null)
 	{
 		//region Check input parameters
+		// noinspection ConstantOnRightSideOfComparisonJS, ConstantOnLeftSideOfComparisonJS
 		if(start == null)
+		{
+			// noinspection AssignmentToFunctionParameterJS
 			start = 0;
+		}
 		
+		// noinspection ConstantOnRightSideOfComparisonJS, ConstantOnLeftSideOfComparisonJS
 		if((start >= this.view.length) || (start < 0))
+		{
+			// noinspection AssignmentToFunctionParameterJS
 			start = 0;
+		}
 		
+		// noinspection ConstantOnRightSideOfComparisonJS, ConstantOnLeftSideOfComparisonJS
 		if(length == null)
+		{
+			// noinspection AssignmentToFunctionParameterJS
 			length = this.view.length - start;
+		}
 		
+		// noinspection ConstantOnRightSideOfComparisonJS, ConstantOnLeftSideOfComparisonJS
 		if((length >= this.view.length) || (length < 0))
+		{
+			// noinspection AssignmentToFunctionParameterJS
 			length = this.view.length - start;
+		}
 		//endregion
 		
 		//region Initial variables
@@ -2450,13 +3005,16 @@ export class BitStream
 		//endregion
 		
 		//region Convert from bytes to "bit string"
+		// noinspection NonBlockStatementBodyJS
 		for(let i = start; i < (start + length); i++)
 			result.push(bitsToStringArray[this.view[i]]);
 		//endregion
 		
+		// noinspection ChainedFunctionCallJS
 		return result.join("").slice((this.view.length << 3) - this.bitsCount);
 	}
 	//**********************************************************************************
+	// noinspection FunctionWithMultipleReturnPointsJS
 	/**
 	 * Shift entire "BitStream" value right to number of bits
 	 * @param {number} shift Number of bits to shift value
@@ -2465,42 +3023,50 @@ export class BitStream
 	shiftRight(shift, needShrink = true)
 	{
 		//region Check parameters
+		// noinspection ConstantOnRightSideOfComparisonJS, ConstantOnLeftSideOfComparisonJS, EqualityComparisonWithCoercionJS, NonBlockStatementBodyJS
 		if(this.view.length == 0)
 			return;
 		
+		// noinspection ConstantOnRightSideOfComparisonJS, ConstantOnLeftSideOfComparisonJS, NonBlockStatementBodyJS
 		if((shift < 0) || (shift > 8))
 			throw new Error("The \"shift\" parameter must be in range 0-8");
 		
+		// noinspection NonBlockStatementBodyJS
 		if(shift > this.bitsCount)
 			throw new Error("The \"shift\" parameter can not be bigger than \"this.bitsCount\"");
 		//endregion
 		
 		//region Initial variables
+		// noinspection MagicNumberJS
 		const shiftMask = 0xFF >> (8 - shift);
 		this.view[this.view.length - 1] >>= shift;
 		//endregion
 		
 		//region Shift value
+		// noinspection ConstantOnRightSideOfComparisonJS, ConstantOnLeftSideOfComparisonJS
 		for(let i = (this.view.length - 2); i >= 0; i--)
 		{
-			const shiftedBits = (this.view[i] & shiftMask) << (8 - shift);
-			this.view[i + 1] |= shiftedBits;
+			// noinspection NonShortCircuitBooleanExpressionJS
+			this.view[i + 1] |= (this.view[i] & shiftMask) << (8 - shift);
 			this.view[i] >>= shift;
 		}
 		//endregion
 		
 		//region Decrease number of bits stored into value
 		this.bitsCount -= shift;
+		// noinspection ConstantOnRightSideOfComparisonJS, ConstantOnLeftSideOfComparisonJS, EqualityComparisonWithCoercionJS, NonBlockStatementBodyJS
 		if(this.bitsCount == 0)
 			this.clear();
 		//endregion
 		
 		//region Change stream size if needed
+		// noinspection NonBlockStatementBodyJS
 		if(needShrink)
 			this.shrink();
 		//endregion
 	}
 	//**********************************************************************************
+	// noinspection JSUnusedGlobalSymbols, FunctionWithMultipleReturnPointsJS
 	/**
 	 * Shift entire "BitStream" value left to number of bits
 	 * @param {number} shift Number of bits to shift value
@@ -2516,30 +3082,39 @@ export class BitStream
 		 */
 		
 		//region Check parameters
+		// noinspection ConstantOnRightSideOfComparisonJS, ConstantOnLeftSideOfComparisonJS, EqualityComparisonWithCoercionJS, NonBlockStatementBodyJS
 		if(this.view.length == 0)
 			return;
 		
+		// noinspection ConstantOnRightSideOfComparisonJS, ConstantOnLeftSideOfComparisonJS, NonBlockStatementBodyJS
 		if((shift < 0) || (shift > 8))
 			throw new Error("The \"shift\" parameter must be in range 0-8");
 		
+		// noinspection NonBlockStatementBodyJS
 		if(shift > this.bitsCount)
 			throw new Error("The \"shift\" parameter can not be bigger than \"this.bitsCount\"");
 		//endregion
 		
 		//region Remove shifted bits
+		// noinspection MagicNumberJS, NonShortCircuitBooleanExpressionJS
 		const bitsOffset = this.bitsCount & 0x07;
 		if(bitsOffset > shift)
+		{
+			// noinspection MagicNumberJS
 			this.view[0] &= 0xFF >> (bitsOffset + shift);
+		}
 		else
 		{
 			//region Change size of buffer
 			const buffer = new ArrayBuffer(this.buffer.byteLength - 1);
 			const view = new Uint8Array(buffer);
 			
+			// noinspection NestedFunctionCallJS
 			view.set(new Uint8Array(this.buffer, 1, this.buffer.byteLength - 1));
 			//endregion
 			
 			//region Mask item with index 0
+			// noinspection MagicNumberJS
 			view[0] &= 0xFF >> (shift - bitsOffset);
 			//endregion
 			
@@ -2552,50 +3127,69 @@ export class BitStream
 		
 		//region Decrease number of bits stored into value
 		this.bitsCount -= shift;
+		// noinspection ConstantOnRightSideOfComparisonJS, ConstantOnLeftSideOfComparisonJS, EqualityComparisonWithCoercionJS, NonBlockStatementBodyJS
 		if(this.bitsCount == 0)
 			this.clear();
 		//endregion
 	}
 	//**********************************************************************************
+	// noinspection FunctionWithMultipleReturnPointsJS, FunctionTooLongJS
 	/**
 	 * Return slice of existing "BitStream"
-	 * @param {number|null} [start=null] Start position of the slice (in bits)
-	 * @param {number|null} [end=null] End position of the slice (in bits)
+	 * @param {?number} [start=null] Start position of the slice (in bits)
+	 * @param {?number} [end=null] End position of the slice (in bits)
 	 * @returns {BitStream}
 	 */
 	slice(start = null, end = null)
 	{
 		//region Make ability to pass non-value bits
 		let valueShift = 0;
+		// noinspection NonBlockStatementBodyJS
 		if(this.bitsCount % 8)
 			valueShift = (8 - (this.bitsCount % 8));
 		
+		// noinspection AssignmentToFunctionParameterJS
 		start += valueShift;
+		// noinspection AssignmentToFunctionParameterJS
 		end += valueShift;
 		//endregion
 		
 		//region Initial variables
+		// noinspection ConstantOnRightSideOfComparisonJS, ConstantOnLeftSideOfComparisonJS
 		if(start == null)
+		{
+			// noinspection AssignmentToFunctionParameterJS
 			start = 0;
+		}
 		
+		// noinspection ConstantOnRightSideOfComparisonJS, ConstantOnLeftSideOfComparisonJS, NonBlockStatementBodyJS
 		if((start < 0) || (start > ((this.view.length << 3) - 1)))
 			return new BitStream(); //("Wrong start position: " + start);
 		
+		// noinspection ConstantOnRightSideOfComparisonJS, ConstantOnLeftSideOfComparisonJS
 		if(end == null)
+		{
+			// noinspection AssignmentToFunctionParameterJS
 			end = (this.view.length << 3) - 1;
+		}
 		
+		// noinspection ConstantOnRightSideOfComparisonJS, ConstantOnLeftSideOfComparisonJS, NonBlockStatementBodyJS
 		if((end < 0) || (end > ((this.view.length << 3) - 1)))
 			return new BitStream(); //("Wrong end position: " + end);
 		
+		// noinspection NonBlockStatementBodyJS
 		if((end - start + 1) > this.bitsCount)
 			return new BitStream(); //("Maximum length is " + this.bitsCount);
 		
 		const startIndex = start >> 3;
+		// noinspection MagicNumberJS, NonShortCircuitBooleanExpressionJS
 		const startOffset = start & 0x07;
 		
 		const endIndex = end >> 3;
+		// noinspection MagicNumberJS, NonShortCircuitBooleanExpressionJS
 		const endOffset = end & 0x07;
 		
+		// noinspection ConstantOnRightSideOfComparisonJS, ConstantOnLeftSideOfComparisonJS, ConditionalExpressionJS, EqualityComparisonWithCoercionJS
 		const bitsLength = ((endIndex - startIndex) == 0) ? 1 : (endIndex - startIndex + 1);
 		
 		const result = new BitStream();
@@ -2606,18 +3200,22 @@ export class BitStream
 		result.view = new Uint8Array(result.buffer);
 		result.bitsCount = bitsLength << 3;
 		
+		// noinspection NestedFunctionCallJS
 		result.view.set(new Uint8Array(this.buffer, startIndex, bitsLength));
 		//endregion
 		
 		//region Change "start byte"
+		// noinspection MagicNumberJS
 		result.view[0] &= (0xFF >> startOffset);
 		//endregion
 		
 		//region Change "end byte"
+		// noinspection MagicNumberJS
 		result.view[bitsLength] &= (0xFF << (7 - endOffset));
 		//endregion
 		
 		//region Shift result array to right
+		// noinspection NonBlockStatementBodyJS
 		if(7 - endOffset)
 			result.shiftRight(7 - endOffset, false);
 		//endregion
@@ -2633,21 +3231,28 @@ export class BitStream
 		return result;
 	}
 	//**********************************************************************************
+	// noinspection FunctionWithMultipleReturnPointsJS
 	/**
 	 * Return copy of existing "BitStream"
-	 * @param {number|null} [start=null] Start position of the copy (in bits)
-	 * @param {number|null} [length=null] Length of the copy (in bits)
+	 * @param {?number} [start=null] Start position of the copy (in bits)
+	 * @param {?number} [length=null] Length of the copy (in bits)
 	 * @returns {BitStream}
 	 */
 	copy(start = null, length = null)
 	{
 		//region Check input parameters
+		// noinspection ConstantOnRightSideOfComparisonJS, ConstantOnLeftSideOfComparisonJS, NonBlockStatementBodyJS
 		if((start < 0) || (start > ((this.view.length << 3) - 1)))
 			return new BitStream(); //("Wrong start position: " + start);
 		
+		// noinspection ConstantOnRightSideOfComparisonJS, ConstantOnLeftSideOfComparisonJS
 		if(length === null)
+		{
+			// noinspection AssignmentToFunctionParameterJS
 			length = (this.view.length << 3) - start - 1;
+		}
 		
+		// noinspection NonBlockStatementBodyJS
 		if(length > this.bitsCount)
 			return new BitStream(); //("Maximum length is " + this.bitsCount);
 		//endregion
@@ -2660,6 +3265,7 @@ export class BitStream
 	 */
 	shrink()
 	{
+		// noinspection ConditionalExpressionJS
 		const currentLength = (this.bitsCount >> 3) + ((this.bitsCount % 8) ? 1 : 0);
 		if(currentLength < this.buffer.byteLength)
 		{
@@ -2667,6 +3273,7 @@ export class BitStream
 			const buffer = new ArrayBuffer(currentLength);
 			const view = new Uint8Array(buffer);
 			
+			// noinspection NestedFunctionCallJS
 			view.set(new Uint8Array(this.buffer, this.buffer.byteLength - currentLength, currentLength));
 			//endregion
 			
@@ -2677,6 +3284,7 @@ export class BitStream
 		}
 	}
 	//**********************************************************************************
+	// noinspection JSUnusedGlobalSymbols
 	/**
 	 * Reverse bits order in each byte in the stream
 	 * Got it from here: http://graphics.stanford.edu/~seander/bithacks.html#ReverseByteWith32Bits
@@ -2685,18 +3293,24 @@ export class BitStream
 	{
 		//region Reverse bits order in each byte in the stream
 		for(let i = 0; i < this.view.length; i++)
+		{
+			// noinspection MagicNumberJS, NonShortCircuitBooleanExpressionJS
 			this.view[i] = ((this.view[i] * 0x0802 & 0x22110) | (this.view[i] * 0x8020 & 0x88440)) * 0x10101 >> 16;
+		}
 		//endregion
 		
 		//region Shift "most significant" byte
 		if(this.bitsCount % 8)
 		{
+			// noinspection ConditionalExpressionJS
 			const currentLength = (this.bitsCount >> 3) + ((this.bitsCount % 8) ? 1 : 0);
+			// noinspection MagicNumberJS, NonShortCircuitBooleanExpressionJS
 			this.view[this.view.length - currentLength] >>= (8 - (this.bitsCount & 0x07));
 		}
 		//endregion
 	}
 	//**********************************************************************************
+	// noinspection JSUnusedGlobalSymbols
 	reverseValue()
 	{
 		const initialValue = this.toString();
@@ -2704,12 +3318,15 @@ export class BitStream
 		
 		const reversedValue = new Array(initialValueLength);
 		
+		// noinspection NonBlockStatementBodyJS
 		for(let i = 0; i < initialValueLength; i++)
 			reversedValue[initialValueLength - 1 - i] = initialValue[i];
 		
+		// noinspection NestedFunctionCallJS
 		this.fromString(reversedValue.join(""));
 	}
 	//**********************************************************************************
+	// noinspection JSUnusedGlobalSymbols, FunctionWithMultipleReturnPointsJS
 	getNumberValue()
 	{
 		//region Initial variables
@@ -2717,9 +3334,11 @@ export class BitStream
 		//endregion
 		
 		//region Check posibility for convertion
+		// noinspection ConstantOnRightSideOfComparisonJS, ConstantOnLeftSideOfComparisonJS, NonBlockStatementBodyJS
 		if(byteLength > 3)
 			return (-1);
 		
+		// noinspection ConstantOnRightSideOfComparisonJS, ConstantOnLeftSideOfComparisonJS, EqualityComparisonWithCoercionJS, NonBlockStatementBodyJS
 		if(byteLength == (-1))
 			return 0;
 		//endregion
@@ -2728,6 +3347,7 @@ export class BitStream
 		const value = new Uint32Array(1);
 		const view = new Uint8Array(value.buffer);
 		
+		// noinspection ConstantOnRightSideOfComparisonJS, ConstantOnLeftSideOfComparisonJS, NonBlockStatementBodyJS
 		for(let i = byteLength; i >= 0; i--)
 			view[byteLength - i] = this.view[i];
 		//endregion
@@ -2735,11 +3355,12 @@ export class BitStream
 		return value[0];
 	}
 	//**********************************************************************************
+	// noinspection JSUnusedGlobalSymbols
 	/**
 	 * Find any byte pattern in "ArrayBuffer"
 	 * @param {BitStream} pattern Stream having pattern value
-	 * @param {number|null} [start=null] Start position to search from
-	 * @param {number|null} [length=null] Length of byte block to search at
+	 * @param {?number} [start=null] Start position to search from
+	 * @param {?number} [length=null] Length of byte block to search at
 	 * @param {boolean} [backward=false] Flag to search in backward order
 	 * @returns {number}
 	 */
@@ -2757,11 +3378,12 @@ export class BitStream
 		return stringStream.findPattern(stringPattern, start, length, backward);
 	}
 	//**********************************************************************************
+	// noinspection JSUnusedGlobalSymbols
 	/**
 	 * Find first position of any pattern from input array
 	 * @param {Array.<BitStream>} patterns Array with patterns which should be found
-	 * @param {number|null} [start=null] Start position to search from
-	 * @param {number|null} [length=null] Length of byte block to search at
+	 * @param {?number} [start=null] Start position to search from
+	 * @param {?number} [length=null] Length of byte block to search at
 	 * @param {boolean} [backward=false] Flag to search in backward order
 	 * @returns {{id: number, position: number}}
 	 */
@@ -2785,11 +3407,12 @@ export class BitStream
 		return stringStream.findFirstIn(stringPatterns, start, length, backward);
 	}
 	//**********************************************************************************
+	// noinspection JSUnusedGlobalSymbols
 	/**
 	 * Find all positions of any pattern from input array
 	 * @param {Array.<BitStream>} patterns Array with patterns which should be found
-	 * @param {number|null} [start=null] Start position to search from
-	 * @param {number|null} [length=null] Length of byte block to search at
+	 * @param {?number} [start=null] Start position to search from
+	 * @param {?number} [length=null] Length of byte block to search at
 	 * @returns {Array}
 	 */
 	findAllIn(patterns, start = null, length = null)
@@ -2812,11 +3435,12 @@ export class BitStream
 		return stringStream.findAllIn(stringPatterns, start, length);
 	}
 	//**********************************************************************************
+	// noinspection JSUnusedGlobalSymbols
 	/**
 	 * Find all positions of a pattern
 	 * @param {BitStream} pattern Stream having pattern value
-	 * @param {number|null} [start=null] Start position to search from
-	 * @param {number|null} [length=null] Length of byte block to search at
+	 * @param {?number} [start=null] Start position to search from
+	 * @param {?number} [length=null] Length of byte block to search at
 	 * @returns {Array|number}
 	 */
 	findAllPatternIn(pattern, start = null, length = null)
@@ -2833,11 +3457,12 @@ export class BitStream
 		return stringStream.findAllPatternIn(stringPattern, start, length);
 	}
 	//**********************************************************************************
+	// noinspection JSUnusedGlobalSymbols
 	/**
 	 * Find first position of data, not included in patterns from input array
 	 * @param {Array.<BitStream>} patterns Array with patterns which should be found
-	 * @param {number|null} [start=null] Start position to search from
-	 * @param {number|null} [length=null] Length of byte block to search at
+	 * @param {?number} [start=null] Start position to search from
+	 * @param {?number} [length=null] Length of byte block to search at
 	 * @param {boolean} [backward=false] Flag to search in backward order
 	 * @returns {{left: {id: number, position: *}, right: {id: number, position: number}, value: ByteStream}}
 	 */
@@ -2861,11 +3486,12 @@ export class BitStream
 		return stringStream.findFirstNotIn(stringPatterns, start, length, backward);
 	}
 	//**********************************************************************************
+	// noinspection JSUnusedGlobalSymbols
 	/**
 	 * Find all positions of data, not included in patterns from input array
 	 * @param {Array.<BitStream>} patterns Array with patterns which should be found
-	 * @param {number|null} [start=null] Start position to search from
-	 * @param {number|null} [length=null] Length of byte block to search at
+	 * @param {?number} [start=null] Start position to search from
+	 * @param {?number} [length=null] Length of byte block to search at
 	 * @returns {Array}
 	 */
 	findAllNotIn(patterns, start = null, length = null)
@@ -2888,11 +3514,12 @@ export class BitStream
 		return stringStream.findAllNotIn(stringPatterns, start, length);
 	}
 	//**********************************************************************************
+	// noinspection JSUnusedGlobalSymbols
 	/**
 	 * Find position of a sequence of any patterns from input array
 	 * @param {Array.<BitStream>} patterns Array with patterns which should be found
-	 * @param {number|null} [start=null] Start position to search from
-	 * @param {number|null} [length=null] Length of byte block to search at
+	 * @param {?number} [start=null] Start position to search from
+	 * @param {?number} [length=null] Length of byte block to search at
 	 * @param {boolean} [backward=false] Flag to search in backward order
 	 * @returns {{position, value}|*}
 	 */
@@ -2916,11 +3543,12 @@ export class BitStream
 		return stringStream.findFirstSequence(stringPatterns, start, length, backward);
 	}
 	//**********************************************************************************
+	// noinspection JSUnusedGlobalSymbols
 	/**
 	 * Find position of a sequence of any patterns from input array
 	 * @param {Array.<BitStream>} patterns Array with patterns which should be found
-	 * @param {number|null} [start=null] Start position to search from
-	 * @param {number|null} [length=null] Length of byte block to search at
+	 * @param {?number} [start=null] Start position to search from
+	 * @param {?number} [length=null] Length of byte block to search at
 	 * @returns {Array}
 	 */
 	findAllSequences(patterns, start, length)
@@ -2943,12 +3571,13 @@ export class BitStream
 		return stringStream.findAllSequences(stringPatterns, start, length);
 	}
 	//**********************************************************************************
+	// noinspection JSUnusedGlobalSymbols
 	/**
 	 * Find all paired patterns in the stream
 	 * @param {BitStream} leftPattern Left pattern to search for
 	 * @param {BitStream} rightPattern Right pattern to search for
-	 * @param {number|null} [start=null] Start position to search from
-	 * @param {number|null} [length=null] Length of byte block to search at
+	 * @param {?number} [start=null] Start position to search from
+	 * @param {?number} [length=null] Length of byte block to search at
 	 * @returns {Array}
 	 */
 	findPairedPatterns(leftPattern, rightPattern, start = null, length = null)
@@ -2968,12 +3597,13 @@ export class BitStream
 		return stringStream.findPairedPatterns(stringLeftPattern, stringRightPattern, start, length);
 	}
 	//**********************************************************************************
+	// noinspection JSUnusedGlobalSymbols, FunctionWithMultipleLoopsJS
 	/**
 	 * Find all paired patterns in the stream
 	 * @param {Array.<BitStream>} inputLeftPatterns Array of left patterns to search for
 	 * @param {Array.<BitStream>} inputRightPatterns Array of right patterns to search for
-	 * @param {number|null} [start=null] Start position to search from
-	 * @param {number|null} [length=null] Length of byte block to search at
+	 * @param {?number} [start=null] Start position to search from
+	 * @param {?number} [length=null] Length of byte block to search at
 	 * @returns {Array}
 	 */
 	findPairedArrays(inputLeftPatterns, inputRightPatterns, start = null, length = null)
@@ -3005,12 +3635,13 @@ export class BitStream
 		return stringStream.findPairedArrays(stringLeftPatterns, stringRightPatterns, start, length);
 	}
 	//**********************************************************************************
+	// noinspection JSUnusedGlobalSymbols, FunctionWithMultipleReturnPointsJS
 	/**
 	 * Replace one pattern with other
 	 * @param {BitStream} searchPattern The pattern to search for
 	 * @param {BitStream} replacePattern The pattern to replace initial pattern
-	 * @param {number|null} [start=null] Start position to search from
-	 * @param {number|null} [length=null] Length of byte block to search at
+	 * @param {?number} [start=null] Start position to search from
+	 * @param {?number} [length=null] Length of byte block to search at
 	 * @returns {boolean}
 	 */
 	replacePattern(searchPattern, replacePattern, start = null, length = null)
@@ -3030,6 +3661,7 @@ export class BitStream
 		//region Re-initialize existing data
 		if(stringStream.findPairedPatterns(stringSearchPattern, stringReplacePattern, start, length))
 		{
+			// noinspection NestedFunctionCallJS
 			this.fromString(stringStream.toString());
 			return true;
 		}
@@ -3038,11 +3670,12 @@ export class BitStream
 		return false;
 	}
 	//**********************************************************************************
+	// noinspection JSUnusedGlobalSymbols
 	/**
 	 * Skip any pattern from input array
 	 * @param {Array.<BitStream>} patterns Array with patterns which should be ommited
-	 * @param {number|null} [start=null] Start position to search from
-	 * @param {number|null} [length=null] Length of byte block to search at
+	 * @param {?number} [start=null] Start position to search from
+	 * @param {?number} [length=null] Length of byte block to search at
 	 * @param {boolean} [backward=false] Flag to search in backward order
 	 * @returns {*}
 	 */
@@ -3066,11 +3699,12 @@ export class BitStream
 		return stringStream.skipPatterns(stringPatterns, start, length, backward);
 	}
 	//**********************************************************************************
+	// noinspection JSUnusedGlobalSymbols
 	/**
 	 * Skip any pattern not from input array
 	 * @param {Array.<BitStream>} patterns Array with patterns which should be ommited
-	 * @param {number|null} [start=null] Start position to search from
-	 * @param {number|null} [length=null] Length of byte block to search at
+	 * @param {?number} [start=null] Start position to search from
+	 * @param {?number} [length=null] Length of byte block to search at
 	 * @param {boolean} [backward=false] Flag to search in backward order
 	 * @returns {number}
 	 */
@@ -3094,6 +3728,7 @@ export class BitStream
 		return stringStream.skipNotPatterns(stringPatterns, start, length, backward);
 	}
 	//**********************************************************************************
+	// noinspection JSUnusedGlobalSymbols
 	/**
 	 * Append a new "stream" content to the current "stream"
 	 * @param {BitStream} stream A new "stream" to append to current "stream"
@@ -3101,6 +3736,7 @@ export class BitStream
 	append(stream)
 	{
 		//region Initialize current stream with new data
+		// noinspection NestedFunctionCallJS
 		this.fromString([
 			this.toString(),
 			stream.toString()
@@ -3142,16 +3778,21 @@ export class SeqBitStream
 		}
 	}
 	//**********************************************************************************
+	// noinspection FunctionWithMultipleReturnPointsJS
 	set start(value)
 	{
+		// noinspection NonBlockStatementBodyJS
 		if(value > this.stream.bitsCount)
 			return;
 		
+		// noinspection ConditionalExpressionJS
 		this._length -= ((this.backward) ? (this._start - value) : (value - this._start));
 		this._start = value;
 		
 		//region Initialization of "prev" internal variables
+		// noinspection JSUnusedGlobalSymbols
 		this.prevStart = this._start;
+		// noinspection JSUnusedGlobalSymbols
 		this.prevLength = this._length;
 		//endregion
 	}
@@ -3161,11 +3802,14 @@ export class SeqBitStream
 		return this._start;
 	}
 	//**********************************************************************************
+	// noinspection FunctionWithMultipleReturnPointsJS
 	set length(value)
 	{
+		// noinspection NonBlockStatementBodyJS
 		if(value > this.stream.bitsCount)
 			return;
-
+		
+		// noinspection JSUnusedGlobalSymbols
 		this.prevLength = this._length;
 		this._length = value;
 	}
@@ -3178,11 +3822,14 @@ export class SeqBitStream
 	set stream(value)
 	{
 		this._stream = value;
-
+		
+		// noinspection JSUnusedGlobalSymbols
 		this.prevLength = this._length;
 		this._length = value.bitsCount;
 		
+		// noinspection JSUnusedGlobalSymbols
 		this.prevStart = this._start;
+		// noinspection ConditionalExpressionJS
 		this._start = (this.backward) ? this.length : 0;
 	}
 	//**********************************************************************************
@@ -3191,6 +3838,7 @@ export class SeqBitStream
 		return this._stream;
 	}
 	//**********************************************************************************
+	// noinspection JSUnusedGlobalSymbols
 	/**
 	 * Get next "length" bits from the stream
 	 * @param {number} length Number of bits to read
@@ -3200,7 +3848,10 @@ export class SeqBitStream
 	{
 		//region Check input parameters 
 		if((this.start + length) > this.stream.bitsCount)
+		{
+			// noinspection AssignmentToFunctionParameterJS
 			length = (this.stream.bitsCount - this.start);
+		}
 		//endregion 
 		
 		//region Initial variables 
@@ -3223,16 +3874,20 @@ export class SeqBitStream
 		return result;
 	}
 	//**********************************************************************************
+	// noinspection FunctionTooLongJS
 	/**
 	 * Get string representation for the next "length" bits from the stream
 	 * @param {number} length Number of bits to read
-	 * @returns {Array}
+	 * @returns {string}
 	 */
 	getBitsString(length)
 	{
 		//region Check input parameters
 		if((this.start + length) > this.stream.bitsCount)
+		{
+			// noinspection AssignmentToFunctionParameterJS
 			length = (this.stream.bitsCount - this.start);
+		}
 		//endregion
 		
 		//region Initial variables
@@ -3240,6 +3895,7 @@ export class SeqBitStream
 		
 		let start;
 		
+		// noinspection NonBlockStatementBodyJS
 		if(this.backward)
 			start = this.start - length;
 		else
@@ -3249,6 +3905,7 @@ export class SeqBitStream
 		
 		//region Make ability to pass non-value bits
 		let valueShift = 0;
+		// noinspection NonBlockStatementBodyJS
 		if(this.stream.bitsCount % 8)
 			valueShift = (8 - (this.stream.bitsCount % 8));
 		
@@ -3257,11 +3914,14 @@ export class SeqBitStream
 		//endregion
 		
 		const startIndex = start >> 3;
+		// noinspection MagicNumberJS, NonShortCircuitBooleanExpressionJS
 		const startOffset = start & 0x07;
 		
 		const endIndex = end >> 3;
+		// noinspection MagicNumberJS, NonShortCircuitBooleanExpressionJS
 		const endOffset = end & 0x07;
 		
+		// noinspection ConstantOnRightSideOfComparisonJS, ConstantOnLeftSideOfComparisonJS, ConditionalExpressionJS, EqualityComparisonWithCoercionJS
 		const bitsLengthIndex = startIndex + (((endIndex - startIndex) == 0) ? 1 : (endIndex - startIndex + 1));
 		//endregion
 		
@@ -3270,9 +3930,11 @@ export class SeqBitStream
 		{
 			let value = bitsToStringArray[this.stream.view[i]];
 			
+			// noinspection EqualityComparisonWithCoercionJS, NonBlockStatementBodyJS
 			if(i == startIndex)
 				value = value.slice(startOffset);
 			
+			// noinspection EqualityComparisonWithCoercionJS, NonBlockStatementBodyJS
 			if(i == (bitsLengthIndex - 1))
 				value = value.slice(0, endOffset - 7 + value.length);
 			
@@ -3283,6 +3945,7 @@ export class SeqBitStream
 		//endregion
 		
 		//region Change internal values
+		// noinspection NonBlockStatementBodyJS
 		if(this.backward)
 			this.start -= result.length;
 		else
@@ -3292,6 +3955,7 @@ export class SeqBitStream
 		return result;
 	}
 	//**********************************************************************************
+	// noinspection JSUnusedGlobalSymbols, FunctionWithMultipleLoopsJS, FunctionWithMultipleReturnPointsJS
 	/**
 	 * Get number value representation of the next "length" bits from the stream, preliminary reversed
 	 * @param {number} length Number of bits to read
@@ -3303,15 +3967,7 @@ export class SeqBitStream
 		const initialValue = this.getBitsString(length);
 		const initialValueLength = initialValue.length;
 		
-		if(initialValueLength > 32)
-			return (-1);
-		
 		let byteIndex;
-		
-		if(length == 32)
-			byteIndex = 3;
-		else
-			byteIndex = ((initialValueLength - 1) >> 3);
 		
 		const initialOffset = 8 - (initialValueLength % 8);
 		
@@ -3319,19 +3975,37 @@ export class SeqBitStream
 		
 		const value = new Uint32Array(1);
 		const valueView = new Uint8Array(value.buffer, 0, 4);
-		//endregion 
+		
+		let i;
+
+		// noinspection ConstantOnRightSideOfComparisonJS, ConstantOnLeftSideOfComparisonJS, MagicNumberJS, NonBlockStatementBodyJS
+		if(initialValueLength > 32)
+			return (-1);
+		
+		// noinspection ConstantOnRightSideOfComparisonJS, ConstantOnLeftSideOfComparisonJS, MagicNumberJS, EqualityComparisonWithCoercionJS, NonBlockStatementBodyJS
+		if(length == 32)
+			byteIndex = 3;
+		else
+			byteIndex = ((initialValueLength - 1) >> 3);
+		//endregion
 		
 		//region Reverse value 
-		for(let i = 0; i < initialValueLength; i++)
+		// noinspection NonBlockStatementBodyJS
+		for(i = 0; i < initialValueLength; i++)
 			reversedValue[initialValueLength - 1 - i] = initialValue[i];
 		//endregion 
 		
 		//region Convert byte array to "Uint32Array" value 
-		for(let i = initialOffset; i < (initialOffset + initialValueLength); i++)
+		for(i = initialOffset; i < (initialOffset + initialValueLength); i++)
 		{
+			// noinspection ConstantOnRightSideOfComparisonJS, ConstantOnLeftSideOfComparisonJS, EqualityComparisonWithCoercionJS
 			if(reversedValue[i - initialOffset] == "1")
+			{
+				// noinspection MagicNumberJS
 				valueView[byteIndex] |= 0x01 << (7 - (i % 8));
+			}
 			
+			// noinspection ConstantOnRightSideOfComparisonJS, ConstantOnLeftSideOfComparisonJS, EqualityComparisonWithCoercionJS, NonBlockStatementBodyJS
 			if(i && (((i + 1) % 8) == 0))
 				byteIndex--;
 		}

@@ -14,8 +14,33 @@
     "type": "git",
     "url": "git://github.com/PeculiarVenturess/ByteStream.js.git"
   },
+  "devDependencies": {
+    "babel-cli": "latest",
+    "babel-plugin-istanbul": "^4.1.5",
+    "babel-polyfill": "^6.26.0",
+    "babel-preset-env": "latest",
+    "cross-env": "^5.1.4",
+    "mocha": "^3.0.2",
+    "nyc": "^11.6.0"
+  },
+  "scripts": {
+    "build": "babel src --compact=false --out-dir build --source-maps",
+    "watch": "babel src --compact=false --out-dir build --source-maps --watch",
+    "test": "cross-env NODE_ENV=test nyc mocha --require babel-register --require babel-polyfill",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "ES6",
+    "ES2015",
+    "stream",
+    "bit",
+    "byte",
+    "access"
+  ],
   "name": "bytestreamjs",
-  "version": "1.0.9",
-  "main": "src/bytestream.js",
+  "version": "1.0.10",
+  "jsnext:main": "./src/bytestream.js",
+  "module": "./src/bytestream.js",
+  "main": "./build/bytestream.js",
   "license": "MIT"
 }
