@@ -5,7 +5,7 @@ export class ByteStream
 	// noinspection FunctionWithMultipleLoopsJS
 	/**
 	 * Constructor for ByteStream class
-	 * @param {{[length]: number, [stub]: number, [view]: Uint8Array, [buffer]: ArrayBuffer, [string]: string, [hexstring]: string}}parameters
+	 * @param {{[length]: number, [stub]: number, [view]: Uint8Array, [buffer]: ArrayBuffer, [string]: string, [hexstring]: string}} parameters
 	 */
 	constructor(parameters = {})
 	{
@@ -400,6 +400,8 @@ export class ByteStream
 		//region Initial variables
 		const initialSize = this._buffer.byteLength;
 		const streamViewLength = stream._buffer.byteLength;
+		
+		const copyView = stream._view.slice();
 		//endregion
 		
 		//region Re-allocate current internal buffer
@@ -407,7 +409,7 @@ export class ByteStream
 		//endregion
 		
 		//region Copy input stream content to a new place
-		this._view.set(stream._view, initialSize);
+		this._view.set(copyView, initialSize);
 		//endregion
 	}
 	//**********************************************************************************
