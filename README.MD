@@ -1,0 +1,3 @@
+# ByteStream.js
+
+[![License](https://img.shields.io/badge/license-MIT-green.svg?style=flat)](https://github.com/PeculiarVentures/ByteStream.js/blob/master/LICENSE) [![CircleCI](https://circleci.com/gh/PeculiarVentures/ByteStream.js.svg?style=svg)](https://circleci.com/gh/PeculiarVentures/ByteStream.js) [![Known Vulnerabilities](https://snyk.io/test/github/PeculiarVentures/ByteStream.js/badge.svg)](https://snyk.io/test/github/PeculiarVentures/ByteStream.js) [![Coverage Status](https://coveralls.io/repos/github/PeculiarVentures/ByteStream.js/badge.svg?t=zjnJTs)](https://coveralls.io/github/PeculiarVentures/ByteStream.js)
