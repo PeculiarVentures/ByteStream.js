@@ -131,7 +131,7 @@ export class ByteStream
 	}
 	//**********************************************************************************
 	/**
-	 *
+	 * Initialize "Stream" object from existing string
 	 * @param {string} string The string to initialize from
 	 */
 	fromString(string)
@@ -310,7 +310,7 @@ export class ByteStream
 	//**********************************************************************************
 	// noinspection FunctionWithMultipleReturnPointsJS
 	/**
-	 * Return copy of existing "ArrayBuffer"
+	 * Return copy of existing "Stream"
 	 * @param {number} [start=0] Start position of the copy
 	 * @param {number} [length=this.view.length] Length of the copy
 	 * @returns {ByteStream}
@@ -337,7 +337,7 @@ export class ByteStream
 	//**********************************************************************************
 	// noinspection JSUnusedGlobalSymbols, FunctionWithMultipleReturnPointsJS
 	/**
-	 * Return slice of existing "ArrayBuffer"
+	 * Return slice of existing "Stream"
 	 * @param {number} [start=0] Start position of the slice
 	 * @param {number} [end=this._buffer.byteLength] End position of the slice
 	 * @returns {ByteStream}
@@ -392,7 +392,7 @@ export class ByteStream
 	//**********************************************************************************
 	// noinspection JSUnusedGlobalSymbols
 	/**
-	 * Append a new "stream" content to the current "stream"
+	 * Append a new "Stream" content to the current "Stream"
 	 * @param {ByteStream} stream A new "stream" to append to current "stream"
 	 */
 	append(stream)
@@ -415,7 +415,7 @@ export class ByteStream
 	//**********************************************************************************
 	// noinspection JSUnusedGlobalSymbols, FunctionWithMultipleReturnPointsJS
 	/**
-	 * Insert "stream" content to the current "stream" at specific position
+	 * Insert "Stream" content to the current "Stream" at specific position
 	 * @param {ByteStream} stream A new "stream" to insert to current "stream"
 	 * @param {number} [start=0] Start position to insert to
 	 * @param {number} [length]
@@ -1978,6 +1978,9 @@ export class SeqStream
 	}
 	//**********************************************************************************
 	// noinspection JSUnusedGlobalSymbols
+	/**
+	 * Reset current position of the "SeqStream"
+	 */
 	resetPosition()
 	{
 		// noinspection JSUnusedGlobalSymbols
@@ -2439,7 +2442,7 @@ export class SeqStream
 	//**********************************************************************************
 	// noinspection JSUnusedGlobalSymbols
 	/**
-	 * Append a new "stream" content to the current "stream"
+	 * Append a new "Stream" content to the current "Stream"
 	 * @param {ByteStream} stream A new "stream" to append to current "stream"
 	 */
 	append(stream)
@@ -2461,7 +2464,7 @@ export class SeqStream
 	//**********************************************************************************
 	// noinspection JSUnusedGlobalSymbols
 	/**
-	 * Append a "view" content to the current "stream"
+	 * Append a "view" content to the current "Stream"
 	 * @param {Uint8Array} view A new "view" to append to current "stream"
 	 */
 	appendView(view)
@@ -2483,7 +2486,7 @@ export class SeqStream
 	//**********************************************************************************
 	// noinspection JSUnusedGlobalSymbols
 	/**
-	 * Append a new char to the current "stream"
+	 * Append a new char to the current "Stream"
 	 * @param {number} char A new char to append to current "stream"
 	 */
 	appendChar(char)
@@ -2555,7 +2558,7 @@ export class SeqStream
 	//**********************************************************************************
 	// noinspection JSUnusedGlobalSymbols, FunctionWithMultipleReturnPointsJS, FunctionNamingConventionJS
 	/**
-	 * Get unsigned 4-byte integer value
+	 * Get 4-byte unsigned integer value
 	 * @param {boolean} [changeLength=true] Should we change "length" and "start" value after reading the data block
 	 * @returns {number}
 	 */
@@ -3313,6 +3316,9 @@ export class BitStream
 	}
 	//**********************************************************************************
 	// noinspection JSUnusedGlobalSymbols
+	/**
+	 * Reverse all bits in entire "BitStream"
+	 */
 	reverseValue()
 	{
 		const initialValue = this.toString();
@@ -3329,6 +3335,10 @@ export class BitStream
 	}
 	//**********************************************************************************
 	// noinspection JSUnusedGlobalSymbols, FunctionWithMultipleReturnPointsJS
+	/**
+	 * Trying to represent entire "BitStream" as an unsigned integer.
+	 * @return {number}
+	 */
 	getNumberValue()
 	{
 		//region Initial variables
@@ -3359,7 +3369,7 @@ export class BitStream
 	//**********************************************************************************
 	// noinspection JSUnusedGlobalSymbols
 	/**
-	 * Find any byte pattern in "ArrayBuffer"
+	 * Find any bit pattern in "BitStream"
 	 * @param {BitStream} pattern Stream having pattern value
 	 * @param {?number} [start=null] Start position to search from
 	 * @param {?number} [length=null] Length of byte block to search at
@@ -3732,7 +3742,7 @@ export class BitStream
 	//**********************************************************************************
 	// noinspection JSUnusedGlobalSymbols
 	/**
-	 * Append a new "stream" content to the current "stream"
+	 * Append a new "BitStream" content to the current "BitStream"
 	 * @param {BitStream} stream A new "stream" to append to current "stream"
 	 */
 	append(stream)
@@ -4016,6 +4026,10 @@ export class SeqBitStream
 		return value[0];
 	}
 	//**********************************************************************************
+	/**
+	 * Represent remaining bits in "BitStream" as a string
+	 * @return {string}
+	 */
 	toString()
 	{
 		const streamToDisplay = this.stream.copy(this.start, this.length);

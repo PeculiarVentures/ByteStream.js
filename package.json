@@ -39,7 +39,7 @@
     "access"
   ],
   "name": "bytestreamjs",
-  "version": "1.0.11",
+  "version": "1.0.12",
   "jsnext:main": "./src/bytestream.js",
   "module": "./src/bytestream.js",
   "main": "./build/bytestream.js",
