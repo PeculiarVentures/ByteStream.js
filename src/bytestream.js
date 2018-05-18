@@ -2558,6 +2558,33 @@ export class SeqStream
 	//**********************************************************************************
 	// noinspection JSUnusedGlobalSymbols, FunctionWithMultipleReturnPointsJS, FunctionNamingConventionJS
 	/**
+	 * Get 2-byte unsigned integer value
+	 * @param {boolean} [changeLength=true] Should we change "length" and "start" value after reading the data block
+	 * @returns {number}
+	 */
+	getUint16(changeLength = true)
+	{
+		const block = this.getBlock(2, changeLength);
+		
+		//region Check posibility for convertion
+		// noinspection ConstantOnRightSideOfComparisonJS, ConstantOnLeftSideOfComparisonJS, NonBlockStatementBodyJS
+		if(block.length < 2)
+			return 0;
+		//endregion
+		
+		//region Convert byte array to "Uint32Array" value
+		const value = new Uint16Array(1);
+		const view = new Uint8Array(value.buffer);
+		
+		view[0] = block[1];
+		view[1] = block[0];
+		//endregion
+		
+		return value[0];
+	}
+	//**********************************************************************************
+	// noinspection JSUnusedGlobalSymbols, FunctionWithMultipleReturnPointsJS, FunctionNamingConventionJS
+	/**
 	 * Get 4-byte unsigned integer value
 	 * @param {boolean} [changeLength=true] Should we change "length" and "start" value after reading the data block
 	 * @returns {number}
