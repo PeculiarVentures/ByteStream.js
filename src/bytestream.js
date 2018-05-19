@@ -2500,12 +2500,71 @@ export class SeqStream
 	 */
 	appendChar(char)
 	{
-		// noinspection NonBlockStatementBodyJS
 		if((this.start + 1) > this.stream.buffer.byteLength)
+		{
+			if(1 > this.appendBlock)
+			{
+				// noinspection MagicNumberJS
+				this.appendBlock = 1000;
+			}
+			
 			this.stream.realloc(this.stream.buffer.byteLength + this.appendBlock);
+		}
 		
 		this.stream.view[this.start] = char;
 		this.start = (this._start + 1);
+	}
+	//**********************************************************************************
+	/**
+	 * Append a new number to the current "Stream"
+	 * @param {number} number A new unsigned 16-bit integer to append to current "stream"
+	 */
+	appendUint16(number)
+	{
+		if((this.start + 2) > this.stream.buffer.byteLength)
+		{
+			if(2 > this.appendBlock)
+			{
+				// noinspection MagicNumberJS
+				this.appendBlock = 1000;
+			}
+			
+			this.stream.realloc(this.stream.buffer.byteLength + this.appendBlock);
+		}
+		
+		const value = new Uint16Array([number]);
+		const view = new Uint8Array(value.buffer);
+		
+		this.stream.view[this.start] = view[1];
+		this.stream.view[this.start + 1] = view[0];
+		this.start = (this._start + 2);
+	}
+	//**********************************************************************************
+	/**
+	 * Append a new number to the current "Stream"
+	 * @param {number} number A new unsigned 32-bit integer to append to current "stream"
+	 */
+	appendUint32(number)
+	{
+		if((this.start + 4) > this.stream.buffer.byteLength)
+		{
+			if(4 > this.appendBlock)
+			{
+				// noinspection MagicNumberJS
+				this.appendBlock = 1000;
+			}
+			
+			this.stream.realloc(this.stream.buffer.byteLength + this.appendBlock);
+		}
+		
+		const value = new Uint32Array([number]);
+		const view = new Uint8Array(value.buffer);
+		
+		this.stream.view[this.start] = view[3];
+		this.stream.view[this.start + 1] = view[2];
+		this.stream.view[this.start + 2] = view[1];
+		this.stream.view[this.start + 3] = view[0];
+		this.start = (this._start + 4);
 	}
 	//**********************************************************************************
 	// noinspection FunctionWithMultipleReturnPointsJS
