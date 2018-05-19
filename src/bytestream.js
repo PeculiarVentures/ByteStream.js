@@ -1,3 +1,12 @@
+/*
+ * Copyright (c) 2016-2018, Peculiar Ventures
+ * All rights reserved.
+ *
+ * Author 2016-2018, Yury Strozhevsky <www.strozhevsky.com>.
+ *
+ * THIS IS A PRIVATE SOURCE CODE AND ANY DISTRIBUTION OR COPYING IS PROHIBITED.
+ *
+ */
 //**************************************************************************************
 export class ByteStream
 {
