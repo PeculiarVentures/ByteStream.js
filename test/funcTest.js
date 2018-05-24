@@ -390,6 +390,55 @@ context("Functional testing", () =>
 		result = xrefStream.findFirstSequence(digits, result.position);
 		
 		assert.equal(parseInt(result.value.toString(), 10), 1461, "Incorrect value #5 in parsing XRef");
+		
+		// replacePattern
+		// findAllPatternIn
+		
+		const pairedStream = new ByteStream({
+			string: "<<[1[1][1]]>>"
+		});
+		
+		result = pairedStream.findPairedPatterns(new ByteStream({
+			string: "["
+		}), new ByteStream({
+			string: "]"
+		}));
+		
+		assert.equal(result.length, 3, "Incorrect length for findPairedPatterns #1");
+		assert.equal(result[0].left, 3, "Incorrect left[0] for findPairedPatterns #1");
+		assert.equal(result[0].right, 11, "Incorrect right[0] for findPairedPatterns #1");
+		assert.equal(result[1].left, 5, "Incorrect left[1] for findPairedPatterns #1");
+		assert.equal(result[1].right, 7, "Incorrect right[1] for findPairedPatterns #1");
+		assert.equal(result[2].left, 8, "Incorrect left[2] for findPairedPatterns #1");
+		assert.equal(result[2].right, 10, "Incorrect right[2] for findPairedPatterns #1");
+		
+		result = pairedStream.findPairedArrays(
+			[
+				new ByteStream({ string: "[" }),
+				new ByteStream({ string: "<<" })
+			],
+			[
+				new ByteStream({ string: "]" }),
+				new ByteStream({ string: ">>" })
+			]);
+		
+		assert.equal(result.length, 4, "Incorrect length for findPairedArrays #1");
+		assert.equal(result[0].left.id, 1, "Incorrect left.id[0] for findPairedArrays #1");
+		assert.equal(result[0].left.position, 2, "Incorrect left[0] for findPairedArrays #1");
+		assert.equal(result[0].right.id, 1, "Incorrect right.id[0] for findPairedArrays #1");
+		assert.equal(result[0].right.position, 13, "Incorrect right[0] for findPairedArrays #1");
+		assert.equal(result[1].left.id, 0, "Incorrect left.id[1] for findPairedArrays #1");
+		assert.equal(result[1].left.position, 3, "Incorrect left[1] for findPairedArrays #1");
+		assert.equal(result[1].right.id, 0, "Incorrect right.id[1] for findPairedArrays #1");
+		assert.equal(result[1].right.position, 11, "Incorrect right[1] for findPairedArrays #1");
+		assert.equal(result[2].left.id, 0, "Incorrect left.id[2] for findPairedArrays #1");
+		assert.equal(result[2].left.position, 5, "Incorrect left[2] for findPairedArrays #1");
+		assert.equal(result[2].right.id, 0, "Incorrect right.id[2] for findPairedArrays #1");
+		assert.equal(result[2].right.position, 7, "Incorrect right[2] for findPairedArrays #1");
+		assert.equal(result[3].left.id, 0, "Incorrect left.id[3] for findPairedArrays #1");
+		assert.equal(result[3].left.position, 8, "Incorrect left[3] for findPairedArrays #1");
+		assert.equal(result[3].right.id, 0, "Incorrect right.id[3] for findPairedArrays #1");
+		assert.equal(result[3].right.position, 10, "Incorrect right[3] for findPairedArrays #1");
 	});
 	
 	// noinspection JSUnresolvedFunction
