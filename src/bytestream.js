@@ -1971,8 +1971,8 @@ export class SeqStream
 		this.prevLength = this._length;
 		//endregion
 		
-		// noinspection JSUnusedGlobalSymbols, ConditionalExpressionJS
-		this._length -= ((this.backward) ? (this._start - value) : (value - this._start));
+		// noinspection JSUnusedGlobalSymbols
+		this._length -= (this._start - value);
 		// noinspection JSUnusedGlobalSymbols
 		this._start = value;
 	}
@@ -2456,19 +2456,19 @@ export class SeqStream
 	 */
 	append(stream)
 	{
-		if((this.start + stream.buffer.byteLength) > this.stream.buffer.byteLength)
+		if((this._start + stream._buffer.byteLength) > this._stream._buffer.byteLength)
 		{
-			if(stream.buffer.byteLength > this.appendBlock)
+			if(stream._buffer.byteLength > this.appendBlock)
 			{
 				// noinspection MagicNumberJS
-				this.appendBlock = (stream.buffer.byteLength + 1000);
+				this.appendBlock = (stream._buffer.byteLength + 1000);
 			}
 			
-			this.stream.realloc(this.stream.buffer.byteLength + this.appendBlock);
+			this._stream.realloc(this._stream._buffer.byteLength + this.appendBlock);
 		}
 		
-		this.stream.view.set(stream.view, this.start);
-		this.start = (this._start + stream.buffer.byteLength);
+		this._stream._view.set(stream._view, this._start);
+		this.start = (this._start + stream._buffer.byteLength);
 	}
 	//**********************************************************************************
 	// noinspection JSUnusedGlobalSymbols
@@ -2478,7 +2478,7 @@ export class SeqStream
 	 */
 	appendView(view)
 	{
-		if((this.start + view.length) > this.stream.buffer.byteLength)
+		if((this._start + view.length) > this._stream._buffer.byteLength)
 		{
 			if(view.length > this.appendBlock)
 			{
@@ -2486,10 +2486,10 @@ export class SeqStream
 				this.appendBlock = (view.length + 1000);
 			}
 			
-			this.stream.realloc(this.stream.buffer.byteLength + this.appendBlock);
+			this._stream.realloc(this._stream._buffer.byteLength + this.appendBlock);
 		}
 		
-		this.stream.view.set(view, this.start);
+		this._stream._view.set(view, this._start);
 		this.start = (this._start + view.length);
 	}
 	//**********************************************************************************
@@ -2500,7 +2500,7 @@ export class SeqStream
 	 */
 	appendChar(char)
 	{
-		if((this.start + 1) > this.stream.buffer.byteLength)
+		if((this._start + 1) > this._stream._buffer.byteLength)
 		{
 			if(1 > this.appendBlock)
 			{
@@ -2508,10 +2508,10 @@ export class SeqStream
 				this.appendBlock = 1000;
 			}
 			
-			this.stream.realloc(this.stream.buffer.byteLength + this.appendBlock);
+			this._stream.realloc(this._stream._buffer.byteLength + this.appendBlock);
 		}
 		
-		this.stream.view[this.start] = char;
+		this._stream._view[this._start] = char;
 		this.start = (this._start + 1);
 	}
 	//**********************************************************************************
@@ -2521,7 +2521,7 @@ export class SeqStream
 	 */
 	appendUint16(number)
 	{
-		if((this.start + 2) > this.stream.buffer.byteLength)
+		if((this._start + 2) > this._stream._buffer.byteLength)
 		{
 			if(2 > this.appendBlock)
 			{
@@ -2529,14 +2529,14 @@ export class SeqStream
 				this.appendBlock = 1000;
 			}
 			
-			this.stream.realloc(this.stream.buffer.byteLength + this.appendBlock);
+			this._stream.realloc(this._stream._buffer.byteLength + this.appendBlock);
 		}
 		
 		const value = new Uint16Array([number]);
 		const view = new Uint8Array(value.buffer);
 		
-		this.stream.view[this.start] = view[1];
-		this.stream.view[this.start + 1] = view[0];
+		this._stream._view[this._start] = view[1];
+		this._stream._view[this._start + 1] = view[0];
 		this.start = (this._start + 2);
 	}
 	//**********************************************************************************
@@ -2546,7 +2546,7 @@ export class SeqStream
 	 */
 	appendUint32(number)
 	{
-		if((this.start + 4) > this.stream.buffer.byteLength)
+		if((this._start + 4) > this._stream._buffer.byteLength)
 		{
 			if(4 > this.appendBlock)
 			{
@@ -2554,16 +2554,16 @@ export class SeqStream
 				this.appendBlock = 1000;
 			}
 			
-			this.stream.realloc(this.stream.buffer.byteLength + this.appendBlock);
+			this._stream.realloc(this._stream._buffer.byteLength + this.appendBlock);
 		}
 		
 		const value = new Uint32Array([number]);
 		const view = new Uint8Array(value.buffer);
 		
-		this.stream.view[this.start] = view[3];
-		this.stream.view[this.start + 1] = view[2];
-		this.stream.view[this.start + 2] = view[1];
-		this.stream.view[this.start + 3] = view[0];
+		this._stream._view[this._start] = view[3];
+		this._stream._view[this._start + 1] = view[2];
+		this._stream._view[this._start + 2] = view[1];
+		this._stream._view[this._start + 3] = view[0];
 		this.start = (this._start + 4);
 	}
 	//**********************************************************************************

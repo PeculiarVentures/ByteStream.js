@@ -97,6 +97,299 @@ context("Functional testing", () =>
 		assert.equal(byteStreamString.insert(new ByteStream({ view: new Uint8Array([0xFF, 0xFF, 0xFF]) }), 4, 2), false, "Incorrect result from insert method");
 		assert.equal(byteStreamString.insert(new ByteStream({ view: new Uint8Array([0xFF, 0xFF]) }), 0, 4), true, "Incorrect result from insert method");
 		assert.equal(byteStreamString.insert(new ByteStream({ view: new Uint8Array([0xFF, 0xFF]) })), true, "Incorrect result from insert method");
+		
+		const dataStream = new ByteStream({
+			view: new Uint8Array([
+				0x20,
+				0x20,
+				0x21,
+				0x22,
+				0x23,
+				0x25
+			])
+		});
+		
+		const separatorStream = new ByteStream({
+			view: new Uint8Array([
+				0x20
+			])
+		});
+		
+		const separatorStream2 = new ByteStream({
+			view: new Uint8Array([
+				0x23
+			])
+		});
+		
+		const separatorStream3 = new ByteStream({
+			view: new Uint8Array([
+				0x25
+			])
+		});
+		
+		const separatorStream4 = new ByteStream({
+			view: new Uint8Array([
+				0x21,
+				0x22,
+				0x23
+			])
+		});
+
+		let result;
+		
+		result = dataStream.findFirstNotIn([separatorStream, separatorStream2]);
+		assert.equal(result.value.toHexString(), "2122", "Incorrect result for findFirstNotIn #1");
+		result = dataStream.findFirstNotIn([separatorStream]); // 21222325
+		assert.equal(result.value.toHexString(), "21222325", "Incorrect result for findFirstNotIn #2");
+		result = dataStream.findFirstIn([separatorStream, separatorStream2]);
+		assert.equal(result.position, 1, "Incorrect result for findFirstIn #1");
+		result = dataStream.findPattern(separatorStream);
+		assert.equal(result, 1, "Incorrect result for findPattern #1");
+		result = dataStream.findPattern(separatorStream4);
+		assert.equal(result, 5, "Incorrect result for findPattern #2");
+		result = dataStream.findFirstIn([separatorStream, separatorStream2]);
+		assert.equal(result.position, 1, "Incorrect result for findFirstIn #2");
+		result = dataStream.findFirstNotIn([separatorStream, separatorStream2, separatorStream3]);
+		assert.equal(result.value.toHexString(), "2122", "Incorrect result for findFirstNotIn #2");
+		
+		const string = "startxref123a\n\
+1908\n\
+%%EOF";
+		
+		const bufferStream = new ByteStream({
+			string
+		});
+		
+		const digits_0_stream = new ByteStream({
+			view: new Uint8Array([
+				0x30
+			])
+		});
+		
+		const digits_1_stream = new ByteStream({
+			view: new Uint8Array([
+				0x31
+			])
+		});
+		
+		const digits_2_stream = new ByteStream({
+			view: new Uint8Array([
+				0x32
+			])
+		});
+		
+		const digits_3_stream = new ByteStream({
+			view: new Uint8Array([
+				0x33
+			])
+		});
+		
+		const digits_4_stream = new ByteStream({
+			view: new Uint8Array([
+				0x34
+			])
+		});
+		
+		const digits_5_stream = new ByteStream({
+			view: new Uint8Array([
+				0x35
+			])
+		});
+		
+		const digits_6_stream = new ByteStream({
+			view: new Uint8Array([
+				0x36
+			])
+		});
+		
+		const digits_7_stream = new ByteStream({
+			view: new Uint8Array([
+				0x37
+			])
+		});
+		
+		const digits_8_stream = new ByteStream({
+			view: new Uint8Array([
+				0x38
+			])
+		});
+		
+		const digits_9_stream = new ByteStream({
+			view: new Uint8Array([
+				0x39
+			])
+		});
+		
+		result = bufferStream.skipNotPatterns([
+			digits_0_stream,
+			digits_1_stream,
+			digits_2_stream,
+			digits_3_stream,
+			digits_4_stream,
+			digits_5_stream,
+			digits_6_stream,
+			digits_7_stream,
+			digits_8_stream,
+			digits_9_stream
+		], null, null, true);
+		
+		result = bufferStream.findFirstSequence([
+			digits_0_stream,
+			digits_1_stream,
+			digits_2_stream,
+			digits_3_stream,
+			digits_4_stream,
+			digits_5_stream,
+			digits_6_stream,
+			digits_7_stream,
+			digits_8_stream,
+			digits_9_stream
+		], null, null, true);
+		
+		assert.equal(result.value.toHexString(), "31393038", "Incorrect value for findFirstSequence #1");
+		
+		result = bufferStream.findAllSequences([
+			digits_0_stream,
+			digits_1_stream,
+			digits_2_stream,
+			digits_3_stream,
+			digits_4_stream,
+			digits_5_stream,
+			digits_6_stream,
+			digits_7_stream,
+			digits_8_stream,
+			digits_9_stream
+		]);
+		
+		assert.equal(result.length, 2, "Incorrect length for result of findAllSequences #1");
+		assert.equal(result[0].value.toHexString(), "313233", "Incorrect value[0] for result of findAllSequences #1");
+		assert.equal(result[1].value.toHexString(), "31393038", "Incorrect value[1] for result of findAllSequences #1");
+		
+		result = bufferStream.findAllIn([
+			digits_0_stream,
+			digits_1_stream,
+			digits_2_stream,
+			digits_3_stream,
+			digits_4_stream,
+			digits_5_stream,
+			digits_6_stream,
+			digits_7_stream,
+			digits_8_stream,
+			digits_9_stream
+		]);
+		
+		assert.equal(result.length, 7, "Incorrect length for result of findAllIn #1");
+		assert.equal(result[0].id, 1, "Incorrect id[0] for result of findAllIn #1");
+		assert.equal(result[0].position, 10, "Incorrect position[0] for result of findAllIn #1");
+		assert.equal(result[1].id, 2, "Incorrect id[1] for result of findAllIn #1");
+		assert.equal(result[1].position, 11, "Incorrect position[1] for result of findAllIn #1");
+		assert.equal(result[2].id, 3, "Incorrect id[2] for result of findAllIn #1");
+		assert.equal(result[2].position, 12, "Incorrect position[2] for result of findAllIn #1");
+		assert.equal(result[3].id, 1, "Incorrect id[3] for result of findAllIn #1");
+		assert.equal(result[3].position, 15, "Incorrect position[3] for result of findAllIn #1");
+		assert.equal(result[4].id, 9, "Incorrect id[4] for result of findAllIn #1");
+		assert.equal(result[4].position, 16, "Incorrect position[4] for result of findAllIn #1");
+		assert.equal(result[5].id, 0, "Incorrect id[5] for result of findAllIn #1");
+		assert.equal(result[5].position, 17, "Incorrect position[5] for result of findAllIn #1");
+		assert.equal(result[6].id, 8, "Incorrect id[6] for result of findAllIn #1");
+		assert.equal(result[6].position, 18, "Incorrect position[6] for result of findAllIn #1");
+		
+		result = bufferStream.findAllNotIn([
+			digits_0_stream,
+			digits_1_stream,
+			digits_2_stream,
+			digits_3_stream,
+			digits_4_stream,
+			digits_5_stream,
+			digits_6_stream,
+			digits_7_stream,
+			digits_8_stream,
+			digits_9_stream
+		]);
+		
+		assert.equal(result[0].value.toHexString(), "737461727478726566", "Incorrect value[0] for result of findAllNotIn #1");
+		assert.equal(result[1].value.toHexString(), "610A", "Incorrect value[1] for result of findAllNotIn #1");
+		assert.equal(result[2].value.toHexString(), "0A2525454F46", "Incorrect value[2] for result of findAllNotIn #1");
+		
+		const digits = [
+			digits_0_stream,
+			digits_1_stream,
+			digits_2_stream,
+			digits_3_stream,
+			digits_4_stream,
+			digits_5_stream,
+			digits_6_stream,
+			digits_7_stream,
+			digits_8_stream,
+			digits_9_stream,
+			new ByteStream({
+				view: new Uint8Array([
+					0x2B // "+"
+				])
+			}),
+			new ByteStream({
+				view: new Uint8Array([
+					0x2D // "-"
+				])
+			})
+		];
+		
+		const xref = "xref\n\
+            0 -19\n\
+            0000000000 65535 f\n\
+            0000000262 00000 n\n\
+            0000001461 00000 n\n\
+            0000000009 00000 n\n\
+            0000000117 00000 n\n\
+            0000000319 00000 n\n\
+            0000000409 00000 n\n\
+            0000000504 00000 n\n\
+            0000000602 00000 n\n\
+            0000000704 00000 n\n\
+            0000000792 00000 n\n\
+            0000000886 00000 n\n\
+            0000000983 00000 n\n\
+            0000001084 00000 n\n\
+            0000001177 00000 n\n\
+            0000001269 00000 n\n\
+            0000001363 00000 n\n\
+            0000001685 00000 n\n\
+            0000001804 00000 n\n\
+            trailer\n\
+            ";
+		
+		const xrefStream = new ByteStream({
+			string: xref
+		});
+		
+		result = xrefStream.findFirstIn([
+			new ByteStream({
+				string: "xref"
+			})
+		]);
+		
+		result = xrefStream.findFirstSequence(digits, result.position);
+		
+		assert.equal(parseInt(result.value.toString(), 10), 0, "Incorrect value #1 in parsing XRef");
+		
+		result = xrefStream.findFirstSequence(digits, result.position);
+		
+		assert.equal(parseInt(result.value.toString(), 10), -19, "Incorrect value #2 in parsing XRef");
+		
+		result = xrefStream.findFirstSequence(digits, result.position);
+		
+		assert.equal(parseInt(result.value.toString(), 10), 0, "Incorrect value #3 in parsing XRef");
+		
+		result = xrefStream.findFirstSequence(digits, result.position);
+		
+		assert.equal(parseInt(result.value.toString(), 10), 65535, "Incorrect value #4 in parsing XRef");
+		
+		result = xrefStream.findFirstSequence(digits, result.position);
+		result = xrefStream.findFirstSequence(digits, result.position);
+		
+		result = xrefStream.findFirstSequence(digits, result.position);
+		
+		assert.equal(parseInt(result.value.toString(), 10), 1461, "Incorrect value #5 in parsing XRef");
 	});
 	
 	// noinspection JSUnresolvedFunction
@@ -111,6 +404,22 @@ context("Functional testing", () =>
 		assert.equal(seqStreamStream.length, 10, "Incorrect length initialization");
 		assert.equal(seqStreamStream.start, 10, "Incorrect start initialization");
 		assert.equal(seqStreamStream.appendBlock, 1000, "Incorrect appendBlock initialization");
+		
+		const seqStreamUpdate = new SeqStream();
+		
+		seqStreamUpdate.appendUint16(123);
+		seqStreamUpdate.start = 0;
+		seqStreamUpdate.length = 2;
+		assert.equal(seqStreamUpdate.getUint16(), 123, "Incorrect data on getUint16");
+		
+		seqStreamUpdate.stream.clear();
+		seqStreamUpdate.start = 0;
+		seqStreamUpdate.length = 0;
+		
+		seqStreamUpdate.appendUint32(123);
+		seqStreamUpdate.start = 0;
+		seqStreamUpdate.length = 4;
+		assert.equal(seqStreamUpdate.getUint32(), 123, "Incorrect data on getUint32");
 	});
 	
 	// noinspection JSUnresolvedFunction
