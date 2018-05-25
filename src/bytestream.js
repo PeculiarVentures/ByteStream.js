@@ -1972,7 +1972,7 @@ export class SeqStream
 		//endregion
 		
 		// noinspection JSUnusedGlobalSymbols
-		this._length -= (this._start - value);
+		this._length -= ((this.backward) ? (this._start - value) : (value - this._start));
 		// noinspection JSUnusedGlobalSymbols
 		this._start = value;
 	}
@@ -2126,15 +2126,15 @@ export class SeqStream
 	{
 		//region Initial variables
 		// noinspection ConstantOnRightSideOfComparisonJS, ConstantOnLeftSideOfComparisonJS
-		if((gap == null) || (gap > this.length))
+		if((gap == null) || (gap > this._length))
 		{
 			// noinspection AssignmentToFunctionParameterJS
-			gap = this.length;
+			gap = this._length;
 		}
 		//endregion
 		
 		//region Search for patterns
-		const result = this.stream.findFirstNotIn(patterns, this.start, this.length, this.backward);
+		const result = this._stream.findFirstNotIn(patterns, this._start, this._length, this.backward);
 		// noinspection NonBlockStatementBodyJS, EqualityComparisonWithCoercionJS
 		if((result.left.id == (-1)) && (result.right.id == (-1)))
 			return result;
@@ -2144,12 +2144,12 @@ export class SeqStream
 			// noinspection EqualityComparisonWithCoercionJS
 			if(result.right.id != (-1))
 			{
-				if(result.right.position < (this.start - patterns[result.right.id].buffer.byteLength - gap))
+				if(result.right.position < (this._start - patterns[result.right.id]._buffer.byteLength - gap))
 				{
 					return {
 						left: {
 							id: (-1),
-							position: this.start
+							position: this._start
 						},
 						right: {
 							id: (-1),
@@ -2165,12 +2165,12 @@ export class SeqStream
 			// noinspection EqualityComparisonWithCoercionJS
 			if(result.left.id != (-1))
 			{
-				if(result.left.position > (this.start + patterns[result.left.id].buffer.byteLength + gap))
+				if(result.left.position > (this._start + patterns[result.left.id]._buffer.byteLength + gap))
 				{
 					return {
 						left: {
 							id: (-1),
-							position: this.start
+							position: this._start
 						},
 						right: {
 							id: (-1),
@@ -2196,7 +2196,7 @@ export class SeqStream
 		{
 			// noinspection NonBlockStatementBodyJS, EqualityComparisonWithCoercionJS
 			if(result.right.id == (-1))
-				this.start = (this.start + this.length);
+				this.start = (this._start + this._length);
 			else
 				this.start = result.right.position;
 		}
@@ -2217,9 +2217,9 @@ export class SeqStream
 		// In case of "normal order" the start position is at the begging of the stream.
 		// But in fact for search for all patterns we need to have start position in "normal order".
 		// noinspection ConditionalExpressionJS
-		const start = (this.backward) ? (this.start - this.length) : this.start;
+		const start = (this.backward) ? (this._start - this._length) : this._start;
 		
-		return this.stream.findAllNotIn(patterns, start, this.length);
+		return this._stream.findAllNotIn(patterns, start, this._length);
 	}
 	//**********************************************************************************
 	// noinspection JSUnusedGlobalSymbols, FunctionWithMultipleReturnPointsJS
@@ -2234,10 +2234,10 @@ export class SeqStream
 	{
 		//region Initial variables
 		// noinspection ConstantOnRightSideOfComparisonJS, ConstantOnLeftSideOfComparisonJS
-		if((length == null) || (length > this.length))
+		if((length == null) || (length > this._length))
 		{
 			// noinspection AssignmentToFunctionParameterJS
-			length = this.length;
+			length = this._length;
 		}
 		
 		// noinspection ConstantOnRightSideOfComparisonJS, ConstantOnLeftSideOfComparisonJS
@@ -2249,14 +2249,14 @@ export class SeqStream
 		//endregion
 		
 		//region Search for sequence
-		const result = this.stream.findFirstSequence(patterns, this.start, length, this.backward);
+		const result = this._stream.findFirstSequence(patterns, this._start, length, this.backward);
 		// noinspection ConstantOnRightSideOfComparisonJS, ConstantOnLeftSideOfComparisonJS, NonBlockStatementBodyJS, EqualityComparisonWithCoercionJS
 		if(result.value.buffer.byteLength == 0)
 			return result;
 		
 		if(this.backward)
 		{
-			if(result.position < (this.start - result.value.buffer.byteLength - gap))
+			if(result.position < (this._start - result.value._buffer.byteLength - gap))
 			{
 				return {
 					position: (-1),
@@ -2266,7 +2266,7 @@ export class SeqStream
 		}
 		else
 		{
-			if(result.position > (this.start + result.value.buffer.byteLength + gap))
+			if(result.position > (this._start + result.value._buffer.byteLength + gap))
 			{
 				return {
 					position: (-1),
@@ -2468,7 +2468,10 @@ export class SeqStream
 		}
 		
 		this._stream._view.set(stream._view, this._start);
+		
+		this._length += (stream._buffer.byteLength * 2);
 		this.start = (this._start + stream._buffer.byteLength);
+		this.prevLength -= (stream._buffer.byteLength * 2);
 	}
 	//**********************************************************************************
 	// noinspection JSUnusedGlobalSymbols
@@ -2490,7 +2493,10 @@ export class SeqStream
 		}
 		
 		this._stream._view.set(view, this._start);
+		
+		this._length += (view.length * 2);
 		this.start = (this._start + view.length);
+		this.prevLength -= (view.length * 2);
 	}
 	//**********************************************************************************
 	// noinspection JSUnusedGlobalSymbols
@@ -2512,7 +2518,10 @@ export class SeqStream
 		}
 		
 		this._stream._view[this._start] = char;
+		
+		this._length += 2;
 		this.start = (this._start + 1);
+		this.prevLength -= 2;
 	}
 	//**********************************************************************************
 	/**
@@ -2537,7 +2546,10 @@ export class SeqStream
 		
 		this._stream._view[this._start] = view[1];
 		this._stream._view[this._start + 1] = view[0];
+		
+		this._length += 4;
 		this.start = (this._start + 2);
+		this.prevLength -= 4;
 	}
 	//**********************************************************************************
 	/**
@@ -2564,7 +2576,10 @@ export class SeqStream
 		this._stream._view[this._start + 1] = view[2];
 		this._stream._view[this._start + 2] = view[1];
 		this._stream._view[this._start + 3] = view[0];
+		
+		this._length += 8;
 		this.start = (this._start + 4);
+		this.prevLength -= 8;
 	}
 	//**********************************************************************************
 	// noinspection FunctionWithMultipleReturnPointsJS
