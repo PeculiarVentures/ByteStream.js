@@ -1,6 +1,6 @@
 machine:
   environment:
-    COVERALLS_REPO_TOKEN: wjUIpS2dLJpgJDaf9FLmSAC0e6knW52L3
+    COVERALLS_REPO_TOKEN: vpcdrOSgdZ1FmgF1iz41OQQzjwTtPU9f9
   node:
     version: 8.7.0
 
