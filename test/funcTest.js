@@ -463,6 +463,11 @@ context("Functional testing", () =>
 		assert.equal(seqStreamStream.start, 10, "Incorrect start initialization");
 		assert.equal(seqStreamStream.appendBlock, 1000, "Incorrect appendBlock initialization");
 		
+		const seqStreamUpdateSeq = new SeqStream();
+		
+		seqStreamUpdateSeq.appendUint16(123);
+		seqStreamUpdateSeq.appendChar(123);
+
 		const seqStreamUpdate = new SeqStream();
 		
 		seqStreamUpdate.appendUint16(123);
