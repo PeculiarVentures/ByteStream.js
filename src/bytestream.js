@@ -1971,7 +1971,7 @@ export class SeqStream
 		this.prevLength = this._length;
 		//endregion
 		
-		// noinspection JSUnusedGlobalSymbols
+		// noinspection JSUnusedGlobalSymbols, ConditionalExpressionJS
 		this._length -= ((this.backward) ? (this._start - value) : (value - this._start));
 		// noinspection JSUnusedGlobalSymbols
 		this._start = value;
@@ -2508,6 +2508,7 @@ export class SeqStream
 	{
 		if((this._start + 1) > this._stream._buffer.byteLength)
 		{
+			// noinspection ConstantOnLefSideOfComparisonJS
 			if(1 > this.appendBlock)
 			{
 				// noinspection MagicNumberJS
@@ -2524,6 +2525,7 @@ export class SeqStream
 		this.prevLength -= 2;
 	}
 	//**********************************************************************************
+	// noinspection FunctionNamingConventionJS
 	/**
 	 * Append a new number to the current "Stream"
 	 * @param {number} number A new unsigned 16-bit integer to append to current "stream"
@@ -2532,6 +2534,7 @@ export class SeqStream
 	{
 		if((this._start + 2) > this._stream._buffer.byteLength)
 		{
+			// noinspection ConstantOnLefSideOfComparisonJS
 			if(2 > this.appendBlock)
 			{
 				// noinspection MagicNumberJS
@@ -2552,6 +2555,38 @@ export class SeqStream
 		this.prevLength -= 4;
 	}
 	//**********************************************************************************
+	// noinspection FunctionNamingConventionJS
+	/**
+	 * Append a new number to the current "Stream"
+	 * @param {number} number A new unsigned 24-bit integer to append to current "stream"
+	 */
+	appendUint24(number)
+	{
+		if((this._start + 3) > this._stream._buffer.byteLength)
+		{
+			// noinspection ConstantOnLefSideOfComparisonJS
+			if(3 > this.appendBlock)
+			{
+				// noinspection MagicNumberJS
+				this.appendBlock = 1000;
+			}
+			
+			this._stream.realloc(this._stream._buffer.byteLength + this.appendBlock);
+		}
+		
+		const value = new Uint32Array([number]);
+		const view = new Uint8Array(value.buffer);
+		
+		this._stream._view[this._start] = view[2];
+		this._stream._view[this._start + 1] = view[1];
+		this._stream._view[this._start + 2] = view[0];
+		
+		this._length += 6;
+		this.start = (this._start + 3);
+		this.prevLength -= 6;
+	}
+	//**********************************************************************************
+	// noinspection FunctionNamingConventionJS
 	/**
 	 * Append a new number to the current "Stream"
 	 * @param {number} number A new unsigned 32-bit integer to append to current "stream"
@@ -2560,6 +2595,7 @@ export class SeqStream
 	{
 		if((this._start + 4) > this._stream._buffer.byteLength)
 		{
+			// noinspection ConstantOnLefSideOfComparisonJS
 			if(4 > this.appendBlock)
 			{
 				// noinspection MagicNumberJS
@@ -2661,6 +2697,34 @@ export class SeqStream
 		
 		view[0] = block[1];
 		view[1] = block[0];
+		//endregion
+		
+		return value[0];
+	}
+	//**********************************************************************************
+	// noinspection JSUnusedGlobalSymbols, FunctionWithMultipleReturnPointsJS, FunctionNamingConventionJS
+	/**
+	 * Get 3-byte unsigned integer value
+	 * @param {boolean} [changeLength=true] Should we change "length" and "start" value after reading the data block
+	 * @returns {number}
+	 */
+	getUint24(changeLength = true)
+	{
+		const block = this.getBlock(3, changeLength);
+		
+		//region Check posibility for convertion
+		// noinspection ConstantOnRightSideOfComparisonJS, ConstantOnLeftSideOfComparisonJS, NonBlockStatementBodyJS
+		if(block.length < 3)
+			return 0;
+		//endregion
+		
+		//region Convert byte array to "Uint32Array" value
+		const value = new Uint32Array(1);
+		const view = new Uint8Array(value.buffer);
+		
+		// noinspection ConstantOnRightSideOfComparisonJS, ConstantOnLeftSideOfComparisonJS, NonBlockStatementBodyJS
+		for(let i = 3; i >= 1; i--)
+			view[3 - i] = block[i - 1];
 		//endregion
 		
 		return value[0];

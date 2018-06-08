@@ -465,8 +465,12 @@ context("Functional testing", () =>
 		
 		const seqStreamUpdateSeq = new SeqStream();
 		
-		seqStreamUpdateSeq.appendUint16(123);
-		seqStreamUpdateSeq.appendChar(123);
+		seqStreamUpdateSeq.appendUint24(123);
+/*
+		seqStreamUpdateSeq.start = 1;
+		seqStreamUpdateSeq.length = 3;
+		const uint24 = seqStreamUpdateSeq.getUint24();
+*/
 
 		const seqStreamUpdate = new SeqStream();
 		
