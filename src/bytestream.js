@@ -1986,6 +1986,15 @@ export class SeqStream
 		return this._start;
 	}
 	//**********************************************************************************
+	/**
+	 * Return ArrayBuffer with having value of existing SeqStream length
+	 * @return {ArrayBuffer}
+	 */
+	get buffer()
+	{
+		return this._stream._buffer.slice(0, this._length);
+	}
+	//**********************************************************************************
 	// noinspection JSUnusedGlobalSymbols
 	/**
 	 * Reset current position of the "SeqStream"
@@ -3041,6 +3050,9 @@ export class BitStream
 				case "string":
 					this.fromString(parameters.string);
 					break;
+				case "uint32":
+					this.fromUint32(parameters.uint32);
+					break;
 				case "bitsCount":
 					this.bitsCount = parameters.bitsCount;
 					break;
@@ -3139,6 +3151,24 @@ export class BitStream
 		//region Change "bitsCount"
 		this.bitsCount = stringLength;
 		//endregion
+	}
+	//**********************************************************************************
+	/**
+	 * Initialize "BitStream" object from existing uint32 number
+	 * @param {Number} number The string to initialize from
+	 */
+	fromUint32(uint32)
+	{
+		this.buffer = new ArrayBuffer(4);
+		this.view = new Uint8Array(this.buffer);
+
+		const value = new Uint32Array([uint32]);
+		const view = new Uint8Array(value.buffer);
+		
+		for(let i = 3; i >= 0; i--)
+			this.view[i] = view[3 - i];
+
+		this.bitsCount = 32;
 	}
 	//**********************************************************************************
 	/**
