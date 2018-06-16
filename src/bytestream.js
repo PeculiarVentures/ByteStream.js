@@ -1899,6 +1899,18 @@ export class SeqStream
 				case "appendBlock":
 					this.appendBlock = parameters.appendBlock;
 					break;
+				case "view":
+					this.stream = new ByteStream({ view: parameters.view});
+					break;
+				case "buffer":
+					this.stream = new ByteStream({ buffer: parameters.buffer});
+					break;
+				case "string":
+					this.stream = new ByteStream({ string: parameters.string});
+					break;
+				case "hexstring":
+					this.stream = new ByteStream({ hexstring: parameters.hexstring});
+					break;
 				default:
 			}
 		}
