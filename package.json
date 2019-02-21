@@ -45,5 +45,5 @@
   "jsnext:main": "./src/bytestream.js",
   "module": "./src/bytestream.js",
   "main": "./build/bytestream.js",
-  "license": "MIT"
+  "license": "BSD-3-Clause"
 }
