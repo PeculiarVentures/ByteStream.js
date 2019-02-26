@@ -2920,7 +2920,13 @@ export function parseByteMap(stream, map, elements, start = null, length = null)
 			const result = (map[i].func)(array);
 			// noinspection EqualityComparisonWithCoercionJS, NonBlockStatementBodyJS
 			if(result.status == (-1))
-				return result;
+			{
+				// noinspection ConstantOnRightSideOfComparisonJS, ConstantOnLeftSideOfComparisonJS, NonBlockStatementBodyJS, EqualityComparisonWithCoercionJS
+				if(resultArray.length == 1)
+					return [];
+
+				return resultArray.slice(0, resultArray.length - 1);
+			}
 			
 			// noinspection ConstantOnRightSideOfComparisonJS, ConstantOnLeftSideOfComparisonJS, EqualityComparisonWithCoercionJS, NonBlockStatementBodyJS
 			if(map[i].type != "check")
