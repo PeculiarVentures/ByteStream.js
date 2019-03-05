@@ -675,7 +675,8 @@ export class ByteStream
 		// noinspection ConditionalExpressionJS
 		const result = {
 			id: (-1),
-			position: (backward) ? 0 : (start + length)
+			position: (backward) ? 0 : (start + length),
+			length: 0
 		};
 		//endregion
 		
@@ -686,17 +687,18 @@ export class ByteStream
 			if(position != (-1))
 			{
 				let valid = false;
-				
+				const patternLength = patterns[i].length;
+
 				if(backward)
 				{
 					// noinspection NonBlockStatementBodyJS
-					if(position >= result.position)
+					if((position - patternLength) >= (result.position - result.length))
 						valid = true;
 				}
 				else
 				{
 					// noinspection NonBlockStatementBodyJS
-					if(position <= result.position)
+					if((position - patternLength) <= (result.position - result.length))
 						valid = true;
 				}
 				
