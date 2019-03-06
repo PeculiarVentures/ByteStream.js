@@ -706,6 +706,7 @@ export class ByteStream
 				{
 					result.position = position;
 					result.id = i;
+					result.length = patternLength;
 				}
 			}
 		}
