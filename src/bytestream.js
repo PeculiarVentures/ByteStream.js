@@ -2713,7 +2713,7 @@ export class SeqStream
 			return 0;
 		//endregion
 		
-		//region Convert byte array to "Uint32Array" value
+		//region Convert byte array to "Uint16Array" value
 		const value = new Uint16Array(1);
 		const view = new Uint8Array(value.buffer);
 		
@@ -2721,6 +2721,33 @@ export class SeqStream
 		view[1] = block[0];
 		//endregion
 		
+		return value[0];
+	}
+	//**********************************************************************************
+	// noinspection JSUnusedGlobalSymbols, FunctionWithMultipleReturnPointsJS, FunctionNamingConventionJS
+	/**
+	 * Get 2-byte signed integer value
+	 * @param {boolean} [changeLength=true] Should we change "length" and "start" value after reading the data block
+	 * @returns {number}
+	 */
+	getInt16(changeLength = true)
+	{
+		const block = this.getBlock(2, changeLength);
+
+		//region Check posibility for convertion
+		// noinspection ConstantOnRightSideOfComparisonJS, ConstantOnLeftSideOfComparisonJS, NonBlockStatementBodyJS
+		if(block.length < 2)
+			return 0;
+		//endregion
+
+		//region Convert byte array to "Int16Array" value
+		const value = new Int16Array(1);
+		const view = new Uint8Array(value.buffer);
+
+		view[0] = block[1];
+		view[1] = block[0];
+		//endregion
+
 		return value[0];
 	}
 	//**********************************************************************************
@@ -2777,6 +2804,33 @@ export class SeqStream
 			view[3 - i] = block[i];
 		//endregion
 		
+		return value[0];
+	}
+	//**********************************************************************************
+	/**
+	 * Get 4-byte signed integer value
+	 * @param {boolean} [changeLength=true] Should we change "length" and "start" value after reading the data block
+	 * @returns {number}
+	 */
+	getInt32(changeLength = true)
+	{
+		const block = this.getBlock(4, changeLength);
+
+		//region Check posibility for convertion
+		// noinspection ConstantOnRightSideOfComparisonJS, ConstantOnLeftSideOfComparisonJS, NonBlockStatementBodyJS
+		if(block.length < 4)
+			return 0;
+		//endregion
+
+		//region Convert byte array to "Int32Array" value
+		const value = new Int32Array(1);
+		const view = new Uint8Array(value.buffer);
+
+		// noinspection ConstantOnRightSideOfComparisonJS, ConstantOnLeftSideOfComparisonJS, NonBlockStatementBodyJS
+		for(let i = 3; i >= 0; i--)
+			view[3 - i] = block[i];
+		//endregion
+
 		return value[0];
 	}
 	//**********************************************************************************
