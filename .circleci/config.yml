@@ -16,8 +16,8 @@ jobs:
       - node/install:
           node-version: << parameters.node-version >>
       - run:
-        name: install global dependencies
-        command: npm install -g nyc coveralls
+          name: install global dependencies
+          command: npm install -g nyc coveralls
       - run: npm test
 
 workflows:
