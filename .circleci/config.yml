@@ -34,12 +34,10 @@ jobs:
             - ./node_modules
       - run: 
           name: Run test
-          command: npm test
+          command: npm run coverage
       - run: 
           name: Report coveralls
-          command: |
-            nyc report --reporter=text-lcov
-            coveralls
+          command: npm run coveralls
 
 workflows:
   all-tests:
