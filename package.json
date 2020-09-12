@@ -27,8 +27,8 @@
     "node": ">=6.0.0"
   },
   "scripts": {
-    "build": "babel src --compact=false --out-dir build --source-maps",
-    "watch": "babel src --compact=false --out-dir build --source-maps --watch",
+    "build": "babel src --out-dir build --source-maps",
+    "watch": "babel src --out-dir build --source-maps --watch",
     "test": "mocha",
     "prepublishOnly": "npm run build",
     "coverage": "nyc npm test",
@@ -68,5 +68,25 @@
     "spec": [
       "test/**/*.js"
     ]
+  },
+  "babel": {
+    "compact": false,
+    "presets": [
+      [
+        "env",
+        {
+          "targets": {
+            "node": "6.0"
+          }
+        }
+      ]
+    ],
+    "env": {
+      "test": {
+        "plugins": [
+          "istanbul"
+        ]
+      }
+    }
   }
 }
