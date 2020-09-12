@@ -1,0 +1,26 @@
+version: 2.1
+
+orbs:
+  node: circleci/node@2.0.2
+
+jobs:
+  test:
+    parameters:
+      node-version:
+        type: string
+    steps:
+      - checkout
+      - run:
+        name: install global dependencies
+        command: npm install -g nyc coveralls
+      - node/install:
+          node-version: << parameters.node-version >>
+      - run: npm test
+
+workflows:
+  all-tests:
+    jobs:
+      - test:
+          matrix:
+            parameters:
+              node-version: ["10.22.0", "12.18.3", "14.10.1"]
