@@ -21,22 +21,32 @@
     "url": "git://github.com/PeculiarVentures/ByteStream.js.git"
   },
   "devDependencies": {
-    "babel-cli": "^6.26.0",
-    "babel-plugin-istanbul": "^6.0.0",
-    "babel-preset-env": "^1.7.0",
-    "cross-env": "^7.0.2",
-    "eslint": "^7.8.1",
-    "mocha": "^8.1.3",
-    "nyc": "^15.1.0"
+    "@types/mocha": "^8.2.0",
+    "@types/node": "^14.14.27",
+    "@typescript-eslint/eslint-plugin": "^4.15.1",
+    "@typescript-eslint/parser": "^4.15.1",
+    "coveralls": "^3.1.0",
+    "eslint": "^7.20.0",
+    "mocha": "^8.3.0",
+    "nyc": "^15.1.0",
+    "rimraf": "^3.0.2",
+    "ts-node": "^9.1.1",
+    "typescript": "^4.1.5"
   },
   "engines": {
     "node": ">=6.0.0"
   },
   "scripts": {
-    "build": "babel src --out-dir build --source-maps",
-    "watch": "babel src --out-dir build --source-maps --watch",
     "test": "mocha",
-    "prepublishOnly": "npm run build",
+    "clear": "rimraf build",
+    "build": "npm run build:cjs && npm run build:mjs && npm run build:types",
+    "build:cjs": "tsc -p tsconfig.json --module commonjs --removeComments --outDir build/cjs",
+    "build:mjs": "tsc -p tsconfig.json --module es2015 --removeComments --outDir build/mjs",
+    "prebuild:types": "rimraf build/types",
+    "build:types": "tsc -p tsconfig.json --outDir build/types --declaration --emitDeclarationOnly",
+    "rebuild": "npm run clear && npm run build",
+    "lint": "eslint . --ext .ts",
+    "lint:fix": "eslint --fix . --ext .ts",
     "coverage": "nyc npm test",
     "coveralls": "nyc report --reporter=text-lcov | coveralls"
   },
@@ -50,49 +60,62 @@
   ],
   "name": "bytestreamjs",
   "version": "1.0.29",
-  "jsnext:main": "./src/bytestream.js",
-  "module": "./src/bytestream.js",
-  "main": "./build/bytestream.js",
+  "module": "./build/mjs/index.js",
+  "main": "./build/cjs/index.js",
   "license": "BSD-3-Clause",
   "nyc": {
     "extension": [
-      ".js"
+      ".ts",
+      ".tsx"
     ],
     "include": [
-      "src/**/*.js"
+      "src/**/*.ts"
+    ],
+    "exclude": [
+      "**/*.d.ts"
     ],
     "reporter": [
+      "lcov",
       "text-summary",
       "html"
     ]
   },
   "mocha": {
-    "require": "babel-register",
+    "require": [
+      "ts-node/register"
+    ],
     "extension": [
-      "js"
+      "ts"
     ],
     "spec": [
-      "test/**/*.js"
+      "test/**"
     ]
   },
-  "babel": {
-    "compact": false,
-    "presets": [
-      [
-        "env",
-        {
-          "targets": {
-            "node": "6.0"
-          }
-        }
-      ]
+  "eslintConfig": {
+    "root": true,
+    "parser": "@typescript-eslint/parser",
+    "plugins": [
+      "@typescript-eslint"
     ],
-    "env": {
-      "test": {
-        "plugins": [
-          "istanbul"
-        ]
-      }
+    "extends": [
+      "eslint:recommended",
+      "plugin:@typescript-eslint/recommended"
+    ],
+    "rules": {
+      "@typescript-eslint/explicit-module-boundary-types": 0,
+      "@typescript-eslint/no-explicit-any": 0,
+      "newline-before-return": 1,
+      "@typescript-eslint/semi": 1,
+      "no-constant-condition": 0,
+      "@typescript-eslint/quotes": [
+        "warn",
+        "double"
+      ],
+      "brace-style": [
+        "error",
+        "1tbs",
+        { "allowSingleLine": true }
+      ]
     }
   }
 }
