@@ -13,7 +13,13 @@ export interface FindResult {
 }
 
 export interface FindFirstInResult {
+  /**
+   * Index of the pattern in the list of the patterns
+   */
   id: number;
+  /**
+   * Position after the pattern found
+   */
   position: number;
   length: number;
 }
@@ -289,7 +295,7 @@ export class ByteStream {
    */
   public copy(start = 0, length = (this._buffer.byteLength - start)) {
     //#region Check input parameters
-    if ((start === 0) && (this._buffer.byteLength === 0)) {
+    if (!start && !this._buffer.byteLength) {
       return new ByteStream();
     }
 
@@ -314,7 +320,7 @@ export class ByteStream {
    */
   public slice(start = 0, end = this._buffer.byteLength) {
     //#region Check input parameters
-    if ((start === 0) && (this._buffer.byteLength === 0)) {
+    if (!start && !this._buffer.byteLength) {
       return new ByteStream();
     }
 
@@ -598,19 +604,16 @@ export class ByteStream {
    * @param length Length of byte block to search at
    * @returns
    */
-  public findAllIn(patterns: ByteStream[], start = 0, length = (this.buffer.byteLength - start)) {
+  public findAllIn(patterns: ByteStream[], start = 0, length = 0) {
 
     //#region Initial variables
     const result: FindResult[] = [];
 
-    if (start == null) {
-      start = 0;
+    if (start > (this.buffer.byteLength - 1)) {
+      return result;
     }
 
-    if (start > (this.buffer.byteLength - 1))
-      return result;
-
-    if (length == null) {
+    if (!length) {
       length = this.buffer.byteLength - start;
     }
 
@@ -654,17 +657,14 @@ export class ByteStream {
    * @returns Array with all pattern positions or (-1) if failed
    */
   // TODO throw Error instead of -1
-  public findAllPatternIn(pattern: ByteStream, start = 0, length = (this.buffer.byteLength - start)): -1 | number[] {
+  public findAllPatternIn(pattern: ByteStream, start = 0, length = 0): -1 | number[] {
     //#region Check input variables
-    if (start === null) {
-      start = 0;
-    }
 
     if (start > this.buffer.byteLength) {
       start = this.buffer.byteLength;
     }
 
-    if (length === null) {
+    if (!length) {
       length = this.buffer.byteLength - start;
     }
 
@@ -1222,9 +1222,9 @@ export class ByteStream {
    * @param start Start position to search from
    * @param length Length of byte block to search at
    * @param findAllResult Pre-calculated results of "findAllIn"
-   * @returns
    */
   public replacePattern(searchPattern: ByteStream, replacePattern: ByteStream, start: null | number = null, length: null | number = null, findAllResult: null | FindResult[] = null) {
+    // TODO Align result type for BitStream
     //#region Initial variables
     let result: FindResult[] = [];
 

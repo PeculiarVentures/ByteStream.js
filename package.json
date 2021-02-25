@@ -115,7 +115,8 @@
         "error",
         "1tbs",
         { "allowSingleLine": true }
-      ]
+      ],
+      "@typescript-eslint/no-empty-interface": 0
     }
   }
 }
