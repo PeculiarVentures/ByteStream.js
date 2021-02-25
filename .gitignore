@@ -1,6 +1,12 @@
 .idea
+.vscode
 **/node_modules
 **/package-lock.json
 build
+
+# nyc
 .nyc_output
 coverage
+
+# MacOS
+.DS_Store
