@@ -601,6 +601,7 @@ export class SeqStream {
     this.start = (this._start + 3);
     this.prevLength -= 6;
   }
+
   /**
    * Append a new number to the current "Stream"
    * @param number A new unsigned 32-bit integer to append to current "stream"
@@ -626,6 +627,57 @@ export class SeqStream {
     this.start = (this._start + 4);
     this.prevLength -= 8;
   }
+
+  /**
+   * Append a new number to the current "Stream"
+   * @param number A new signed 16-bit integer to append to current "stream"
+   */
+  public appendInt16(number: number): void {
+    if ((this._start + 2) > this._stream.length) {
+      if (2 > this.appendBlock) {
+        this.appendBlock = 1000;
+      }
+
+      this._stream.realloc(this._stream.length + this.appendBlock);
+    }
+
+    const value = new Int16Array([number]);
+    const view = new Uint8Array(value.buffer);
+
+    this._stream.view[this._start] = view[1];
+    this._stream.view[this._start + 1] = view[0];
+
+    this._length += 4;
+    this.start = (this._start + 2);
+    this.prevLength -= 4;
+  }
+
+  /**
+   * Append a new number to the current "Stream"
+   * @param number A new signed 32-bit integer to append to current "stream"
+   */
+  public appendInt32(number: number) {
+    if ((this._start + 4) > this._stream.length) {
+      if (4 > this.appendBlock) {
+        this.appendBlock = 1000;
+      }
+
+      this._stream.realloc(this._stream.length + this.appendBlock);
+    }
+
+    const value = new Int32Array([number]);
+    const view = new Uint8Array(value.buffer);
+
+    this._stream.view[this._start] = view[3];
+    this._stream.view[this._start + 1] = view[2];
+    this._stream.view[this._start + 2] = view[1];
+    this._stream.view[this._start + 3] = view[0];
+
+    this._length += 8;
+    this.start = (this._start + 4);
+    this.prevLength -= 8;
+  }
+
   /**
    * Get a block of data
    * @param size Size of the data block to get
