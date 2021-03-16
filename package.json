@@ -45,8 +45,8 @@
     "prebuild:types": "rimraf build/types",
     "build:types": "tsc -p tsconfig.json --outDir build/types --declaration --emitDeclarationOnly",
     "rebuild": "npm run clear && npm run build",
-    "lint": "eslint . --ext .ts",
-    "lint:fix": "eslint --fix . --ext .ts",
+    "lint": "eslint .",
+    "lint:fix": "eslint --fix .",
     "coverage": "nyc npm test",
     "coveralls": "nyc report --reporter=text-lcov | coveralls"
   },
@@ -90,33 +90,5 @@
     "spec": [
       "test/**"
     ]
-  },
-  "eslintConfig": {
-    "root": true,
-    "parser": "@typescript-eslint/parser",
-    "plugins": [
-      "@typescript-eslint"
-    ],
-    "extends": [
-      "eslint:recommended",
-      "plugin:@typescript-eslint/recommended"
-    ],
-    "rules": {
-      "@typescript-eslint/explicit-module-boundary-types": 0,
-      "@typescript-eslint/no-explicit-any": 0,
-      "newline-before-return": 1,
-      "@typescript-eslint/semi": 1,
-      "no-constant-condition": 0,
-      "@typescript-eslint/quotes": [
-        "warn",
-        "double"
-      ],
-      "brace-style": [
-        "error",
-        "1tbs",
-        { "allowSingleLine": true }
-      ],
-      "@typescript-eslint/no-empty-interface": 0
-    }
   }
 }
