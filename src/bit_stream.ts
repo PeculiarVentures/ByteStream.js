@@ -4,7 +4,7 @@ import { ByteStream, FindFirstInResult, FindFirstNotInResult, FindFirstSequenceR
 export interface ViewParameters {
   view: Uint8Array;
   bitsCount?: number;
-};
+}
 
 export interface StreamParameters {
   byteStream: ByteStream;
@@ -194,7 +194,7 @@ export class BitStream {
     // Incoming `10101010 10101010 101010` (3 bytes, 22 bits, 2 unused bits)
     // toString() -> 10101010 10101010 101010  (the same value)
     // toString(start: 1) -> 10101010  101010 (last 2 bytes without 2 unused bytes)
-    // toString(start: 1, length: 1) -> 10101010  (второй  байт)
+    // toString(start: 1, length: 1) -> 10101010  (second byte)
     return result.join("").slice((this.view.length << 3) - this.bitsCount);
   }
   /**
