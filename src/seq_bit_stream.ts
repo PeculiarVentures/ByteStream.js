@@ -85,7 +85,7 @@ export class SeqBitStream {
     //#endregion
 
     //#region Initial variables
-    let result;
+    let result: BitStream;
     //#endregion
 
     //#region Copy necessary length of bits
@@ -106,71 +106,7 @@ export class SeqBitStream {
    * @returns
    */
   public getBitsString(length: number): string {
-    //#region Check input parameters
-    if ((this.start + length) > this.stream.bitsCount) {
-      length = (this.stream.bitsCount - this.start);
-    }
-    //#endregion
-
-    //#region Initial variables
-    const result: string[] = [];
-
-    let start;
-
-    if (this.backward) {
-      start = this.start - length;
-    } else {
-      start = this.start;
-    }
-
-    let end = this.start + length - 1;
-
-    //#region Make ability to pass non-value bits
-    let valueShift = 0;
-    if (this.stream.bitsCount % 8) {
-      valueShift = (8 - (this.stream.bitsCount % 8));
-    }
-
-    start += valueShift;
-    end += valueShift;
-    //#endregion
-
-    const startIndex = start >> 3;
-    const startOffset = start & 0x07;
-
-    const endIndex = end >> 3;
-    const endOffset = end & 0x07;
-
-    const bitsLengthIndex = startIndex + (((endIndex - startIndex) == 0) ? 1 : (endIndex - startIndex + 1));
-    //#endregion
-
-    //#region Get string representation of bits
-    for (let i = startIndex; i < bitsLengthIndex; i++) {
-      let value = bitsToStringArray[this.stream.view[i]];
-
-      if (i == startIndex) {
-        value = value.substring(startOffset);
-      }
-
-      if (i == (bitsLengthIndex - 1)) {
-        value = value.substr(0, endOffset - 7 + value.length);
-      }
-
-      result.push(value);
-    }
-
-    const textResult = result.join("");
-    //#endregion
-
-    //#region Change internal values
-    if (this.backward) {
-      this.start -= textResult.length;
-    } else {
-      this.start += textResult.length;
-    }
-    //#endregion
-
-    return textResult;
+    return this.getBits(length).toString();
   }
   /**
    * Get number value representation of the next "length" bits from the stream, preliminary reversed

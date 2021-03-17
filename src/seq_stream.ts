@@ -77,7 +77,7 @@ export class SeqStream {
     } else if ("hexstring" in parameters) {
       this.stream = new ByteStream({ hexstring: parameters.hexstring });
     } else if ("stream" in parameters) {
-      this.stream = parameters.stream.copy();
+      this.stream = parameters.stream.slice();
     } else {
       this.stream = new ByteStream();
     }
