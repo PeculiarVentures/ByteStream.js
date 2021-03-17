@@ -309,13 +309,13 @@ export class ByteStream {
    * @param start Start position of the copy
    * @param length Length of the copy
    */
-  public copy(start = 0, length = (this._buffer.byteLength - start)) {
+  public copy(start = 0, length = (this.length - start)) {
     //#region Check input parameters
-    if (!start && !this._buffer.byteLength) {
+    if (!start && !this.length) {
       return new ByteStream();
     }
 
-    if ((start < 0) || (start > (this._buffer.byteLength - 1))) {
+    if ((start < 0) || (start > (this.length - 1))) {
       throw new Error(`Wrong start position: ${start}`);
     }
     //#endregion
@@ -333,13 +333,13 @@ export class ByteStream {
    * @param end End position of the slice
    * @returns
    */
-  public slice(start = 0, end = this._buffer.byteLength) {
+  public slice(start = 0, end = this.length) {
     //#region Check input parameters
-    if (!start && !this._buffer.byteLength) {
+    if (!start && !this.length) {
       return new ByteStream();
     }
 
-    if ((start < 0) || (start > (this._buffer.byteLength - 1))) {
+    if ((start < 0) || (start > (this.length - 1))) {
       throw new Error(`Wrong start position: ${start}`);
     }
     //#endregion
@@ -381,8 +381,8 @@ export class ByteStream {
    */
   public append(stream: ByteStream) {
     //#region Initial variables
-    const initialSize = this._buffer.byteLength;
-    const streamViewLength = stream._buffer.byteLength;
+    const initialSize = this.length;
+    const streamViewLength = stream.length;
 
     const subarrayView = stream._view.subarray();
     //#endregion
@@ -403,24 +403,24 @@ export class ByteStream {
    * @param length
    * @returns
    */
-  public insert(stream: ByteStream, start = 0, length = (this._buffer.byteLength - start)) {
+  public insert(stream: ByteStream, start = 0, length = (this.length - start)) {
     //#region Initial variables
-    if (start > (this._buffer.byteLength - 1))
+    if (start > (this.length - 1))
       return false;
 
-    if (length > (this._buffer.byteLength - start)) {
-      length = this._buffer.byteLength - start;
+    if (length > (this.length - start)) {
+      length = this.length - start;
     }
     //#endregion
 
     //#region Check input variables
-    if (length > stream._buffer.byteLength) {
-      length = stream._buffer.byteLength;
+    if (length > stream.length) {
+      length = stream.length;
     }
     //#endregion
 
     //#region Update content of the current stream
-    if (length == stream._buffer.byteLength)
+    if (length == stream.length)
       this._view.set(stream._view, start);
     else {
       this._view.set(stream._view.subarray(0, length), start);
@@ -437,12 +437,12 @@ export class ByteStream {
    */
   public isEqual(stream: ByteStream) {
     //#region Check length of both buffers
-    if (this._buffer.byteLength != stream._buffer.byteLength)
+    if (this.length != stream.length)
       return false;
     //#endregion
 
     //#region Compare each byte of both buffers
-    for (let i = 0; i < stream._buffer.byteLength; i++) {
+    for (let i = 0; i < stream.length; i++) {
       if (this.view[i] != stream.view[i])
         return false;
     }
@@ -484,7 +484,7 @@ export class ByteStream {
   public findPattern(pattern: ByteStream, start_?: null | number, length_?: null | number, backward_?: boolean): number {
     //#region Initial variables
     const { start, length, backward } = this.prepareFindParameters(start_, length_, backward_);
-    const patternLength = pattern.buffer.byteLength;
+    const patternLength = pattern.length;
     if (patternLength > length) {
       return (-1);
     }
@@ -617,7 +617,7 @@ export class ByteStream {
     //#region Initial variables
     const result: number[] = [];
 
-    const patternLength = pattern.buffer.byteLength;
+    const patternLength = pattern.length;
     if (patternLength > length) {
       return (-1);
     }
@@ -704,13 +704,13 @@ export class ByteStream {
       //#endregion
 
       //#region Check distance between two patterns
-      if (result.right.position != ((backward) ? (result.left.position - patterns[result.right.id].buffer.byteLength) : (result.left.position + patterns[result.right.id].buffer.byteLength))) {
+      if (result.right.position != ((backward) ? (result.left.position - patterns[result.right.id].length) : (result.left.position + patterns[result.right.id].length))) {
         if (backward) {
-          start = result.right.position + patterns[result.right.id].buffer.byteLength;
-          length = result.left.position - result.right.position - patterns[result.right.id].buffer.byteLength;
+          start = result.right.position + patterns[result.right.id].length;
+          length = result.left.position - result.right.position - patterns[result.right.id].length;
         } else {
           start = result.left.position;
-          length = result.right.position - result.left.position - patterns[result.right.id].buffer.byteLength;
+          length = result.right.position - result.left.position - patterns[result.right.id].length;
         }
 
         result.value = new ByteStream({
@@ -726,7 +726,7 @@ export class ByteStream {
       //#endregion
 
       //#region Change current length
-      currentLength -= patterns[result.right.id]._buffer.byteLength;
+      currentLength -= patterns[result.right.id].length;
       //#endregion
     }
 
@@ -1094,7 +1094,7 @@ export class ByteStream {
     //#endregion
 
     //#region Variables for new buffer initialization
-    const patternDifference = searchPattern.buffer.byteLength - replacePattern.buffer.byteLength;
+    const patternDifference = searchPattern.length - replacePattern.length;
 
     const changedBuffer = new ArrayBuffer(this.view.length - (result.length * patternDifference));
     const changedView = new Uint8Array(changedBuffer);
@@ -1111,20 +1111,20 @@ export class ByteStream {
       //#endregion
 
       //#region Copy bytes other then search pattern
-      changedView.set(new Uint8Array(this.buffer, currentPosition, result[i].position - searchPattern.buffer.byteLength - currentPosition), currentPosition - i * patternDifference);
+      changedView.set(new Uint8Array(this.buffer, currentPosition, result[i].position - searchPattern.length - currentPosition), currentPosition - i * patternDifference);
       //#endregion
 
       //#region Put replace pattern in a new buffer
-      changedView.set(replacePattern.view, result[i].position - searchPattern.buffer.byteLength - i * patternDifference);
+      changedView.set(replacePattern.view, result[i].position - searchPattern.length - i * patternDifference);
 
-      output.replacePatternPositions.push(result[i].position - searchPattern.buffer.byteLength - i * patternDifference);
+      output.replacePatternPositions.push(result[i].position - searchPattern.length - i * patternDifference);
       //#endregion
     }
     //#endregion
 
     //#region Copy data from the end of old buffer
     i--;
-    changedView.set(new Uint8Array(this.buffer, result[i].position, this.buffer.byteLength - result[i].position), result[i].position - searchPattern.buffer.byteLength + replacePattern.buffer.byteLength - i * patternDifference);
+    changedView.set(new Uint8Array(this.buffer, result[i].position, this.length - result[i].position), result[i].position - searchPattern.length + replacePattern.length - i * patternDifference);
     //#endregion
 
     //#region Re-initialize existing buffer
@@ -1155,7 +1155,7 @@ export class ByteStream {
 
     //#region Search for pattern
     for (let k = 0; k < patterns.length; k++) {
-      const patternLength = patterns[k].buffer.byteLength;
+      const patternLength = patterns[k].length;
       const equalStart = (backward) ? (result - patternLength) : (result);
       let equal = true;
 
@@ -1203,7 +1203,7 @@ export class ByteStream {
     //#region Search for pattern
     for (let i = 0; i < length; i++) {
       for (let k = 0; k < patterns.length; k++) {
-        const patternLength = patterns[k].buffer.byteLength;
+        const patternLength = patterns[k].length;
         const equalStart = (backward) ? (start - i - patternLength) : (start + i);
         let equal = true;
 

@@ -84,21 +84,21 @@ export function parseByteMap(stream: ByteStream, map: ByteMap[], elements: numbe
 		start = 0;
 	}
 
-	if (start > (stream.buffer.byteLength - 1)) {
+	if (start > (stream.length - 1)) {
 		return [];
 	}
 
 	if (length === null) {
-		length = stream.buffer.byteLength - start;
+		length = stream.length - start;
 	}
 
-	if (length > (stream.buffer.byteLength - start)) {
-		length = stream.buffer.byteLength - start;
+	if (length > (stream.length - start)) {
+		length = stream.length - start;
 	}
 
 	let dataView: Uint8Array;
 
-	if ((start == 0) && (length == stream.buffer.byteLength)) {
+	if ((start == 0) && (length == stream.length)) {
 		dataView = stream.view;
 	} else {
 		dataView = new Uint8Array(stream.buffer, start, length);

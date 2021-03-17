@@ -83,7 +83,7 @@ export class SeqStream {
     }
     if ("backward" in parameters && parameters.backward) {
       this.backward = parameters.backward;
-      this._start = this.stream.buffer.byteLength;
+      this._start = this.stream.length;
     }
     if ("length" in parameters && parameters.length > 0) {
       this._length = parameters.length;
@@ -102,7 +102,7 @@ export class SeqStream {
     this._stream = value;
 
     this.prevLength = this._length;
-    this._length = value.buffer.byteLength;
+    this._length = value.length;
 
     this.prevStart = this._start;
     this._start = 0;
@@ -140,7 +140,7 @@ export class SeqStream {
    * @param value
    */
   public set start(value: number) {
-    if (value > this.stream.buffer.byteLength)
+    if (value > this.stream.length)
       return;
 
     //#region Initialization of "prev" internal variables
@@ -194,11 +194,11 @@ export class SeqStream {
       return result;
 
     if (this.backward) {
-      if (result < (this.start - pattern.buffer.byteLength - gap)) {
+      if (result < (this.start - pattern.length - gap)) {
         return (-1);
       }
     } else {
-      if (result > (this.start + pattern.buffer.byteLength + gap)) {
+      if (result > (this.start + pattern.length + gap)) {
         return (-1);
       }
     }
@@ -230,14 +230,14 @@ export class SeqStream {
       return result;
 
     if (this.backward) {
-      if (result.position < (this.start - patterns[result.id].buffer.byteLength - gap)) {
+      if (result.position < (this.start - patterns[result.id].length - gap)) {
         return {
           id: (-1),
           position: (this.backward) ? 0 : (this.start + this.length)
         };
       }
     } else {
-      if (result.position > (this.start + patterns[result.id].buffer.byteLength + gap)) {
+      if (result.position > (this.start + patterns[result.id].length + gap)) {
         return {
           id: (-1),
           position: (this.backward) ? 0 : (this.start + this.length)
@@ -285,7 +285,7 @@ export class SeqStream {
 
     if (this.backward) {
       if (result.right.id != (-1)) {
-        if (result.right.position < (this._start - patterns[result.right.id].buffer.byteLength - gap)) {
+        if (result.right.position < (this._start - patterns[result.right.id].length - gap)) {
           return {
             left: {
               id: (-1),
@@ -301,7 +301,7 @@ export class SeqStream {
       }
     } else {
       if (result.left.id != (-1)) {
-        if (result.left.position > (this._start + patterns[result.left.id].buffer.byteLength + gap)) {
+        if (result.left.position > (this._start + patterns[result.left.id].length + gap)) {
           return {
             left: {
               id: (-1),
@@ -369,19 +369,19 @@ export class SeqStream {
 
     //#region Search for sequence
     const result = this._stream.findFirstSequence(patterns, this._start, length, this.backward);
-    if (result.value.buffer.byteLength == 0) {
+    if (result.value.length == 0) {
       return result;
     }
 
     if (this.backward) {
-      if (result.position < (this._start - result.value.buffer.byteLength - gap)) {
+      if (result.position < (this._start - result.value.length - gap)) {
         return {
           position: (-1),
           value: new ByteStream()
         };
       }
     } else {
-      if (result.position > (this._start + result.value.buffer.byteLength + gap)) {
+      if (result.position > (this._start + result.value.length + gap)) {
         return {
           position: (-1),
           value: new ByteStream()
@@ -432,11 +432,11 @@ export class SeqStream {
     const result = this.stream.findPairedPatterns(leftPattern, rightPattern, start, this.length);
     if (result.length) {
       if (this.backward) {
-        if (result[0].right < (this.start - rightPattern.buffer.byteLength - gap)) {
+        if (result[0].right < (this.start - rightPattern.length - gap)) {
           return [];
         }
       } else {
-        if (result[0].left > (this.start + leftPattern.buffer.byteLength + gap)) {
+        if (result[0].left > (this.start + leftPattern.length + gap)) {
           return [];
         }
       }
@@ -468,11 +468,11 @@ export class SeqStream {
     const result = this.stream.findPairedArrays(leftPatterns, rightPatterns, start, this.length);
     if (result.length) {
       if (this.backward) {
-        if (result[0].right.position < (this.start - rightPatterns[result[0].right.id].buffer.byteLength - gap)) {
+        if (result[0].right.position < (this.start - rightPatterns[result[0].right.id].length - gap)) {
           return [];
         }
       } else {
-        if (result[0].left.position > (this.start + leftPatterns[result[0].left.id].buffer.byteLength + gap)) {
+        if (result[0].left.position > (this.start + leftPatterns[result[0].left.id].length + gap)) {
           return [];
         }
       }
@@ -530,31 +530,31 @@ export class SeqStream {
    * @param stream A new "stream" to append to current "stream"
    */
   public append(stream: ByteStream) {
-    if ((this._start + stream.buffer.byteLength) > this._stream.buffer.byteLength) {
-      if (stream.buffer.byteLength > this.appendBlock) {
-        this.appendBlock = (stream.buffer.byteLength + 1000);
+    if ((this._start + stream.length) > this._stream.length) {
+      if (stream.length > this.appendBlock) {
+        this.appendBlock = (stream.length + 1000);
       }
 
-      this._stream.realloc(this._stream.buffer.byteLength + this.appendBlock);
+      this._stream.realloc(this._stream.length + this.appendBlock);
     }
 
     this._stream.view.set(stream.view, this._start);
 
-    this._length += (stream.buffer.byteLength * 2);
-    this.start = (this._start + stream.buffer.byteLength);
-    this.prevLength -= (stream.buffer.byteLength * 2);
+    this._length += (stream.length * 2);
+    this.start = (this._start + stream.length);
+    this.prevLength -= (stream.length * 2);
   }
   /**
    * Append a "view" content to the current "Stream"
    * @param view A new "view" to append to current "stream"
    */
   public appendView(view: Uint8Array) {
-    if ((this._start + view.length) > this._stream.buffer.byteLength) {
+    if ((this._start + view.length) > this._stream.length) {
       if (view.length > this.appendBlock) {
         this.appendBlock = (view.length + 1000);
       }
 
-      this._stream.realloc(this._stream.buffer.byteLength + this.appendBlock);
+      this._stream.realloc(this._stream.length + this.appendBlock);
     }
 
     this._stream.view.set(view, this._start);
@@ -568,12 +568,12 @@ export class SeqStream {
    * @param char A new char to append to current "stream"
    */
   public appendChar(char: number) {
-    if ((this._start + 1) > this._stream.buffer.byteLength) {
+    if ((this._start + 1) > this._stream.length) {
       if (1 > this.appendBlock) {
         this.appendBlock = 1000;
       }
 
-      this._stream.realloc(this._stream.buffer.byteLength + this.appendBlock);
+      this._stream.realloc(this._stream.length + this.appendBlock);
     }
 
     this._stream.view[this._start] = char;
@@ -587,12 +587,12 @@ export class SeqStream {
    * @param number A new unsigned 16-bit integer to append to current "stream"
    */
   public appendUint16(number: number) {
-    if ((this._start + 2) > this._stream.buffer.byteLength) {
+    if ((this._start + 2) > this._stream.length) {
       if (2 > this.appendBlock) {
         this.appendBlock = 1000;
       }
 
-      this._stream.realloc(this._stream.buffer.byteLength + this.appendBlock);
+      this._stream.realloc(this._stream.length + this.appendBlock);
     }
 
     const value = new Uint16Array([number]);
@@ -611,12 +611,12 @@ export class SeqStream {
    * @param number A new unsigned 24-bit integer to append to current "stream"
    */
   appendUint24(number: number) {
-    if ((this._start + 3) > this._stream.buffer.byteLength) {
+    if ((this._start + 3) > this._stream.length) {
       if (3 > this.appendBlock) {
         this.appendBlock = 1000;
       }
 
-      this._stream.realloc(this._stream.buffer.byteLength + this.appendBlock);
+      this._stream.realloc(this._stream.length + this.appendBlock);
     }
 
     const value = new Uint32Array([number]);
@@ -636,12 +636,12 @@ export class SeqStream {
    * @param number A new unsigned 32-bit integer to append to current "stream"
    */
   public appendUint32(number: number) {
-    if ((this._start + 4) > this._stream.buffer.byteLength) {
+    if ((this._start + 4) > this._stream.length) {
       if (4 > this.appendBlock) {
         this.appendBlock = 1000;
       }
 
-      this._stream.realloc(this._stream.buffer.byteLength + this.appendBlock);
+      this._stream.realloc(this._stream.length + this.appendBlock);
     }
 
     const value = new Uint32Array([number]);

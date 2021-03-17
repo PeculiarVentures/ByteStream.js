@@ -273,10 +273,7 @@ export class BitStream {
       this.view[0] &= 0xFF >> (bitsOffset + shift);
     } else {
       //#region Change size of buffer
-      const buffer = new ArrayBuffer(this.buffer.byteLength - 1);
-      const view = new Uint8Array(buffer);
-
-      view.set(new Uint8Array(this.buffer, 1, this.buffer.byteLength - 1));
+      const view = this.view.slice(1);
       //#endregion
 
       //#region Mask item with index 0
@@ -284,8 +281,8 @@ export class BitStream {
       //#endregion
 
       //#region Store final array into current stream
-      this.buffer = buffer.slice(0);
-      this.view = new Uint8Array(this.buffer);
+      this.buffer = view.buffer;
+      this.view = view;
       //#endregion
     }
     //#endregion
@@ -400,17 +397,14 @@ export class BitStream {
    */
   public shrink(): void {
     const currentLength = (this.bitsCount >> 3) + ((this.bitsCount % 8) ? 1 : 0);
-    if (currentLength < this.buffer.byteLength) {
+    if (currentLength < this.view.length) {
       //#region Change size of buffer
-      const buffer = new ArrayBuffer(currentLength);
-      const view = new Uint8Array(buffer);
-
-      view.set(new Uint8Array(this.buffer, this.buffer.byteLength - currentLength, currentLength));
+      const view = this.view.slice(this.view.length - currentLength, (this.view.length - currentLength) + currentLength);
       //#endregion
 
       //#region Store final array into current stream
-      this.buffer = buffer;
-      this.view = new Uint8Array(buffer);
+      this.view = view;
+      this.buffer = view.buffer;
       //#endregion
     }
   }
@@ -454,7 +448,7 @@ export class BitStream {
    */
   public getNumberValue(): number {
     //#region Initial variables
-    const byteLength = (this.buffer.byteLength - 1);
+    const byteLength = (this.view.length - 1);
     //#endregion
 
     //#region Check possibility for conversion
