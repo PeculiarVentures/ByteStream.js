@@ -1,5 +1,5 @@
 import * as assert from "assert";
-import { BitStream, ByteStream, SeqStream } from "../src";
+import { BitStream, ByteStream, SeqBitStream, SeqStream } from "../src";
 
 const data = new Uint8Array([0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0A]);
 context("Functional testing", () => {
@@ -1534,7 +1534,7 @@ context("Functional testing", () => {
 
 		it("append", () => {
 			const bitStream = new BitStream({ string: "11001110 110".replace(/ /g, "") });
-			bitStream.append(new BitStream({string: "111"}));
+			bitStream.append(new BitStream({ string: "111" }));
 
 			assert.strictEqual(bitStream.toString(), "11001110 110111".replace(/ /g, ""));
 			assert.strictEqual(bitStream.bitsCount, 14);
@@ -1542,9 +1542,20 @@ context("Functional testing", () => {
 
 	});
 
-	it("SeqBitStream class tests", () => {
-		// const seqBitStreamClear = new SeqBitStream();
-		// TODO write test
+	context("SeqBitStream class tests", () => {
+
+		context("constructor", () => {
+
+			it("stream", () => {
+
+				const bitStream = new BitStream({ view: new Uint8Array([1, 2, 3, 4, 5]) });
+				const seqBitStream = new SeqBitStream({ stream: bitStream });
+
+				assert.strictEqual(bitStream.bitsCount, seqBitStream.length);
+			});
+
+		});
+
 	});
 
 	it("parseByteMap tests", () => {

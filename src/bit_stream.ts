@@ -1,38 +1,43 @@
 import { bitsToStringArray } from "./bit";
 import { ByteStream, FindFirstInResult, FindFirstNotInResult, FindFirstSequenceResult, FindPairedArraysResult, FindPairedPatternsResult, FindResult } from "./byte_stream";
 
-export interface ViewParameters {
+export interface BitStreamViewParameters {
   view: Uint8Array;
   bitsCount?: number;
 }
 
-export interface StreamParameters {
+export interface BitStreamStreamParameters {
   byteStream: ByteStream;
   bitsCount?: number;
 }
 
-export interface BufferParameters {
+export interface BitStreamBufferParameters {
   buffer: ArrayBuffer;
   bitsCount?: number;
 }
 
-export interface Uint32Parameters {
+export interface BitStreamUint32Parameters {
   uint32: number;
   bitsCount?: number;
 }
 
-export interface StringParameters {
+export interface BitStreamStringParameters {
   string: string;
   bitsCount?: number;
 }
 
-export type BitStreamParameters = ViewParameters | StreamParameters | BufferParameters
-  | Uint32Parameters | StringParameters;
+export type BitStreamParameters =
+  BitStreamViewParameters |
+  BitStreamStreamParameters |
+  BitStreamBufferParameters |
+  BitStreamUint32Parameters |
+  BitStreamStringParameters;
 
 export class BitStream {
   public buffer: ArrayBuffer;
   public view: Uint8Array;
   public bitsCount: number;
+
   /**
    * Constructor for "BitStream" class
    * @param parameters

@@ -21,10 +21,14 @@ export class SeqBitStream {
 
   constructor(parameters: SeqBitStreamParameters = {}) {
     //#region Internal variables
-    this.stream = parameters.stream?.copy() || new BitStream();
+    this.stream = parameters.stream?.slice() || new BitStream();
     this.appendBlock = parameters.appendBlock || 0;
-    this.start = parameters.start || 0;
-    this.length = parameters.length || 0;
+    if (parameters.start && parameters.start > 0) {
+      this.start = parameters.start;
+    }
+    if (parameters.length && parameters.length > 0) {
+      this.length = parameters.length;
+    }
     this.backward = parameters.backward || false;
     //#endregion
   }
