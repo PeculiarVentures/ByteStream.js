@@ -1,5 +1,19 @@
 import { ByteStream } from "./byte_stream";
 
+export interface ByteMapFunctionResult {
+	status: number;
+	length: number;
+	value?: number;
+}
+export interface ByteMap {
+	type: string;
+	name: string;
+	defaultValue: string;
+	maxlength: number;
+	minlength: number; // TODO Not used field
+	func: (array: Uint8Array) => ByteMapFunctionResult;
+}
+
 /**
  * Get parsed values from "byte map"
  * @param stream Stream to parse data from
@@ -9,7 +23,7 @@ import { ByteStream } from "./byte_stream";
  * @param length Length of byte block to parse from
  * @returns
  */
-export function parseByteMap(stream: ByteStream, map: Record<string, any>, elements: number, start: null | number = null, length: null | number = null) {
+export function parseByteMap(stream: ByteStream, map: ByteMap[], elements: number, start: null | number = null, length: null | number = null): Record<string, any>[] {
 	/**
 	 * Map example:
 	 *
@@ -25,7 +39,7 @@ export function parseByteMap(stream: ByteStream, map: Record<string, any>, eleme
 	 * status: (-1),
 	 * length: 1
 	 * };
-   *
+	 *
 	 * switch(array[0])
 	 * {
 	 * case 0x6E: // "n"
@@ -37,9 +51,9 @@ export function parseByteMap(stream: ByteStream, map: Record<string, any>, eleme
 	 * default:
 	 * return result;
 	 * }
-   *
+	 *
 	 * result.status = 1;
-   *
+	 *
 	 * return result;
 	 * }
 	 * },
@@ -50,12 +64,12 @@ export function parseByteMap(stream: ByteStream, map: Record<string, any>, eleme
 	 * func: function(array)
 	 * {
 	 * let position = (-1);
-   *
+	 *
 	 * if(array[0] == 0x0A)
 	 * position = 1;
 	 * if(array[1] == 0x0A)
 	 * position = 2;
-   *
+	 *
 	 * return {
 	 * status: (position > 0) ? 1 : (-1),
 	 * length: position
@@ -70,8 +84,9 @@ export function parseByteMap(stream: ByteStream, map: Record<string, any>, eleme
 		start = 0;
 	}
 
-	if (start > (stream.buffer.byteLength - 1))
-		return false;
+	if (start > (stream.buffer.byteLength - 1)) {
+		return [];
+	}
 
 	if (length === null) {
 		length = stream.buffer.byteLength - start;
@@ -81,14 +96,15 @@ export function parseByteMap(stream: ByteStream, map: Record<string, any>, eleme
 		length = stream.buffer.byteLength - start;
 	}
 
-	let dataView;
+	let dataView: Uint8Array;
 
-	if ((start == 0) && (length == stream.buffer.byteLength))
+	if ((start == 0) && (length == stream.buffer.byteLength)) {
 		dataView = stream.view;
-	else
+	} else {
 		dataView = new Uint8Array(stream.buffer, start, length);
+	}
 
-	const resultArray = new Array(elements);
+	const resultArray = new Array<Record<string, any>>(elements);
 	let elementsCount = 0;
 
 	let count = 0;
@@ -103,13 +119,14 @@ export function parseByteMap(stream: ByteStream, map: Record<string, any>, eleme
 
 		for (let i = 0; i < mapLength; i++) {
 			if (map[i].maxlength == 0) {
-				if ("defaultValue" in map[i])
+				if ("defaultValue" in map[i]) {
 					(resultArray[elementsCount])[map[i].name] = map[i].defaultValue;
+				}
 
 				continue;
 			}
 
-			const array = new Array(map[i].maxlength);
+			const array = new Uint8Array(map[i].maxlength);
 
 			for (let j = 0; j < map[i].maxlength; j++) {
 				array[j] = dataView[count++];
@@ -117,14 +134,16 @@ export function parseByteMap(stream: ByteStream, map: Record<string, any>, eleme
 
 			const result = (map[i].func)(array);
 			if (result.status == (-1)) {
-				if (resultArray.length == 1)
+				if (resultArray.length == 1) {
 					return [];
+				}
 
 				return resultArray.slice(0, resultArray.length - 1);
 			}
 
-			if (map[i].type != "check")
+			if (map[i].type != "check") {
 				(resultArray[elementsCount])[map[i].name] = result.value;
+			}
 
 			count -= (map[i].maxlength - result.length);
 			structureLength += result.length;
