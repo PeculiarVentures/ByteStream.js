@@ -30,6 +30,7 @@ export type ByteStreamParameters =
 export interface FindResult {
   id: number;
   position: number;
+  length?: number;
 }
 
 export interface FindFirstInResult {

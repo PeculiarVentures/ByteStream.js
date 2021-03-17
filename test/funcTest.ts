@@ -1624,6 +1624,205 @@ context("Functional testing", () => {
 
 	});
 
+	context("SeqStream", () => {
+
+		context("findPattern", () => {
+
+			it("exists", () => {
+				const seqStream = new SeqStream({
+					view: new Uint8Array([1, 2, 3, 4, 5, 6, 7, 8, 0]),
+				});
+
+				const pattern = new ByteStream({ view: new Uint8Array([7]) });
+				const res = seqStream.findPattern(pattern);
+				assert.strictEqual(res, 7);
+			});
+
+			it("not found", () => {
+				const seqStream = new SeqStream({
+					view: new Uint8Array([1, 2, 3, 4, 5, 6, 7, 8, 0]),
+				});
+
+				const pattern = new ByteStream({ view: new Uint8Array([10]) });
+				const res = seqStream.findPattern(pattern);
+				assert.strictEqual(res, -1);
+			});
+
+			it("gap", () => {
+				const seqStream = new SeqStream({
+					view: new Uint8Array([1, 2, 3, 4, 5, 6, 7, 8, 0]),
+				});
+
+				const pattern = new ByteStream({ view: new Uint8Array([7]) });
+				const res = seqStream.findPattern(pattern, 5);
+				assert.strictEqual(res, -1);
+			});
+
+			it("gap + backward", () => {
+				const seqStream = new SeqStream({
+					view: new Uint8Array([1, 2, 3, 4, 5, 6, 7, 8, 0]),
+					backward: true,
+				});
+
+				const pattern = new ByteStream({ view: new Uint8Array([2]) });
+				const res = seqStream.findPattern(pattern, 5);
+				assert.strictEqual(res, -1);
+			});
+
+		});
+
+		context("findFirstIn", () => {
+
+			it("exists", () => {
+				const seqStream = new SeqStream({
+					view: new Uint8Array([1, 2, 3, 4, 5, 6, 7, 8, 0]),
+				});
+
+				const res = seqStream.findFirstIn([
+					new ByteStream({ view: new Uint8Array([7]) }),
+					new ByteStream({ view: new Uint8Array([3]) }),
+				]);
+				assert.strictEqual(res.id, 1);
+				assert.strictEqual(res.position, 3);
+			});
+
+			it("not found", () => {
+				const seqStream = new SeqStream({
+					view: new Uint8Array([1, 2, 3, 4, 5, 6, 7, 8, 0]),
+				});
+
+				const res = seqStream.findFirstIn([
+					new ByteStream({ view: new Uint8Array([10]) }),
+					new ByteStream({ view: new Uint8Array([11]) }),
+				]);
+				assert.strictEqual(res.id, -1);
+			});
+
+			it("gap", () => {
+				const seqStream = new SeqStream({
+					view: new Uint8Array([1, 2, 3, 4, 5, 6, 7, 8, 0]),
+				});
+
+				const res = seqStream.findFirstIn([
+					new ByteStream({ view: new Uint8Array([7]) }),
+					new ByteStream({ view: new Uint8Array([3]) }),
+				], 1);
+				assert.strictEqual(res.id, -1);
+			});
+
+			it("gap + backward", () => {
+				const seqStream = new SeqStream({
+					view: new Uint8Array([1, 2, 3, 4, 5, 6, 7, 8, 0]),
+					backward: true,
+				});
+
+				const res = seqStream.findFirstIn([
+					new ByteStream({ view: new Uint8Array([5]) }),
+					new ByteStream({ view: new Uint8Array([3]) }),
+				], 3);
+				assert.strictEqual(res.id, -1);
+			});
+
+		});
+
+		context("findFirstNotIn", () => {
+
+			it("right", () => {
+				const seqStream = new SeqStream({
+					view: new Uint8Array([1, 2, 3, 4, 5, 6, 7, 8, 0]),
+				});
+
+				const res = seqStream.findFirstNotIn([
+					new ByteStream({ view: new Uint8Array([1]) }),
+					new ByteStream({ view: new Uint8Array([2]) }),
+					new ByteStream({ view: new Uint8Array([3]) }),
+				]);
+				assert.deepStrictEqual(res.right, {
+					id: -1,
+					length: 0,
+					position: 9
+				});
+				assert.deepStrictEqual(res.left, {
+					id: 2,
+					length: 1,
+					position: 3
+				});
+				assert.strictEqual(res.value.toHexString(), "040506070800");
+			});
+
+			it("not found", () => {
+				const seqStream = new SeqStream({
+					view: new Uint8Array([1, 2, 3]),
+				});
+
+				const res = seqStream.findFirstNotIn([
+					new ByteStream({ view: new Uint8Array([1]) }),
+					new ByteStream({ view: new Uint8Array([2]) }),
+					new ByteStream({ view: new Uint8Array([3]) }),
+				]);
+				assert.deepStrictEqual(res.right, {
+					id: 2,
+					length: 1,
+					position: 3
+				});
+				assert.deepStrictEqual(res.left, {
+					id: 2,
+					length: 1,
+					position: 3
+				});
+				assert.strictEqual(res.value.toHexString(), "");
+			});
+
+			it("gap", () => {
+				const seqStream = new SeqStream({
+					view: new Uint8Array([1, 2, 3, 4, 5, 6, 7, 8, 0]),
+				});
+
+				const res = seqStream.findFirstNotIn([
+					new ByteStream({ view: new Uint8Array([1]) }),
+					new ByteStream({ view: new Uint8Array([2]) }),
+					new ByteStream({ view: new Uint8Array([3]) }),
+				], 5);
+				assert.deepStrictEqual(res.right, {
+					id: -1,
+					length: 0,
+					position: 9
+				});
+				assert.deepStrictEqual(res.left, {
+					id: 2,
+					length: 1,
+					position: 3
+				});
+				assert.strictEqual(res.value.toHexString(), "040506070800");
+			});
+
+			it("gap + backward", () => {
+				const seqStream = new SeqStream({
+					view: new Uint8Array([1, 2, 3, 4, 5, 6, 7, 8, 0]),
+					backward: true,
+				});
+
+				const res = seqStream.findFirstNotIn([
+					new ByteStream({ view: new Uint8Array([5]) }),
+					new ByteStream({ view: new Uint8Array([3]) }),
+				], 10);
+				assert.deepStrictEqual(res.right, {
+					id: -1,
+					// TODO 'length' does not present
+					position: 9
+				});
+				assert.deepStrictEqual(res.left, {
+					id: 0,
+					length: 1,
+					position: 4
+				});
+				assert.strictEqual(res.value.toHexString(), "06070800");
+			});
+
+		});
+
+	});
+
 	it("parseByteMap tests", () => {
 		// TODO write test
 	});
