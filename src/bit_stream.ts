@@ -154,7 +154,7 @@ export class BitStream {
    * @param length Length of BitStream to convert to string
    * @returns
    */
-  public toString(start: null | number = null, length: null | number = null) {
+  public toString(start?: null | number, length?: null | number) {
     //#region Check input parameters
     if (start == null) {
       start = 0;
@@ -481,7 +481,7 @@ export class BitStream {
    * @param backward Flag to search in backward order
    * @returns
    */
-  public findPattern(pattern: BitStream, start: null | number = null, length: null | number = null, backward = false): number {
+  public findPattern(pattern: BitStream, start?: null | number, length?: null | number, backward?: boolean): number {
     //#region Convert "BitStream" values to "ByteStream"
     const stringStream = new ByteStream({
       string: this.toString(),
@@ -500,7 +500,7 @@ export class BitStream {
    * @param length Length of byte block to search at
    * @param backward Flag to search in backward order
    */
-  public findFirstIn(patterns: BitStream[], start: null | number = null, length: null | number = null, backward = false): FindFirstInResult {
+  public findFirstIn(patterns: BitStream[], start?: null | number, length?: null | number, backward?: boolean): FindFirstInResult {
     //#region Convert "BitStream" values to "ByteStream"
     const stringStream = new ByteStream({
       string: this.toString(),
@@ -523,7 +523,7 @@ export class BitStream {
    * @param start Start position to search from
    * @param length Length of byte block to search at
    */
-  public findAllIn(patterns: BitStream[], start = 0, length = 0): FindResult[] {
+  public findAllIn(patterns: BitStream[], start?: null | number, length?: null | number): FindResult[] {
     //#region Convert "BitStream" values to "ByteStream"
     const stringStream = new ByteStream({
       string: this.toString()
@@ -546,7 +546,7 @@ export class BitStream {
    * @param start Start position to search from
    * @param length Length of byte block to search at
    */
-  public findAllPatternIn(pattern: BitStream, start = 0, length = 0): -1 | number[] {
+  public findAllPatternIn(pattern: BitStream, start?: null | number, length?: null | number): -1 | number[] {
     //#region Convert "BitStream" values to "ByteStream"
     const stringStream = new ByteStream({
       string: this.toString()
@@ -566,7 +566,7 @@ export class BitStream {
    * @param backward Flag to search in backward order
    * @returns
    */
-  public findFirstNotIn(patterns: BitStream[], start: null | number = null, length: null | number = null, backward = false): FindFirstNotInResult {
+  public findFirstNotIn(patterns: BitStream[], start?: null | number, length?: null | number, backward?: boolean): FindFirstNotInResult {
     //#region Convert "BitStream" values to "ByteStream"
     const stringStream = new ByteStream({
       string: this.toString()
@@ -590,7 +590,7 @@ export class BitStream {
    * @param length Length of byte block to search at
    * @returns {Array}
    */
-  public findAllNotIn(patterns: BitStream[], start: null | number = null, length: null | number = null) {
+  public findAllNotIn(patterns: BitStream[], start?: null | number, length?: null | number) {
     //#region Convert "BitStream" values to "ByteStream"
     const stringStream = new ByteStream({
       string: this.toString()
@@ -614,7 +614,7 @@ export class BitStream {
    * @param length Length of byte block to search at
    * @param backward Flag to search in backward order
    */
-  public findFirstSequence(patterns: BitStream[], start: null | number = null, length: null | number = null, backward = false): FindFirstSequenceResult {
+  public findFirstSequence(patterns: BitStream[], start?: null | number, length?: null | number, backward?: boolean): FindFirstSequenceResult {
     //#region Convert "BitStream" values to "ByteStream"
     const stringStream = new ByteStream({
       string: this.toString()
@@ -637,7 +637,7 @@ export class BitStream {
    * @param start Start position to search from
    * @param length Length of byte block to search at
    */
-  public findAllSequences(patterns: BitStream[], start: null | number = null, length: null | number = null): FindFirstSequenceResult[] {
+  public findAllSequences(patterns: BitStream[], start?: null | number, length?: null | number): FindFirstSequenceResult[] {
     //#region Convert "BitStream" values to "ByteStream"
     const stringStream = new ByteStream({
       string: this.toString()
@@ -662,7 +662,7 @@ export class BitStream {
    * @param length Length of byte block to search at
    * @returns
    */
-  public findPairedPatterns(leftPattern: BitStream, rightPattern: BitStream, start: null | number = null, length: null | number = null): FindPairedPatternsResult[] {
+  public findPairedPatterns(leftPattern: BitStream, rightPattern: BitStream, start?: null | number, length?: null | number): FindPairedPatternsResult[] {
     //#region Convert "BitStream" values to "ByteStream"
     const stringStream = new ByteStream({
       string: this.toString()
@@ -684,7 +684,7 @@ export class BitStream {
    * @param start Start position to search from
    * @param length Length of byte block to search at
    */
-  public findPairedArrays(inputLeftPatterns: BitStream[], inputRightPatterns: BitStream[], start: null | number = null, length: null | number = null): FindPairedArraysResult[] {
+  public findPairedArrays(inputLeftPatterns: BitStream[], inputRightPatterns: BitStream[], start?: null | number, length?: null | number): FindPairedArraysResult[] {
     //#region Convert "BitStream" values to "ByteStream"
     const stringStream = new ByteStream({
       string: this.toString()
@@ -717,7 +717,7 @@ export class BitStream {
    * @param length Length of byte block to search at
    * @returns
    */
-  public replacePattern(searchPattern: BitStream, replacePattern: BitStream, start: null | number = null, length: null | number = null): boolean {
+  public replacePattern(searchPattern: BitStream, replacePattern: BitStream, start?: null | number, length?: null | number): boolean {
     //#region Convert "BitStream" values to "ByteStream"
     const stringStream = new ByteStream({
       string: this.toString() // TODO Don't use toString
@@ -747,7 +747,7 @@ export class BitStream {
    * @param length Length of byte block to search at
    * @param backward Flag to search in backward order
    */
-  public skipPatterns(patterns: BitStream[], start: null | number = null, length: null | number = null, backward = false): number {
+  public skipPatterns(patterns: BitStream[], start?: null | number, length?: null | number, backward?: boolean): number {
     //#region Convert "BitStream" values to "ByteStream"
     const stringStream = new ByteStream({
       string: this.toString()
@@ -771,7 +771,7 @@ export class BitStream {
    * @param length Length of byte block to search at
    * @param backward Flag to search in backward order
    */
-  public skipNotPatterns(patterns: BitStream[], start: null | number = null, length: null | number = null, backward = false): number {
+  public skipNotPatterns(patterns: BitStream[], start?: null | number, length?: null | number, backward?: boolean): number {
     //#region Convert "BitStream" values to "ByteStream"
     const stringStream = new ByteStream({
       string: this.toString() // TODO Don't use toString
