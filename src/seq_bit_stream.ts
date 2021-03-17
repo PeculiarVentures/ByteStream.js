@@ -13,7 +13,7 @@ export interface SeqBitStreamParameters {
 export class SeqBitStream {
   private _length = 0;
   private _start = 0;
-  private _stream: BitStream = new BitStream();
+  private _stream!: BitStream;
   public prevLength = 0;
   public prevStart = 0;
   public backward: boolean;
@@ -21,7 +21,7 @@ export class SeqBitStream {
 
   constructor(parameters: SeqBitStreamParameters = {}) {
     //#region Internal variables
-    this.stream = parameters.stream || new BitStream();
+    this.stream = parameters.stream?.copy() || new BitStream();
     this.appendBlock = parameters.appendBlock || 0;
     this.start = parameters.start || 0;
     this.length = parameters.length || 0;
@@ -145,11 +145,11 @@ export class SeqBitStream {
       let value = bitsToStringArray[this.stream.view[i]];
 
       if (i == startIndex) {
-        value = value.slice(startOffset);
+        value = value.substring(startOffset);
       }
 
       if (i == (bitsLengthIndex - 1)) {
-        value = value.slice(0, endOffset - 7 + value.length);
+        value = value.substr(0, endOffset - 7 + value.length);
       }
 
       result.push(value);

@@ -1,11 +1,31 @@
-export interface ByteStreamParameters {
-  length?: number;
+export interface ByteStreamEmptyParameters { }
+export interface ByteStreamLengthParameters {
+  length: number;
   stub?: number;
-  view?: Uint8Array;
-  buffer?: ArrayBuffer;
-  string?: string;
-  hexstring?: string;
 }
+export interface ByteStreamViewParameters {
+  view: Uint8Array;
+}
+
+export interface ByteStreamBufferParameters {
+  buffer: ArrayBuffer;
+}
+
+export interface ByteStreamStringParameters {
+  string: string;
+}
+
+export interface ByteStreamHexParameters {
+  hexstring: string;
+}
+
+export type ByteStreamParameters =
+  ByteStreamEmptyParameters |
+  ByteStreamLengthParameters |
+  ByteStreamViewParameters |
+  ByteStreamBufferParameters |
+  ByteStreamStringParameters |
+  ByteStreamHexParameters;
 
 export interface FindResult {
   id: number;
@@ -52,36 +72,34 @@ export interface ReplacePatternResult {
 }
 
 export class ByteStream {
-  private _buffer: ArrayBuffer;
-  private _view: Uint8Array;
+  private _buffer!: ArrayBuffer;
+  private _view!: Uint8Array;
 
   /**
    * Constructor for ByteStream class
    * @param parameters
    */
   constructor(parameters: ByteStreamParameters = {}) {
-    this._buffer = new ArrayBuffer(0);
-    this._view = new Uint8Array(this._buffer);
-
-    if (parameters.length) {
-      this.length = parameters.length;
-    }
-    if (parameters.stub) {
-      for (let i = 0; i < this._view.length; i++) {
-        this._view[i] = parameters.stub;
+    if ("view" in parameters) {
+      this.fromUint8Array(parameters.view);
+    } else if ("buffer" in parameters) {
+      this.fromArrayBuffer(parameters.buffer);
+    } else if ("string" in parameters) {
+      this.fromString(parameters.string);
+    } else if ("hexstring" in parameters) {
+      this.fromHexString(parameters.hexstring);
+    } else {
+      if ("length" in parameters && parameters.length > 0) {
+        this.length = parameters.length;
+        if (parameters.stub) {
+          for (let i = 0; i < this._view.length; i++) {
+            this._view[i] = parameters.stub;
+          }
+        }
+      } else {
+        this.length = 0;
       }
     }
-    if (parameters.view) {
-      this.fromUint8Array(parameters.view);
-    }
-    if (parameters.buffer) {
-      this.fromArrayBuffer(parameters.buffer);
-    }
-    if (parameters.string) {
-      this.fromString(parameters.string);
-    }
-    if (parameters.hexstring)
-      this.fromHexString(parameters.hexstring);
   }
 
   /**
@@ -89,13 +107,12 @@ export class ByteStream {
    * @param value
    */
   public set buffer(value) {
-    this._buffer = value.slice(0);
+    this._buffer = value;
     this._view = new Uint8Array(this._buffer);
   }
 
   /**
    * Getter for "buffer"
-   * @returns
    */
   public get buffer() {
     return this._buffer;
@@ -114,7 +131,6 @@ export class ByteStream {
 
   /**
    * Getter for "view"
-   * @returns
    */
   public get view() {
     return this._view;
@@ -149,7 +165,8 @@ export class ByteStream {
    * @param array The ArrayBuffer to copy from
    */
   public fromArrayBuffer(array: ArrayBuffer) {
-    this.buffer = array;
+    this._buffer = array;
+    this._view = new Uint8Array(this._buffer);
   }
 
   /**
@@ -157,10 +174,7 @@ export class ByteStream {
    * @param  array The Uint8Array to copy from
    */
   public fromUint8Array(array: Uint8Array) {
-    this._buffer = new ArrayBuffer(array.length);
-    this._view = new Uint8Array(this._buffer);
-
-    this._view.set(array);
+    this.fromArrayBuffer(new Uint8Array(array).buffer);
   }
 
   /**
@@ -304,10 +318,9 @@ export class ByteStream {
     }
     //#endregion
 
-    const stream = new ByteStream();
-
-    stream._buffer = this._buffer.slice(start, start + length);
-    stream._view = new Uint8Array(stream._buffer);
+    const stream = new ByteStream({
+      buffer: this._buffer.slice(start, start + length)
+    });
 
     return stream;
   }
@@ -329,10 +342,9 @@ export class ByteStream {
     }
     //#endregion
 
-    const stream = new ByteStream();
-
-    stream._buffer = this._buffer.slice(start, end);
-    stream._view = new Uint8Array(stream._buffer);
+    const stream = new ByteStream({
+      buffer: this._buffer.slice(start, end),
+    });
 
     return stream;
   }
@@ -356,7 +368,7 @@ export class ByteStream {
     //#endregion
 
     //#region Initialize "Stream" with new "ArrayBuffer"
-    this._buffer = buffer.slice(0); // TODO remove slice
+    this._buffer = buffer;
     this._view = new Uint8Array(this._buffer);
     //#endregion
   }
@@ -370,7 +382,7 @@ export class ByteStream {
     const initialSize = this._buffer.byteLength;
     const streamViewLength = stream._buffer.byteLength;
 
-    const copyView = stream._view.slice(); // TODO remove slice
+    const subarrayView = stream._view.subarray();
     //#endregion
 
     //#region Re-allocate current internal buffer
@@ -378,7 +390,7 @@ export class ByteStream {
     //#endregion
 
     //#region Copy input stream content to a new place
-    this._view.set(copyView, initialSize);
+    this._view.set(subarrayView, initialSize);
     //#endregion
   }
 
@@ -409,7 +421,7 @@ export class ByteStream {
     if (length == stream._buffer.byteLength)
       this._view.set(stream._view, start);
     else {
-      this._view.set(stream._view.slice(0, length), start);
+      this._view.set(stream._view.subarray(0, length), start);
     }
     //#endregion
 
@@ -777,10 +789,9 @@ export class ByteStream {
           start = result.left.position;
         }
 
-        result.value = new ByteStream();
-
-        result.value._buffer = this._buffer.slice(start, start + length);
-        result.value._view = new Uint8Array(result.value._buffer);
+        result.value = new ByteStream({
+          buffer: this._buffer.slice(start, start + length),
+        });
 
         break;
       }
@@ -796,10 +807,9 @@ export class ByteStream {
           length = result.right.position - result.left.position - patterns[result.right.id].buffer.byteLength;
         }
 
-        result.value = new ByteStream();
-
-        result.value._buffer = this._buffer.slice(start, start + length);
-        result.value._view = new Uint8Array(result.value._buffer);
+        result.value = new ByteStream({
+          buffer: this._buffer.slice(start, start + length),
+        });
 
         break;
       }
@@ -953,10 +963,9 @@ export class ByteStream {
       length = (firstNotIn - firstIn);
     }
 
-    const value = new ByteStream();
-
-    value._buffer = this._buffer.slice(start, start + length);
-    value._view = new Uint8Array(value._buffer);
+    const value = new ByteStream({
+      buffer: this._buffer.slice(start, start + length),
+    });
     //#endregion
 
     return {

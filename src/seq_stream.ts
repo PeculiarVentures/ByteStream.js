@@ -1,16 +1,43 @@
 import { ByteStream, FindFirstNotInResult, FindFirstSequenceResult, FindPairedArraysResult, FindPairedPatternsResult } from "./byte_stream";
 
-export interface SeqStreamParameters {
-  stream?: ByteStream;
-  length?: number;
+export interface SeqStreamBaseParameters {
   backward?: boolean;
   start?: number;
   appendBlock?: number;
-  view?: Uint8Array;
-  buffer?: ArrayBuffer;
-  string?: string;
-  hexstring?: string;
 }
+
+export interface SeqStreamLengthParameters extends SeqStreamBaseParameters {
+  length: number;
+}
+
+export interface SeqStreamStreamParameters extends SeqStreamBaseParameters {
+  stream: ByteStream;
+}
+
+export interface SeqStreamViewParameters extends SeqStreamBaseParameters {
+  view: Uint8Array;
+}
+
+export interface SeqStreamBufferParameters extends SeqStreamBaseParameters {
+  buffer: ArrayBuffer;
+}
+
+export interface SeqStreamStringParameters {
+  string: string;
+}
+
+export interface SeqStreamHexParameters {
+  hexstring: string;
+}
+export type SeqStreamParameters =
+  SeqStreamBaseParameters |
+  SeqStreamLengthParameters |
+  SeqStreamBufferParameters |
+  SeqStreamStreamParameters |
+  SeqStreamViewParameters |
+  SeqStreamStringParameters |
+  SeqStreamHexParameters;
+
 
 export class SeqStream {
   /**
@@ -32,7 +59,7 @@ export class SeqStream {
   /**
    * Length of a block when append information to major stream
    */
-  public appendBlock: number;
+  public appendBlock = 0;
   public prevLength = 0;
   public prevStart = 0;
 
@@ -41,29 +68,31 @@ export class SeqStream {
    * @param parameters
    */
   constructor(parameters: SeqStreamParameters = {}) {
-    this.stream = parameters.stream ?? new ByteStream();
-    if (parameters.backward) {
+    if ("view" in parameters) {
+      this.stream = new ByteStream({ view: parameters.view });
+    } else if ("buffer" in parameters) {
+      this.stream = new ByteStream({ buffer: parameters.buffer });
+    } else if ("string" in parameters) {
+      this.stream = new ByteStream({ string: parameters.string });
+    } else if ("hexstring" in parameters) {
+      this.stream = new ByteStream({ hexstring: parameters.hexstring });
+    } else if ("stream" in parameters) {
+      this.stream = parameters.stream.copy();
+    } else {
+      this.stream = new ByteStream();
+    }
+    if ("backward" in parameters && parameters.backward) {
       this.backward = parameters.backward;
       this._start = this.stream.buffer.byteLength;
     }
-    if (parameters.length) {
+    if ("length" in parameters && parameters.length > 0) {
       this._length = parameters.length;
     }
-    if (parameters.start) {
+    if ("start" in parameters && parameters.start && parameters.start > 0) {
       this._start = parameters.start;
     }
-    this.appendBlock = parameters.appendBlock ?? 0;
-    if (parameters.view) {
-      this.stream = new ByteStream({ view: parameters.view });
-    }
-    if (parameters.buffer) {
-      this.stream = new ByteStream({ buffer: parameters.buffer });
-    }
-    if (parameters.string) {
-      this.stream = new ByteStream({ string: parameters.string });
-    }
-    if (parameters.hexstring) {
-      this.stream = new ByteStream({ hexstring: parameters.hexstring });
+    if ("appendBlock" in parameters && parameters.appendBlock && parameters.appendBlock > 0) {
+      this.appendBlock = parameters.appendBlock;
     }
   }
   /**
@@ -135,7 +164,7 @@ export class SeqStream {
    * @return}
    */
   public get buffer() {
-    return this._stream.buffer.slice(0, this._length); // TODO subarray? Or better create buffer only once
+    return this._stream.buffer;
   }
 
   /**
@@ -684,10 +713,10 @@ export class SeqStream {
    * @param changeLength Should we change "length" and "start" value after reading the data block
    * @returns
    */
-  public getBlock(size: number, changeLength = true): number[] {
+  public getBlock(size: number, changeLength = true): Uint8Array {
     //#region Check input parameters
     if (this._length <= 0) {
-      return [];
+      return new Uint8Array(0);
     }
 
     if (this._length < size) {
@@ -696,23 +725,20 @@ export class SeqStream {
     //#endregion
 
     //#region Initial variables
-    let result;
+    let result: Uint8Array;
     //#endregion
 
     //#region Getting result depends on "backward" flag
     if (this.backward) {
-      const buffer = this._stream.buffer.slice(this._length - size, this._length);
-      const view = new Uint8Array(buffer);
+      const view = this._stream.view.subarray(this._length - size, this._length);
 
-      result = new Array(size);
+      result = new Uint8Array(size);
 
       for (let i = 0; i < size; i++) {
         result[size - 1 - i] = view[i];
       }
     } else {
-      const buffer = this._stream.buffer.slice(this._start, this._start + size);
-
-      result = Array.from(new Uint8Array(buffer));
+      result = this._stream.view.subarray(this._start, this._start + size);
     }
     //#endregion
 

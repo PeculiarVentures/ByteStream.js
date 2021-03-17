@@ -78,18 +78,15 @@ export class BitStream {
    * @param stream
    */
   public fromByteStream(stream: ByteStream) {
-    this.buffer = stream.buffer.slice(0);
-    this.view = new Uint8Array(this.buffer);
-
-    this.bitsCount = this.view.length << 3;
+    this.fromUint8Array(stream.view);
   }
   /**
    * Initialize "BitStream" object from existing "ArrayBuffer"
    * @param array The ArrayBuffer to copy from
    */
   public fromArrayBuffer(array: ArrayBuffer) {
-    this.buffer = array.slice(0);
-    this.view = new Uint8Array(this.buffer);
+    this.buffer = array;
+    this.view = new Uint8Array(array);
 
     this.bitsCount = this.view.length << 3;
   }
@@ -98,12 +95,7 @@ export class BitStream {
    * @param array The Uint8Array to copy from
    */
   public fromUint8Array(array: Uint8Array) {
-    this.buffer = new ArrayBuffer(array.length);
-    this.view = new Uint8Array(this.buffer);
-
-    this.view.set(array);
-
-    this.bitsCount = this.view.length << 3;
+    this.fromArrayBuffer(new Uint8Array(array).buffer);
   }
   /**
    * Initialize "BitStream" object from existing bit string
@@ -186,8 +178,9 @@ export class BitStream {
     //#endregion
 
     //#region Convert from bytes to "bit string"
-    for (let i = start; i < (start + length); i++)
+    for (let i = start; i < (start + length); i++) {
       result.push(bitsToStringArray[this.view[i]]);
+    }
     //#endregion
 
     // TODO Do we need to remove unused bits for the subarray of bits?
@@ -195,7 +188,7 @@ export class BitStream {
     // toString() -> 10101010 10101010 101010  (the same value)
     // toString(start: 1) -> 10101010  101010 (last 2 bytes without 2 unused bytes)
     // toString(start: 1, length: 1) -> 10101010  (second byte)
-    return result.join("").slice((this.view.length << 3) - this.bitsCount);
+    return result.join("").substring((this.view.length << 3) - this.bitsCount);
   }
   /**
    * Shift entire "BitStream" value right to number of bits
@@ -343,15 +336,10 @@ export class BitStream {
 
     const bitsLength = ((endIndex - startIndex) == 0) ? 1 : (endIndex - startIndex + 1);
 
-    const result = new BitStream();
-    //#endregion
-
-    //#region Store "primary bytes"
-    result.buffer = new ArrayBuffer(bitsLength);
-    result.view = new Uint8Array(result.buffer);
-    result.bitsCount = bitsLength << 3;
-
-    result.view.set(new Uint8Array(this.buffer, startIndex, bitsLength));
+    const result = new BitStream({
+      buffer: this.buffer.slice(startIndex, startIndex + bitsLength),
+      bitsCount: bitsLength << 3,
+    });
     //#endregion
 
     //#region Change "start byte"
@@ -416,9 +404,8 @@ export class BitStream {
       //#endregion
 
       //#region Store final array into current stream
-      // TODO Why do we use slice here? Would it be better to set buffer from const?
-      this.buffer = buffer.slice(0);
-      this.view = new Uint8Array(this.buffer);
+      this.buffer = buffer;
+      this.view = new Uint8Array(buffer);
       //#endregion
     }
   }
