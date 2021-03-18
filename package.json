@@ -58,9 +58,10 @@
     "access"
   ],
   "name": "bytestreamjs",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "module": "./build/mjs/index.js",
   "main": "./build/cjs/index.js",
+  "types": "./build/types/index.d.ts",
   "license": "BSD-3-Clause",
   "nyc": {
     "extension": [

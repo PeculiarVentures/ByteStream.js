@@ -77,7 +77,13 @@ export class SeqBitStream {
    * @param length Number of bits to read
    * @returns
    */
-  public getBits(length: number): BitStream {
+  public getBits(length: null | number = null): BitStream {
+    if (length === null) {
+      length = 0;
+    } else if (length === 0) {
+      return new BitStream();
+    }
+
     //#region Check input parameters
     if ((this.start + length) > this.stream.bitsCount) {
       length = (this.stream.bitsCount - this.start);
