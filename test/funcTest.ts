@@ -1821,6 +1821,15 @@ context("Functional testing", () => {
 
 		});
 
+		it("appendUint16", () => {
+			const stream = new SeqStream();
+			stream.appendUint16(800);
+			assert.strictEqual(stream.length, 2);
+
+			stream.appendUint16(800);
+			assert.strictEqual(stream.buffer.byteLength, 4);
+		});
+
 	});
 
 	it("parseByteMap tests", () => {

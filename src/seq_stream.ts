@@ -829,7 +829,7 @@ export class SeqStream {
   protected beforeAppend(size: number): void {
     if ((this._start + size) > this._stream.length) {
       if (size > this.appendBlock) {
-        this.appendBlock = SeqStream.APPEND_BLOCK;
+        this.appendBlock = size + SeqStream.APPEND_BLOCK;
       }
 
       this._stream.realloc(this._stream.length + this.appendBlock);
