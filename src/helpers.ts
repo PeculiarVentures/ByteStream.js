@@ -3,12 +3,12 @@ import { ByteStream } from "./byte_stream";
 export interface ByteMapFunctionResult {
 	status: number;
 	length: number;
-	value?: number;
+	value?: string | number;
 }
 export interface ByteMap {
 	type: string;
 	name: string;
-	defaultValue: string;
+	defaultValue?: number | string;
 	maxlength: number;
 	minlength: number; // TODO Not used field
 	func: (array: Uint8Array) => ByteMapFunctionResult;
@@ -21,7 +21,6 @@ export interface ByteMap {
  * @param elements Number of elements in parsing byte map
  * @param start Start position to parse from
  * @param length Length of byte block to parse from
- * @returns
  */
 export function parseByteMap(stream: ByteStream, map: ByteMap[], elements: number, start: null | number = null, length: null | number = null): Record<string, any>[] {
 	/**
