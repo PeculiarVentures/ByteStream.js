@@ -20,17 +20,17 @@
     "url": "git://github.com/PeculiarVentures/ByteStream.js.git"
   },
   "devDependencies": {
-    "@types/mocha": "^8.2.0",
-    "@types/node": "^14.14.27",
-    "@typescript-eslint/eslint-plugin": "^4.15.1",
-    "@typescript-eslint/parser": "^4.15.1",
-    "coveralls": "^3.1.0",
-    "eslint": "^7.20.0",
-    "mocha": "^8.3.0",
+    "@types/mocha": "^9.1.1",
+    "@types/node": "^17.0.35",
+    "@typescript-eslint/eslint-plugin": "^5.25.0",
+    "@typescript-eslint/parser": "^5.25.0",
+    "coveralls": "^3.1.1",
+    "eslint": "^8.15.0",
+    "mocha": "^10.0.0",
     "nyc": "^15.1.0",
     "rimraf": "^3.0.2",
-    "ts-node": "^9.1.1",
-    "typescript": "^4.1.5"
+    "ts-node": "^10.7.0",
+    "typescript": "^4.6.4"
   },
   "engines": {
     "node": ">=6.0.0"
@@ -62,33 +62,5 @@
   "module": "./build/mjs/index.js",
   "main": "./build/cjs/index.js",
   "types": "./build/types/index.d.ts",
-  "license": "BSD-3-Clause",
-  "nyc": {
-    "extension": [
-      ".ts",
-      ".tsx"
-    ],
-    "include": [
-      "src/**/*.ts"
-    ],
-    "exclude": [
-      "**/*.d.ts"
-    ],
-    "reporter": [
-      "lcov",
-      "text-summary",
-      "html"
-    ]
-  },
-  "mocha": {
-    "require": [
-      "ts-node/register"
-    ],
-    "extension": [
-      "ts"
-    ],
-    "spec": [
-      "test/**"
-    ]
-  }
+  "license": "BSD-3-Clause"
 }
