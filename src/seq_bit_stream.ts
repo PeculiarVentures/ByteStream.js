@@ -1,4 +1,3 @@
-import { bitsToStringArray } from "./bit";
 import { BitStream } from "./bit_stream";
 
 export interface SeqBitStreamParameters {
