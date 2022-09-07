@@ -38,6 +38,8 @@ export type SeqStreamParameters =
   SeqStreamStringParameters |
   SeqStreamHexParameters;
 
+const pow2_24 = 16777216;
+
 
 export class SeqStream {
 
@@ -575,15 +577,15 @@ export class SeqStream {
   public appendUint16(number: number) {
     this.beforeAppend(2);
 
-		const value = new Uint16Array([number]);
-		const view = new Uint8Array(value.buffer);
+    const value = new Uint16Array([number]);
+    const view = new Uint8Array(value.buffer);
 
-		this.stream.view[this._start] = view[1];
-		this._stream.view[this._start + 1] = view[0];
+    this.stream.view[this._start] = view[1];
+    this._stream.view[this._start + 1] = view[0];
 
-		this._length += 4;
-		this.start = this._start + 2;
-		this.prevLength -= 4;
+    this._length += 4;
+    this.start = this._start + 2;
+    this.prevLength -= 4;
   }
 
   /**
@@ -719,15 +721,7 @@ export class SeqStream {
       return 0;
     //#endregion
 
-    //#region Convert byte array to "Uint16Array" value
-    const value = new Uint16Array(1);
-    const view = new Uint8Array(value.buffer);
-
-    view[0] = block[1];
-    view[1] = block[0];
-    //#endregion
-
-    return value[0];
+    return (block[0] << 8) | block[1];
   }
   /**
    * Get 2-byte signed integer value
@@ -735,22 +729,14 @@ export class SeqStream {
    * @returns
    */
   public getInt16(changeLength = true): number {
-    const block = this.getBlock(2, changeLength);
+    const num = this.getUint16(changeLength);
 
-    //#region Check possibility for conversion
-    if (block.length < 2)
-      return 0;
-    //#endregion
+    const negative = 0x8000;
+    if (num & negative) {
+      return -(negative - (num ^ negative));
+    }
 
-    //#region Convert byte array to "Int16Array" value
-    const value = new Int16Array(1);
-    const view = new Uint8Array(value.buffer);
-
-    view[0] = block[1];
-    view[1] = block[0];
-    //#endregion
-
-    return value[0];
+    return num;
   }
   /**
    * Get 3-byte unsigned integer value
@@ -758,24 +744,18 @@ export class SeqStream {
    * @returns
    */
   public getUint24(changeLength = true): number {
-    const block = this.getBlock(3, changeLength);
+    const block = this.getBlock(4, changeLength);
 
     //#region Check possibility for conversion
     if (block.length < 3)
       return 0;
     //#endregion
 
-    //#region Convert byte array to "Uint32Array" value
-    const value = new Uint32Array(1);
-    const view = new Uint8Array(value.buffer);
-
-    for (let i = 3; i >= 1; i--) {
-      view[3 - i] = block[i - 1];
-    }
-    //#endregion
-
-    return value[0];
+    return (block[0] << 16) |
+      (block[1] << 8) |
+      block[2];
   }
+
   /**
    * Get 4-byte unsigned integer value
    * @param changeLength Should we change "length" and "start" value after reading the data block
@@ -785,45 +765,30 @@ export class SeqStream {
     const block = this.getBlock(4, changeLength);
 
     //#region Check possibility for conversion
-    if (block.length < 4) {
+    if (block.length < 4)
       return 0;
-    }
     //#endregion
 
-    //#region Convert byte array to "Uint32Array" value
-    const value = new Uint32Array(1);
-    const view = new Uint8Array(value.buffer);
-
-    for (let i = 3; i >= 0; i--) {
-      view[3 - i] = block[i];
-    }
-    //#endregion
-
-    return value[0];
+    return (block[0] * pow2_24) +
+      (block[1] << 16) +
+      (block[2] << 8) +
+      block[3];
   }
   /**
    * Get 4-byte signed integer value
    * @param changeLength Should we change "length" and "start" value after reading the data block
    * @returns
    */
+
   public getInt32(changeLength = true): number {
-    const block = this.getBlock(4, changeLength);
+    const num = this.getUint32(changeLength);
 
-    //#region Check possibility for conversion
-    if (block.length < 4)
-      return 0;
-    //#endregion
-
-    //#region Convert byte array to "Int32Array" value
-    const value = new Int32Array(1);
-    const view = new Uint8Array(value.buffer);
-
-    for (let i = 3; i >= 0; i--) {
-      view[3 - i] = block[i];
+    const negative = 0x80000000;
+    if (num & negative) {
+      return -(negative - (num ^ negative));
     }
-    //#endregion
 
-    return value[0];
+    return num;
   }
 
   protected beforeAppend(size: number): void {
