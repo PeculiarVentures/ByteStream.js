@@ -58,7 +58,7 @@
     "access"
   ],
   "name": "bytestreamjs",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "module": "./build/mjs/index.js",
   "main": "./build/cjs/index.js",
   "types": "./build/types/index.d.ts",
