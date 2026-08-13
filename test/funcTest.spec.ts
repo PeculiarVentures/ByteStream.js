@@ -1,8 +1,8 @@
-import * as assert from "assert";
+import { describe, it, assert } from "vitest";
 import { BitStream, ByteStream, SeqBitStream, SeqStream } from "../src";
 
 const data = new Uint8Array([0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0A]);
-context("Functional testing", () => {
+describe("Functional testing", () => {
 	//#region Aux function
 	function compareWithData(variable: ByteStream, name: string, testData = data, length = 10) {
 		assert.strictEqual(variable.length, length, `${name}: Incorrect byteLength for _buffer value`);
@@ -18,12 +18,12 @@ context("Functional testing", () => {
 		const byteStreamCopyEmpty = byteStreamClear.copy();
 		compareWithData(byteStreamCopyEmpty, "byteStreamCopyEmpty", byteStreamClear.view, byteStreamClear.view.length);
 
-		assert.throws(() => byteStreamClear.copy(1, 1), Error, "Incorrect copy parameters must rise an Error");
+		assert.throws(() => byteStreamClear.copy(1, 1), Error, undefined, "Incorrect copy parameters must rise an Error");
 
 		const byteStreamSliceEmpty = byteStreamClear.slice();
 		compareWithData(byteStreamSliceEmpty, "byteStreamSliceEmpty", byteStreamClear.view, byteStreamClear.view.length);
 
-		assert.throws(() => byteStreamClear.slice(1, 1), Error, "Incorrect slice parameters must rise an Error");
+		assert.throws(() => byteStreamClear.slice(1, 1), Error, undefined, "Incorrect slice parameters must rise an Error");
 
 		const byteStreamLength = new ByteStream({ length: 10 });
 		compareWithData(byteStreamLength, "byteStreamLength", new Uint8Array([0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]), 10);
@@ -442,9 +442,9 @@ context("Functional testing", () => {
 		assert.strictEqual(pairedStream.toString(), "<1[1][1]>", "Incorrect value after replacePattern");
 	});
 
-	context("SeqStream class", () => {
+	describe("SeqStream class", () => {
 
-		context("numbers", () => {
+		describe("numbers", () => {
 			[
 				// uint16
 				{ value: 65535, hex: "ffff", type: "uint16" },
@@ -801,9 +801,9 @@ context("Functional testing", () => {
 
 	});
 
-	context("BitStream class tests", () => {
+	describe("BitStream class tests", () => {
 
-		context("constructor", () => {
+		describe("constructor", () => {
 
 			it("empty", () => {
 				const bitStream = new BitStream();
@@ -867,7 +867,7 @@ context("Functional testing", () => {
 			assert.strictEqual(bitStream.buffer.byteLength, 0);
 		});
 
-		context("toString", () => {
+		describe("toString", () => {
 			const bitStream = new BitStream({ string: "10000000000010000010" });
 
 			it("default", () => {
@@ -894,7 +894,7 @@ context("Functional testing", () => {
 			assert.strictEqual(bitStream.buffer.byteLength, 2);
 		});
 
-		context("shiftRight", () => {
+		describe("shiftRight", () => {
 			const bits = "10101010 10101010 10101"
 				.replace(/ /g, ""); // remove spaces
 
@@ -936,7 +936,7 @@ context("Functional testing", () => {
 
 		});
 
-		context("shiftLeft", () => {
+		describe("shiftLeft", () => {
 			const bits = "10101010 10101010 10101"
 				.replace(/ /g, ""); // remove spaces
 
@@ -970,7 +970,7 @@ context("Functional testing", () => {
 
 		});
 
-		context("slice", () => {
+		describe("slice", () => {
 			const bits = "10101010 10101010 10101"
 				.replace(/ /g, ""); // remove spaces
 
@@ -996,7 +996,7 @@ context("Functional testing", () => {
 			});
 		});
 
-		context("copy", () => {
+		describe("copy", () => {
 			const bits = "10101010 10101010 10101"
 				.replace(/ /g, ""); // remove spaces
 
@@ -1041,7 +1041,7 @@ context("Functional testing", () => {
 			assert.strictEqual(bitStream.toString(), "111110111101110110101");
 		});
 
-		context("getNumberValue", () => {
+		describe("getNumberValue", () => {
 
 			it("4 bytes", () => {
 				const bitStream = new BitStream({ uint32: 1234567890 });
@@ -1060,7 +1060,7 @@ context("Functional testing", () => {
 
 		});
 
-		context("findPattern", () => {
+		describe("findPattern", () => {
 			const bits = "10101101 11011110 11111"
 				.replace(/ /g, ""); // remove spaces
 
@@ -1090,7 +1090,7 @@ context("Functional testing", () => {
 
 		});
 
-		context("findFirstIn", () => {
+		describe("findFirstIn", () => {
 			const bits = "10101101 11011110 11111"
 				.replace(/ /g, ""); // remove spaces
 			const patterns = [
@@ -1119,7 +1119,7 @@ context("Functional testing", () => {
 
 		});
 
-		context("findAllIn", () => {
+		describe("findAllIn", () => {
 			const bits = "10101101 11011110 11111"
 				.replace(/ /g, ""); // remove spaces
 			const patterns = [
@@ -1174,7 +1174,7 @@ context("Functional testing", () => {
 			});
 		});
 
-		context("findAllPatternIn", () => {
+		describe("findAllPatternIn", () => {
 			const bits = "10101101 11011110 11111"
 				.replace(/ /g, ""); // remove spaces
 			const pattern = new BitStream({ string: "111" });
@@ -1199,7 +1199,7 @@ context("Functional testing", () => {
 
 		});
 
-		context("findFirstNotIn", () => {
+		describe("findFirstNotIn", () => {
 			const bits = "10101101 11011110 01111"
 				.replace(/ /g, ""); // remove spaces
 
@@ -1261,7 +1261,7 @@ context("Functional testing", () => {
 
 		});
 
-		context("findFirstSequence", () => {
+		describe("findFirstSequence", () => {
 
 			it("default", () => {
 				const bits = "00000111 1100".replace(/ /g, "");
@@ -1313,7 +1313,7 @@ context("Functional testing", () => {
 
 		});
 
-		context("findAllSequences", () => {
+		describe("findAllSequences", () => {
 			const bits = "010110111 011110"
 				.replace(/ /g, "");
 			const bitStream = new BitStream({
@@ -1355,7 +1355,7 @@ context("Functional testing", () => {
 
 		});
 
-		context("findPairedPatterns", () => {
+		describe("findPairedPatterns", () => {
 
 			it("default", () => {
 				const bits = "00010000 00110000 0110"
@@ -1402,7 +1402,7 @@ context("Functional testing", () => {
 
 		});
 
-		context("findPairedArrays", () => {
+		describe("findPairedArrays", () => {
 
 			it("default", () => {
 				const bits = "00110000 001010"
@@ -1482,7 +1482,7 @@ context("Functional testing", () => {
 
 		});
 
-		context("replacePattern", () => {
+		describe("replacePattern", () => {
 			it("default", () => {
 				const bits = "00110000 00110"
 					.replace(/ /g, "");
@@ -1517,7 +1517,7 @@ context("Functional testing", () => {
 
 		});
 
-		context("skipPatterns", () => {
+		describe("skipPatterns", () => {
 
 			it("default", () => {
 				const bits = "010100000 01010"
@@ -1557,7 +1557,7 @@ context("Functional testing", () => {
 
 		});
 
-		context("skipNotPatterns", () => {
+		describe("skipNotPatterns", () => {
 
 			it("default", () => {
 				const bits = "010111000 01010"
@@ -1604,9 +1604,9 @@ context("Functional testing", () => {
 
 	});
 
-	context("SeqBitStream class tests", () => {
+	describe("SeqBitStream class tests", () => {
 
-		context("constructor", () => {
+		describe("constructor", () => {
 
 			it("default", () => {
 				const seqBitStream = new SeqBitStream();
@@ -1686,9 +1686,9 @@ context("Functional testing", () => {
 
 	});
 
-	context("SeqStream", () => {
+	describe("SeqStream", () => {
 
-		context("findPattern", () => {
+		describe("findPattern", () => {
 
 			it("exists", () => {
 				const seqStream = new SeqStream({
@@ -1733,7 +1733,7 @@ context("Functional testing", () => {
 
 		});
 
-		context("findFirstIn", () => {
+		describe("findFirstIn", () => {
 
 			it("exists", () => {
 				const seqStream = new SeqStream({
@@ -1787,7 +1787,7 @@ context("Functional testing", () => {
 
 		});
 
-		context("findFirstNotIn", () => {
+		describe("findFirstNotIn", () => {
 
 			it("right", () => {
 				const seqStream = new SeqStream({
