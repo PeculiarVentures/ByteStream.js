@@ -126,6 +126,16 @@ describe("Functional testing", () => {
 			])
 		});
 
+		const wildcardStream = new ByteStream({
+			wildcard: 0x3F, // "?"
+			view: new Uint8Array([
+				0x20,
+				0x3F,
+				0x3F,
+				0x23,
+			])
+		});
+
 		let result;
 
 		result = dataStream.findFirstNotIn([separatorStream, separatorStream2]);
@@ -138,6 +148,8 @@ describe("Functional testing", () => {
 		assert.strictEqual(result, 1, "Incorrect result for findPattern #1");
 		result = dataStream.findPattern(separatorStream4);
 		assert.strictEqual(result, 5, "Incorrect result for findPattern #2");
+		result = dataStream.findPattern(wildcardStream);
+		assert.strictEqual(result, 5, "Incorrect result for wildcardStream #1");
 		result = dataStream.findFirstIn([separatorStream, separatorStream2]);
 		assert.strictEqual(result.position, 1, "Incorrect result for findFirstIn #2");
 		result = dataStream.findFirstNotIn([separatorStream, separatorStream2, separatorStream3]);

@@ -1,22 +1,24 @@
-export interface ByteStreamEmptyParameters { }
-export interface ByteStreamLengthParameters {
-  length: number;
-  stub?: number;
+export interface ByteStreamEmptyParameters {
+  readonly wildcard?: number;
 }
-export interface ByteStreamViewParameters {
-  view: Uint8Array;
+export interface ByteStreamLengthParameters extends ByteStreamEmptyParameters {
+  readonly length: number;
+  readonly stub?: number;
 }
-
-export interface ByteStreamBufferParameters {
-  buffer: ArrayBuffer;
+export interface ByteStreamViewParameters extends ByteStreamEmptyParameters {
+  readonly view: Uint8Array;
 }
 
-export interface ByteStreamStringParameters {
-  string: string;
+export interface ByteStreamBufferParameters extends ByteStreamEmptyParameters {
+  readonly buffer: ArrayBuffer;
 }
 
-export interface ByteStreamHexParameters {
-  hexstring: string;
+export interface ByteStreamStringParameters extends ByteStreamEmptyParameters {
+  readonly string: string;
+}
+
+export interface ByteStreamHexParameters extends ByteStreamEmptyParameters {
+  readonly hexstring: string;
 }
 
 export type ByteStreamParameters =
@@ -81,7 +83,7 @@ export class ByteStream {
    * Constructor for ByteStream class
    * @param parameters
    */
-  constructor(parameters: ByteStreamParameters = {}) {
+  constructor(readonly parameters: ByteStreamParameters = {}) {
     if ("view" in parameters) {
       this.fromUint8Array(parameters.view);
     } else if ("buffer" in parameters) {
@@ -502,6 +504,9 @@ export class ByteStream {
       const equalStart = (backward) ? (start - patternLength - i) : (start + i);
 
       for (let j = 0; j < patternLength; j++) {
+        if (pattern.parameters.wildcard === patternArray[j]) {
+          continue;
+        }
         if (this.view[j + equalStart] != patternArray[j]) {
           equal = false;
           break;

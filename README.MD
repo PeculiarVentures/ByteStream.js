@@ -107,9 +107,26 @@ _**getBitsString**_|Get string representation for the next "length" bits from th
 _**getBitsReversedValue**_|Get number value representation of the next "length" bits from the stream, preliminary reversed
 _**toString**_|Represent remaining bits in "BitStream" as a string
 
+## Wildcard byte patterns
+
+The _ByteStream_ class provides an option to use wildcard byte patterns. These are useful in searching for magic bytes [in a file format](https://en.wikipedia.org/wiki/List_of_file_signatures).
+
+Example of using wildcard byte patterns:
+```javascript
+let wildcard = "?".charCodeAt(0);
+let searchPattern = new ByteStream({
+	// set wildcard byte value
+	wildcard: wildcard,
+	// set search pattern with wildcard bytes ("s??e ")
+	view: new Uint8Array([0x73, wildcard, wildcard, 0x65, 0x20])
+});
+let dataPattern = new ByteStream({ data: 'some random data 0x00 0x00 0x01 0x45' });
+dataPattern.findPattern(searchPattern); // find search pattern in data pattern
+```
+
 ## parseByteMap functionality
 
-The `parseByteMap` function is intended to parse and check byte streams with determinated structure.
+The `parseByteMap` function is intended to parse and check byte streams with determined structure.
 
 Example of _map_ used as a kind of _template_. Exactly this _map_ is using for parsing PDF _xref_ table:
 ```javascript
