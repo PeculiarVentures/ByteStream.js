@@ -1,4 +1,4 @@
-export interface ByteStreamEmptyParameters { }
+export interface ByteStreamEmptyParameters {}
 export interface ByteStreamLengthParameters {
   length: number;
   stub?: number;
@@ -20,12 +20,12 @@ export interface ByteStreamHexParameters {
 }
 
 export type ByteStreamParameters =
-  ByteStreamEmptyParameters |
-  ByteStreamLengthParameters |
-  ByteStreamViewParameters |
-  ByteStreamBufferParameters |
-  ByteStreamStringParameters |
-  ByteStreamHexParameters;
+  | ByteStreamEmptyParameters
+  | ByteStreamLengthParameters
+  | ByteStreamViewParameters
+  | ByteStreamBufferParameters
+  | ByteStreamStringParameters
+  | ByteStreamHexParameters;
 
 export interface FindResult {
   id: number;
@@ -73,9 +73,8 @@ export interface ReplacePatternResult {
 }
 
 export class ByteStream {
-
   private _buffer!: ArrayBuffer;
-  private _view!: Uint8Array;
+  private _view!: Uint8Array<ArrayBuffer>;
 
   /**
    * Constructor for ByteStream class
@@ -134,7 +133,7 @@ export class ByteStream {
   /**
    * Getter for "view"
    */
-  public get view() {
+  public get view(): Uint8Array<ArrayBuffer> {
     return this._view;
   }
 
@@ -188,8 +187,7 @@ export class ByteStream {
 
     this.length = stringLength;
 
-    for (let i = 0; i < stringLength; i++)
-      this.view[i] = string.charCodeAt(i);
+    for (let i = 0; i < stringLength; i++) this.view[i] = string.charCodeAt(i);
   }
 
   /**
@@ -198,24 +196,23 @@ export class ByteStream {
    * @param length Length of array to convert to string
    * @returns
    */
-  public toString(start = 0, length = (this.view.length - start)) {
+  public toString(start = 0, length = this.view.length - start) {
     //#region Initial variables
     let result = "";
     //#endregion
 
     //#region Check input parameters
-    if ((start >= this.view.length) || (start < 0)) {
+    if (start >= this.view.length || start < 0) {
       start = 0;
     }
 
-    if ((length >= this.view.length) || (length < 0)) {
+    if (length >= this.view.length || length < 0) {
       length = this.view.length - start;
     }
     //#endregion
 
     //#region Convert array of bytes to string
-    for (let i = start; i < (start + length); i++)
-      result += String.fromCharCode(this.view[i]);
+    for (let i = start; i < start + length; i++) result += String.fromCharCode(this.view[i]);
     //#endregion
 
     return result;
@@ -244,18 +241,18 @@ export class ByteStream {
     hexMap.set("7", 0x07);
     hexMap.set("8", 0x08);
     hexMap.set("9", 0x09);
-    hexMap.set("A", 0x0A);
-    hexMap.set("a", 0x0A);
-    hexMap.set("B", 0x0B);
-    hexMap.set("b", 0x0B);
-    hexMap.set("C", 0x0C);
-    hexMap.set("c", 0x0C);
-    hexMap.set("D", 0x0D);
-    hexMap.set("d", 0x0D);
-    hexMap.set("E", 0x0E);
-    hexMap.set("e", 0x0E);
-    hexMap.set("F", 0x0F);
-    hexMap.set("f", 0x0F);
+    hexMap.set("A", 0x0a);
+    hexMap.set("a", 0x0a);
+    hexMap.set("B", 0x0b);
+    hexMap.set("b", 0x0b);
+    hexMap.set("C", 0x0c);
+    hexMap.set("c", 0x0c);
+    hexMap.set("D", 0x0d);
+    hexMap.set("d", 0x0d);
+    hexMap.set("E", 0x0e);
+    hexMap.set("e", 0x0e);
+    hexMap.set("F", 0x0f);
+    hexMap.set("f", 0x0f);
 
     let j = 0;
     let temp = 0x00;
@@ -281,24 +278,24 @@ export class ByteStream {
    * @param length Length of array to convert to string
    * @returns
    */
-  public toHexString(start = 0, length = (this.view.length - start)) {
+  public toHexString(start = 0, length = this.view.length - start) {
     //#region Initial variables
     let result = "";
     //#endregion
 
     //#region Check input parameters
-    if ((start >= this.view.length) || (start < 0)) {
+    if (start >= this.view.length || start < 0) {
       start = 0;
     }
 
-    if ((length >= this.view.length) || (length < 0)) {
+    if (length >= this.view.length || length < 0) {
       length = this.view.length - start;
     }
     //#endregion
 
-    for (let i = start; i < (start + length); i++) {
+    for (let i = start; i < start + length; i++) {
       const str = this.view[i].toString(16).toUpperCase();
-      result = result + ((str.length == 1) ? "0" : "") + str;
+      result = result + (str.length == 1 ? "0" : "") + str;
     }
 
     return result;
@@ -309,19 +306,19 @@ export class ByteStream {
    * @param start Start position of the copy
    * @param length Length of the copy
    */
-  public copy(start = 0, length = (this.length - start)) {
+  public copy(start = 0, length = this.length - start) {
     //#region Check input parameters
     if (!start && !this.length) {
       return new ByteStream();
     }
 
-    if ((start < 0) || (start > (this.length - 1))) {
+    if (start < 0 || start > this.length - 1) {
       throw new Error(`Wrong start position: ${start}`);
     }
     //#endregion
 
     const stream = new ByteStream({
-      buffer: this._buffer.slice(start, start + length)
+      buffer: this._buffer.slice(start, start + length),
     });
 
     return stream;
@@ -339,7 +336,7 @@ export class ByteStream {
       return new ByteStream();
     }
 
-    if ((start < 0) || (start > (this.length - 1))) {
+    if (start < 0 || start > this.length - 1) {
       throw new Error(`Wrong start position: ${start}`);
     }
     //#endregion
@@ -362,8 +359,7 @@ export class ByteStream {
     //#endregion
 
     //#region Create a new ArrayBuffer content
-    if (size > this._view.length)
-      view.set(this._view);
+    if (size > this._view.length) view.set(this._view);
     else {
       view.set(new Uint8Array(this._buffer, 0, size));
     }
@@ -403,12 +399,11 @@ export class ByteStream {
    * @param length
    * @returns
    */
-  public insert(stream: ByteStream, start = 0, length = (this.length - start)) {
+  public insert(stream: ByteStream, start = 0, length = this.length - start) {
     //#region Initial variables
-    if (start > (this.length - 1))
-      return false;
+    if (start > this.length - 1) return false;
 
-    if (length > (this.length - start)) {
+    if (length > this.length - start) {
       length = this.length - start;
     }
     //#endregion
@@ -420,8 +415,7 @@ export class ByteStream {
     //#endregion
 
     //#region Update content of the current stream
-    if (length == stream.length)
-      this._view.set(stream._view, start);
+    if (length == stream.length) this._view.set(stream._view, start);
     else {
       this._view.set(stream._view.subarray(0, length), start);
     }
@@ -437,14 +431,12 @@ export class ByteStream {
    */
   public isEqual(stream: ByteStream) {
     //#region Check length of both buffers
-    if (this.length != stream.length)
-      return false;
+    if (this.length != stream.length) return false;
     //#endregion
 
     //#region Compare each byte of both buffers
     for (let i = 0; i < stream.length; i++) {
-      if (this.view[i] != stream.view[i])
-        return false;
+      if (this.view[i] != stream.view[i]) return false;
     }
     //#endregion
 
@@ -458,14 +450,12 @@ export class ByteStream {
    */
   public isEqualView(view: Uint8Array) {
     //#region Check length of both buffers
-    if (view.length != this.view.length)
-      return false;
+    if (view.length != this.view.length) return false;
     //#endregion
 
     //#region Compare each byte of both buffers
     for (let i = 0; i < view.length; i++) {
-      if (this.view[i] != view[i])
-        return false;
+      if (this.view[i] != view[i]) return false;
     }
     //#endregion
 
@@ -480,26 +470,35 @@ export class ByteStream {
    * @param backward Flag to search in backward order
    * @returns
    */
-  public findPattern(pattern: ByteStream, start?: null | number, length?: null | number, backward?: boolean): number;
-  public findPattern(pattern: ByteStream, start_?: null | number, length_?: null | number, backward_?: boolean): number {
+  public findPattern(
+    pattern: ByteStream,
+    start?: null | number,
+    length?: null | number,
+    backward?: boolean,
+  ): number;
+  public findPattern(
+    pattern: ByteStream,
+    start_?: null | number,
+    length_?: null | number,
+    backward_?: boolean,
+  ): number {
     //#region Initial variables
     const { start, length, backward } = this.prepareFindParameters(start_, length_, backward_);
     const patternLength = pattern.length;
     if (patternLength > length) {
-      return (-1);
+      return -1;
     }
     //#endregion
 
     //#region Make a "pre-read" array for pattern
     const patternArray: number[] = [];
-    for (let i = 0; i < patternLength; i++)
-      patternArray.push(pattern.view[i]);
+    for (let i = 0; i < patternLength; i++) patternArray.push(pattern.view[i]);
     //#endregion
 
     //#region Search for pattern
-    for (let i = 0; i <= (length - patternLength); i++) {
+    for (let i = 0; i <= length - patternLength; i++) {
       let equal = true;
-      const equalStart = (backward) ? (start - patternLength - i) : (start + i);
+      const equalStart = backward ? start - patternLength - i : start + i;
 
       for (let j = 0; j < patternLength; j++) {
         if (this.view[j + equalStart] != patternArray[j]) {
@@ -509,12 +508,12 @@ export class ByteStream {
       }
 
       if (equal) {
-        return (backward) ? (start - patternLength - i) : (start + patternLength + i); // Position after the pattern found
+        return backward ? start - patternLength - i : start + patternLength + i; // Position after the pattern found
       }
     }
     //#endregion
 
-    return (-1);
+    return -1;
   }
 
   /**
@@ -525,29 +524,37 @@ export class ByteStream {
    * @param backward Flag to search in backward order
    * @returns
    */
-  public findFirstIn(patterns: ByteStream[], start?: null | number, length?: null | number, backward?: boolean): FindFirstInResult;
-  public findFirstIn(patterns: ByteStream[], start_?: null | number, length_?: null | number, backward_?: boolean): FindFirstInResult {
+  public findFirstIn(
+    patterns: ByteStream[],
+    start?: null | number,
+    length?: null | number,
+    backward?: boolean,
+  ): FindFirstInResult;
+  public findFirstIn(
+    patterns: ByteStream[],
+    start_?: null | number,
+    length_?: null | number,
+    backward_?: boolean,
+  ): FindFirstInResult {
     const { start, length, backward } = this.prepareFindParameters(start_, length_, backward_);
 
     const result: FindFirstInResult = {
-      id: (-1),
-      position: (backward) ? 0 : (start + length),
-      length: 0
+      id: -1,
+      position: backward ? 0 : start + length,
+      length: 0,
     };
     //#endregion
 
     for (let i = 0; i < patterns.length; i++) {
       const position = this.findPattern(patterns[i], start, length, backward);
-      if (position != (-1)) {
+      if (position != -1) {
         let valid = false;
         const patternLength = patterns[i].length;
 
         if (backward) {
-          if ((position - patternLength) >= (result.position - result.length))
-            valid = true;
+          if (position - patternLength >= result.position - result.length) valid = true;
         } else {
-          if ((position - patternLength) <= (result.position - result.length))
-            valid = true;
+          if (position - patternLength <= result.position - result.length) valid = true;
         }
 
         if (valid) {
@@ -568,16 +575,19 @@ export class ByteStream {
    * @param length Length of byte block to search at
    * @returns
    */
-  public findAllIn(patterns: ByteStream[], start?: null | number, length?: null | number): FindResult[];
+  public findAllIn(
+    patterns: ByteStream[],
+    start?: null | number,
+    length?: null | number,
+  ): FindResult[];
   public findAllIn(patterns: ByteStream[], start_?: null | number, length_?: null | number) {
-  // eslint-disable-next-line prefer-const
-  let { start, length } = this.prepareFindParameters(start_, length_);
+    let { start, length } = this.prepareFindParameters(start_, length_);
 
     const result: FindResult[] = [];
 
     let patternFound = {
-      id: (-1),
-      position: start
+      id: -1,
+      position: start,
     };
 
     //#region Find all occurrences of patterns
@@ -586,15 +596,15 @@ export class ByteStream {
 
       patternFound = this.findFirstIn(patterns, patternFound.position, length);
 
-      if (patternFound.id == (-1)) {
+      if (patternFound.id == -1) {
         break;
       }
 
-      length -= (patternFound.position - position);
+      length -= patternFound.position - position;
 
       result.push({
         id: patternFound.id,
-        position: patternFound.position
+        position: patternFound.position,
       });
     } while (true);
     //#endregion
@@ -610,8 +620,16 @@ export class ByteStream {
    * @returns Array with all pattern positions or (-1) if failed
    */
   // TODO throw Error instead of -1
-  public findAllPatternIn(pattern: ByteStream, start?: null | number, length?: null | number): -1 | number[];
-  public findAllPatternIn(pattern: ByteStream, start_?: null | number, length_?: null | number): -1 | number[] {
+  public findAllPatternIn(
+    pattern: ByteStream,
+    start?: null | number,
+    length?: null | number,
+  ): -1 | number[];
+  public findAllPatternIn(
+    pattern: ByteStream,
+    start_?: null | number,
+    length_?: null | number,
+  ): -1 | number[] {
     const { start, length } = this.prepareFindParameters(start_, length_);
 
     //#region Initial variables
@@ -619,7 +637,7 @@ export class ByteStream {
 
     const patternLength = pattern.length;
     if (patternLength > length) {
-      return (-1);
+      return -1;
     }
     //#endregion
 
@@ -628,7 +646,7 @@ export class ByteStream {
     //#endregion
 
     //#region Search for pattern
-    for (let i = 0; i <= (length - patternLength); i++) {
+    for (let i = 0; i <= length - patternLength; i++) {
       let equal = true;
       const equalStart = start + i;
 
@@ -641,7 +659,7 @@ export class ByteStream {
 
       if (equal) {
         result.push(start + patternLength + i); // Position after the pattern found
-        i += (patternLength - 1); // On next step of "for" we will have "i++"
+        i += patternLength - 1; // On next step of "for" we will have "i++"
       }
     }
     //#endregion
@@ -657,21 +675,30 @@ export class ByteStream {
    * @param backward Flag to search in backward order
    * @returns
    */
-  public findFirstNotIn(patterns: ByteStream[], start?: null | number, length?: null | number, backward?: boolean): FindFirstNotInResult;
-  public findFirstNotIn(patterns: ByteStream[], start_?: null | number, length_?: null | number, backward_?: boolean): FindFirstNotInResult {
-    // eslint-disable-next-line prefer-const
+  public findFirstNotIn(
+    patterns: ByteStream[],
+    start?: null | number,
+    length?: null | number,
+    backward?: boolean,
+  ): FindFirstNotInResult;
+  public findFirstNotIn(
+    patterns: ByteStream[],
+    start_?: null | number,
+    length_?: null | number,
+    backward_?: boolean,
+  ): FindFirstNotInResult {
     let { start, length, backward } = this.prepareFindParameters(start_, length_, backward_);
 
     const result: FindFirstNotInResult = {
       left: {
-        id: (-1),
-        position: start
+        id: -1,
+        position: start,
       },
       right: {
-        id: (-1),
-        position: 0
+        id: -1,
+        position: 0,
       },
-      value: new ByteStream()
+      value: new ByteStream(),
     };
 
     let currentLength = length;
@@ -679,14 +706,16 @@ export class ByteStream {
 
     while (currentLength > 0) {
       //#region Search for nearest "pattern"
-      result.right = this.findFirstIn(patterns,
-        (backward) ? (start - length + currentLength) : (start + length - currentLength),
+      result.right = this.findFirstIn(
+        patterns,
+        backward ? start - length + currentLength : start + length - currentLength,
         currentLength,
-        backward);
+        backward,
+      );
       //#endregion
 
       //#region No pattern at all
-      if (result.right.id == (-1)) {
+      if (result.right.id == -1) {
         length = currentLength;
 
         if (backward) {
@@ -704,7 +733,12 @@ export class ByteStream {
       //#endregion
 
       //#region Check distance between two patterns
-      if (result.right.position != ((backward) ? (result.left.position - patterns[result.right.id].length) : (result.left.position + patterns[result.right.id].length))) {
+      if (
+        result.right.position !=
+        (backward
+          ? result.left.position - patterns[result.right.id].length
+          : result.left.position + patterns[result.right.id].length)
+      ) {
         if (backward) {
           start = result.right.position + patterns[result.right.id].length;
           length = result.left.position - result.right.position - patterns[result.right.id].length;
@@ -748,23 +782,30 @@ export class ByteStream {
    * @param length Length of byte block to search at
    * @returns
    */
-  public findAllNotIn(patterns: ByteStream[], start?: null | number, length?: null | number): FindFirstNotInResult[];
-  public findAllNotIn(patterns: ByteStream[], start_?: null | number, length_?: null | number): FindFirstNotInResult[] {
+  public findAllNotIn(
+    patterns: ByteStream[],
+    start?: null | number,
+    length?: null | number,
+  ): FindFirstNotInResult[];
+  public findAllNotIn(
+    patterns: ByteStream[],
+    start_?: null | number,
+    length_?: null | number,
+  ): FindFirstNotInResult[] {
     //#region Initial variables
-    // eslint-disable-next-line prefer-const
     let { start, length } = this.prepareFindParameters(start_, length_);
     const result: FindFirstNotInResult[] = [];
 
     let patternFound: FindFirstNotInResult = {
       left: {
-        id: (-1),
-        position: start
+        id: -1,
+        position: start,
       },
       right: {
-        id: (-1),
-        position: start
+        id: -1,
+        position: start,
       },
-      value: new ByteStream()
+      value: new ByteStream(),
     };
     //#endregion
 
@@ -774,20 +815,20 @@ export class ByteStream {
 
       patternFound = this.findFirstNotIn(patterns, patternFound.right.position, length);
 
-      length -= (patternFound.right.position - position);
+      length -= patternFound.right.position - position;
 
       result.push({
         left: {
           id: patternFound.left.id,
-          position: patternFound.left.position
+          position: patternFound.left.position,
         },
         right: {
           id: patternFound.right.id,
-          position: patternFound.right.position
+          position: patternFound.right.position,
         },
-        value: patternFound.value
+        value: patternFound.value,
       });
-    } while (patternFound.right.id != (-1));
+    } while (patternFound.right.id != -1);
     //#endregion
 
     return result;
@@ -801,37 +842,48 @@ export class ByteStream {
    * @param backward Flag to search in backward order
    * @returns
    */
-  public findFirstSequence(patterns: ByteStream[], start?: null | number, length?: null | number, backward?: boolean): FindFirstSequenceResult;
-  public findFirstSequence(patterns: ByteStream[], start_?: null | number, length_?: null | number, backward_?: boolean): FindFirstSequenceResult {
+  public findFirstSequence(
+    patterns: ByteStream[],
+    start?: null | number,
+    length?: null | number,
+    backward?: boolean,
+  ): FindFirstSequenceResult;
+  public findFirstSequence(
+    patterns: ByteStream[],
+    start_?: null | number,
+    length_?: null | number,
+    backward_?: boolean,
+  ): FindFirstSequenceResult {
     //#region Initial variables
-    // eslint-disable-next-line prefer-const
     let { start, length, backward } = this.prepareFindParameters(start_, length_, backward_);
     //#endregion
 
     //#region Find first byte from sequence
     const firstIn = this.skipNotPatterns(patterns, start, length, backward);
-    if (firstIn == (-1)) {
+    if (firstIn == -1) {
       return {
-        position: (-1),
-        value: new ByteStream()
+        position: -1,
+        value: new ByteStream(),
       };
     }
     //#endregion
 
     //#region Find first byte not in sequence
-    const firstNotIn = this.skipPatterns(patterns,
+    const firstNotIn = this.skipPatterns(
+      patterns,
       firstIn,
-      length - ((backward) ? (start - firstIn) : (firstIn - start)),
-      backward);
+      length - (backward ? start - firstIn : firstIn - start),
+      backward,
+    );
     //#endregion
 
     //#region Make output value
     if (backward) {
       start = firstNotIn;
-      length = (firstIn - firstNotIn);
+      length = firstIn - firstNotIn;
     } else {
       start = firstIn;
-      length = (firstNotIn - firstIn);
+      length = firstNotIn - firstIn;
     }
 
     const value = new ByteStream({
@@ -841,7 +893,7 @@ export class ByteStream {
 
     return {
       position: firstNotIn,
-      value
+      value,
     };
   }
 
@@ -852,16 +904,23 @@ export class ByteStream {
    * @param length Length of byte block to search at
    * @returns
    */
-  public findAllSequences(patterns: ByteStream[], start?: null | number, length?: null | number): FindFirstSequenceResult[];
-  public findAllSequences(patterns: ByteStream[], start_?: null | number, length_?: null | number): FindFirstSequenceResult[] {
+  public findAllSequences(
+    patterns: ByteStream[],
+    start?: null | number,
+    length?: null | number,
+  ): FindFirstSequenceResult[];
+  public findAllSequences(
+    patterns: ByteStream[],
+    start_?: null | number,
+    length_?: null | number,
+  ): FindFirstSequenceResult[] {
     //#region Initial variables
-    // eslint-disable-next-line prefer-const
     let { start, length } = this.prepareFindParameters(start_, length_);
     const result: FindFirstSequenceResult[] = [];
 
     let patternFound = {
       position: start,
-      value: new ByteStream()
+      value: new ByteStream(),
     };
     //#endregion
 
@@ -871,16 +930,15 @@ export class ByteStream {
 
       patternFound = this.findFirstSequence(patterns, patternFound.position, length);
 
-      if (patternFound.position != (-1)) {
-        length -= (patternFound.position - position);
+      if (patternFound.position != -1) {
+        length -= patternFound.position - position;
 
         result.push({
           position: patternFound.position,
           value: patternFound.value,
         });
       }
-
-    } while (patternFound.position != (-1));
+    } while (patternFound.position != -1);
     //#endregion
 
     return result;
@@ -894,13 +952,22 @@ export class ByteStream {
    * @param length Length of byte block to search at
    * @returns
    */
-  findPairedPatterns(leftPattern: ByteStream, rightPattern: ByteStream, start?: null | number, length?: null | number): FindPairedPatternsResult[];
-  findPairedPatterns(leftPattern: ByteStream, rightPattern: ByteStream, start_?: null | number, length_?: null | number): FindPairedPatternsResult[] {
+  findPairedPatterns(
+    leftPattern: ByteStream,
+    rightPattern: ByteStream,
+    start?: null | number,
+    length?: null | number,
+  ): FindPairedPatternsResult[];
+  findPairedPatterns(
+    leftPattern: ByteStream,
+    rightPattern: ByteStream,
+    start_?: null | number,
+    length_?: null | number,
+  ): FindPairedPatternsResult[] {
     //#region Initial variables
     const result: FindPairedPatternsResult[] = [];
 
-    if (leftPattern.isEqual(rightPattern))
-      return result;
+    if (leftPattern.isEqual(rightPattern)) return result;
 
     const { start, length } = this.prepareFindParameters(start_, length_);
     let currentPositionLeft = 0;
@@ -934,7 +1001,7 @@ export class ByteStream {
 
         result.push({
           left: leftPatterns[0],
-          right: rightPatterns[0]
+          right: rightPatterns[0],
         });
 
         leftPatterns.splice(0, 1);
@@ -957,7 +1024,7 @@ export class ByteStream {
 
       result.push({
         left: leftPatterns[currentPositionLeft - 1],
-        right: rightPatterns[0]
+        right: rightPatterns[0],
       });
 
       leftPatterns.splice(currentPositionLeft - 1, 1);
@@ -968,7 +1035,7 @@ export class ByteStream {
     //#endregion
 
     //#region Sort result
-    result.sort((a, b) => (a.left - b.left));
+    result.sort((a, b) => a.left - b.left);
     //#endregion
 
     return result;
@@ -982,8 +1049,18 @@ export class ByteStream {
    * @param length Length of byte block to search at
    * @returns
    */
-  public findPairedArrays(inputLeftPatterns: ByteStream[], inputRightPatterns: ByteStream[], start?: null | number, length?: null | number): FindPairedArraysResult[];
-  public findPairedArrays(inputLeftPatterns: ByteStream[], inputRightPatterns: ByteStream[], start_?: null | number, length_?: null | number): FindPairedArraysResult[] {
+  public findPairedArrays(
+    inputLeftPatterns: ByteStream[],
+    inputRightPatterns: ByteStream[],
+    start?: null | number,
+    length?: null | number,
+  ): FindPairedArraysResult[];
+  public findPairedArrays(
+    inputLeftPatterns: ByteStream[],
+    inputRightPatterns: ByteStream[],
+    start_?: null | number,
+    length_?: null | number,
+  ): FindPairedArraysResult[] {
     //#region Initial variables
     const { start, length } = this.prepareFindParameters(start_, length_);
     const result: FindPairedArraysResult[] = [];
@@ -993,14 +1070,12 @@ export class ByteStream {
 
     //#region Find all "left patterns" as sorted array
     const leftPatterns = this.findAllIn(inputLeftPatterns, start, length);
-    if (leftPatterns.length == 0)
-      return result;
+    if (leftPatterns.length == 0) return result;
     //#endregion
 
     //#region Find all "right patterns" as sorted array
     const rightPatterns = this.findAllIn(inputRightPatterns, start, length);
-    if (rightPatterns.length == 0)
-      return result;
+    if (rightPatterns.length == 0) return result;
     //#endregion
 
     //#region Combine patterns
@@ -1017,7 +1092,7 @@ export class ByteStream {
 
         result.push({
           left: leftPatterns[0],
-          right: rightPatterns[0]
+          right: rightPatterns[0],
         });
 
         leftPatterns.splice(0, 1);
@@ -1040,7 +1115,7 @@ export class ByteStream {
 
       result.push({
         left: leftPatterns[currentPositionLeft - 1],
-        right: rightPatterns[0]
+        right: rightPatterns[0],
       });
 
       leftPatterns.splice(currentPositionLeft - 1, 1);
@@ -1051,7 +1126,7 @@ export class ByteStream {
     //#endregion
 
     //#region Sort result
-    result.sort((a, b) => (a.left.position - b.left.position));
+    result.sort((a, b) => a.left.position - b.left.position);
     //#endregion
 
     return result;
@@ -1065,17 +1140,29 @@ export class ByteStream {
    * @param length Length of byte block to search at
    * @param findAllResult Pre-calculated results of "findAllIn"
    */
-  public replacePattern(searchPattern: ByteStream, replacePattern: ByteStream, start?: null | number, length?: null | number, findAllResult?: null | FindResult[]): ReplacePatternResult;
-  public replacePattern(searchPattern: ByteStream, replacePattern: ByteStream, start_?: null | number, length_?: null | number, findAllResult: null | FindResult[] = null): ReplacePatternResult {
+  public replacePattern(
+    searchPattern: ByteStream,
+    replacePattern: ByteStream,
+    start?: null | number,
+    length?: null | number,
+    findAllResult?: null | FindResult[],
+  ): ReplacePatternResult;
+  public replacePattern(
+    searchPattern: ByteStream,
+    replacePattern: ByteStream,
+    start_?: null | number,
+    length_?: null | number,
+    findAllResult: null | FindResult[] = null,
+  ): ReplacePatternResult {
     // TODO Align result type for BitStream
     //#region Initial variables
     let result: FindResult[] = [];
 
     let i;
     const output: ReplacePatternResult = {
-      status: (-1),
+      status: -1,
       searchPatternPositions: [],
-      replacePatternPositions: []
+      replacePatternPositions: [],
     };
     const { start, length } = this.prepareFindParameters(start_, length_);
     //#endregion
@@ -1090,13 +1177,13 @@ export class ByteStream {
       result = findAllResult;
     }
 
-    output.searchPatternPositions.push(...Array.from(result, element => element.position));
+    output.searchPatternPositions.push(...Array.from(result, (element) => element.position));
     //#endregion
 
     //#region Variables for new buffer initialization
     const patternDifference = searchPattern.length - replacePattern.length;
 
-    const changedBuffer = new ArrayBuffer(this.view.length - (result.length * patternDifference));
+    const changedBuffer = new ArrayBuffer(this.view.length - result.length * patternDifference);
     const changedView = new Uint8Array(changedBuffer);
     //#endregion
 
@@ -1107,24 +1194,39 @@ export class ByteStream {
     //#region Replace pattern
     for (i = 0; i < result.length; i++) {
       //#region Initial variables
-      const currentPosition = (i == 0) ? start : result[i - 1].position;
+      const currentPosition = i == 0 ? start : result[i - 1].position;
       //#endregion
 
       //#region Copy bytes other then search pattern
-      changedView.set(new Uint8Array(this.buffer, currentPosition, result[i].position - searchPattern.length - currentPosition), currentPosition - i * patternDifference);
+      changedView.set(
+        new Uint8Array(
+          this.buffer,
+          currentPosition,
+          result[i].position - searchPattern.length - currentPosition,
+        ),
+        currentPosition - i * patternDifference,
+      );
       //#endregion
 
       //#region Put replace pattern in a new buffer
-      changedView.set(replacePattern.view, result[i].position - searchPattern.length - i * patternDifference);
+      changedView.set(
+        replacePattern.view,
+        result[i].position - searchPattern.length - i * patternDifference,
+      );
 
-      output.replacePatternPositions.push(result[i].position - searchPattern.length - i * patternDifference);
+      output.replacePatternPositions.push(
+        result[i].position - searchPattern.length - i * patternDifference,
+      );
       //#endregion
     }
     //#endregion
 
     //#region Copy data from the end of old buffer
     i--;
-    changedView.set(new Uint8Array(this.buffer, result[i].position, this.length - result[i].position), result[i].position - searchPattern.length + replacePattern.length - i * patternDifference);
+    changedView.set(
+      new Uint8Array(this.buffer, result[i].position, this.length - result[i].position),
+      result[i].position - searchPattern.length + replacePattern.length - i * patternDifference,
+    );
     //#endregion
 
     //#region Re-initialize existing buffer
@@ -1145,8 +1247,18 @@ export class ByteStream {
    * @param backward=false Flag to search in backward order
    * @returns
    */
-  public skipPatterns(patterns: ByteStream[], start?: null | number, length?: null | number, backward?: boolean): number;
-  public skipPatterns(patterns: ByteStream[], start_?: null | number, length_?: null | number, backward_?: boolean): number {
+  public skipPatterns(
+    patterns: ByteStream[],
+    start?: null | number,
+    length?: null | number,
+    backward?: boolean,
+  ): number;
+  public skipPatterns(
+    patterns: ByteStream[],
+    start_?: null | number,
+    length_?: null | number,
+    backward_?: boolean,
+  ): number {
     //#region Initial variables
     const { start, length, backward } = this.prepareFindParameters(start_, length_, backward_);
 
@@ -1156,7 +1268,7 @@ export class ByteStream {
     //#region Search for pattern
     for (let k = 0; k < patterns.length; k++) {
       const patternLength = patterns[k].length;
-      const equalStart = (backward) ? (result - patternLength) : (result);
+      const equalStart = backward ? result - patternLength : result;
       let equal = true;
 
       for (let j = 0; j < patternLength; j++) {
@@ -1167,16 +1279,14 @@ export class ByteStream {
       }
 
       if (equal) {
-        k = (-1);
+        k = -1;
 
         if (backward) {
           result -= patternLength;
-          if (result <= 0)
-            return result;
+          if (result <= 0) return result;
         } else {
           result += patternLength;
-          if (result >= (start + length))
-            return result;
+          if (result >= start + length) return result;
         }
       }
     }
@@ -1193,18 +1303,28 @@ export class ByteStream {
    * @param backward
    * @returns
    */
-  public skipNotPatterns(patterns: ByteStream[], start?: number | null, length?: number | null, backward?: boolean): number;
-  public skipNotPatterns(patterns: ByteStream[], start_?: number | null, length_?: number | null, backward_?: boolean): number {
+  public skipNotPatterns(
+    patterns: ByteStream[],
+    start?: number | null,
+    length?: number | null,
+    backward?: boolean,
+  ): number;
+  public skipNotPatterns(
+    patterns: ByteStream[],
+    start_?: number | null,
+    length_?: number | null,
+    backward_?: boolean,
+  ): number {
     //#region Initial variables
     const { start, length, backward } = this.prepareFindParameters(start_, length_, backward_);
-    let result = (-1);
+    let result = -1;
     //#endregion
 
     //#region Search for pattern
     for (let i = 0; i < length; i++) {
       for (let k = 0; k < patterns.length; k++) {
         const patternLength = patterns[k].length;
-        const equalStart = (backward) ? (start - i - patternLength) : (start + i);
+        const equalStart = backward ? start - i - patternLength : start + i;
         let equal = true;
 
         for (let j = 0; j < patternLength; j++) {
@@ -1215,12 +1335,12 @@ export class ByteStream {
         }
 
         if (equal) {
-          result = (backward) ? (start - i) : (start + i); // Exact position of pattern found
+          result = backward ? start - i : start + i; // Exact position of pattern found
           break;
         }
       }
 
-      if (result != (-1)) {
+      if (result != -1) {
         break;
       }
     }
@@ -1229,9 +1349,13 @@ export class ByteStream {
     return result;
   }
 
-  protected prepareFindParameters(start: null | number = null, length: null | number = null, backward = false) {
+  protected prepareFindParameters(
+    start: null | number = null,
+    length: null | number = null,
+    backward = false,
+  ) {
     if (start === null) {
-      start = (backward) ? this.length : 0;
+      start = backward ? this.length : 0;
     }
 
     if (start > this.length) {
@@ -1251,12 +1375,11 @@ export class ByteStream {
         length = this.length - start;
       }
 
-      if (length > (this.length - start)) {
+      if (length > this.length - start) {
         length = this.length - start;
       }
     }
 
     return { start, length, backward };
   }
-
 }
