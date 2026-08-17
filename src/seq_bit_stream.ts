@@ -6,7 +6,6 @@ export interface SeqBitStreamParameters {
   start?: number;
   appendBlock?: number;
   stream?: BitStream;
-
 }
 
 export class SeqBitStream {
@@ -36,7 +35,7 @@ export class SeqBitStream {
       return;
     }
 
-    this._length -= ((this.backward) ? (this._start - value) : (value - this._start));
+    this._length -= this.backward ? this._start - value : value - this._start;
     this._start = value;
 
     //#region Initialization of "prev" internal variables
@@ -66,7 +65,7 @@ export class SeqBitStream {
     this._length = value.bitsCount;
 
     this.prevStart = this._start;
-    this._start = (this.backward) ? this.length : 0;
+    this._start = this.backward ? this.length : 0;
   }
   public get stream() {
     return this._stream;
@@ -84,8 +83,8 @@ export class SeqBitStream {
     }
 
     //#region Check input parameters
-    if ((this.start + length) > this.stream.bitsCount) {
-      length = (this.stream.bitsCount - this.start);
+    if (this.start + length > this.stream.bitsCount) {
+      length = this.stream.bitsCount - this.start;
     }
     //#endregion
 
@@ -135,13 +134,13 @@ export class SeqBitStream {
     let i;
 
     if (initialValueLength > 32) {
-      return (-1);
+      return -1;
     }
 
     if (length == 32) {
       byteIndex = 3;
     } else {
-      byteIndex = ((initialValueLength - 1) >> 3);
+      byteIndex = (initialValueLength - 1) >> 3;
     }
     //#endregion
 
@@ -152,12 +151,12 @@ export class SeqBitStream {
     //#endregion
 
     //#region Convert byte array to "Uint32Array" value
-    for (i = initialOffset; i < (initialOffset + initialValueLength); i++) {
+    for (i = initialOffset; i < initialOffset + initialValueLength; i++) {
       if (reversedValue[i - initialOffset] == "1") {
         valueView[byteIndex] |= 0x01 << (7 - (i % 8));
       }
 
-      if (i && (((i + 1) % 8) == 0)) {
+      if (i && (i + 1) % 8 == 0) {
         byteIndex--;
       }
     }

@@ -1,37 +1,38 @@
 {
-  "author": {
-    "email": "yury@strozhevsky.com",
-    "name": "Yury Strozhevsky"
-  },
+  "name": "bytestreamjs",
+  "version": "2.0.1",
   "description": "ByteStream is a library making possible to manipulates single bytes and bits on pure JavaScript",
+  "keywords": [
+    "ES2015",
+    "ES6",
+    "access",
+    "bit",
+    "byte",
+    "stream"
+  ],
+  "license": "BSD-3-Clause",
+  "author": {
+    "name": "Yury Strozhevsky",
+    "email": "yury@strozhevsky.com"
+  },
   "contributors": [
     {
       "email": "rmh@unmitigatedrisk.com",
       "name": "Ryan Hurst"
     }
   ],
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/PeculiarVentures/ByteStream.js.git"
+  },
   "files": [
     "build",
     "README.md",
     "LICENSE"
   ],
-  "repository": {
-    "type": "git",
-    "url": "git://github.com/PeculiarVentures/ByteStream.js.git"
-  },
-  "devDependencies": {
-    "@types/node": "^18.19.0",
-    "@typescript-eslint/eslint-plugin": "^5.25.0",
-    "@typescript-eslint/parser": "^5.25.0",
-    "@vitest/coverage-v8": "^2.1.9",
-    "eslint": "^8.15.0",
-    "rimraf": "^3.0.2",
-    "typescript": "^5.4.5",
-    "vitest": "^2.1.9"
-  },
-  "engines": {
-    "node": ">=6.0.0"
-  },
+  "main": "./build/cjs/index.js",
+  "module": "./build/mjs/index.js",
+  "types": "./build/types/index.d.ts",
   "scripts": {
     "test": "vitest run",
     "clear": "rimraf build",
@@ -41,22 +42,22 @@
     "prebuild:types": "rimraf build/types",
     "build:types": "tsc -p tsconfig.json --outDir build/types --declaration --emitDeclarationOnly",
     "rebuild": "npm run clear && npm run build",
-    "lint": "eslint .",
-    "lint:fix": "eslint --fix .",
+    "lint": "oxlint .",
+    "lint:fix": "oxlint --fix .",
+    "format": "oxfmt",
+    "format:check": "oxfmt --check",
     "coverage": "vitest run --coverage"
   },
-  "keywords": [
-    "ES6",
-    "ES2015",
-    "stream",
-    "bit",
-    "byte",
-    "access"
-  ],
-  "name": "bytestreamjs",
-  "version": "2.0.1",
-  "module": "./build/mjs/index.js",
-  "main": "./build/cjs/index.js",
-  "types": "./build/types/index.d.ts",
-  "license": "BSD-3-Clause"
+  "devDependencies": {
+    "@types/node": "^18.19.0",
+    "@vitest/coverage-v8": "^2.1.9",
+    "oxfmt": "^0.63.0",
+    "oxlint": "^1.78.0",
+    "rimraf": "^3.0.2",
+    "typescript": "^5.4.5",
+    "vitest": "^2.1.9"
+  },
+  "engines": {
+    "node": ">=6.0.0"
+  }
 }
