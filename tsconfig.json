@@ -3,6 +3,8 @@
     "target": "ES2019",
     "module": "CommonJS",
     "moduleResolution": "node",
+    "ignoreDeprecations": "6.0",
+    "rootDir": "./src",
     "strict": true
   },
   "exclude": ["./test", "./vitest.config.ts"]
