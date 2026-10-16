@@ -1,23 +1,22 @@
 name: Test
 
-on: [push, pull_request]
+# Pushes to master are tested by Publish, which calls this workflow before release-please.
+on:
+  pull_request:
+  workflow_call:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        node-version: [20.x, 22.x]
+    runs-on: ubuntu-24.04
 
     steps:
       - uses: actions/checkout@v7
 
-      - name: Use Node.js ${{ matrix.node-version }}
+      - name: Setup Node.js
         uses: actions/setup-node@v7
         with:
-          node-version: ${{ matrix.node-version }}
-          cache: npm
+          node-version: 24
+          cache: "npm"
 
       - name: Install dependencies
         run: npm ci
@@ -25,10 +24,20 @@ jobs:
       - name: Run linter
         run: npm run lint
 
+      - name: Check formatting
+        run: npm run format:check
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Build package
+        run: npm run build
+
+      - name: Check generated package exports are committed
+        run: git diff --exit-code package.json
+
       - name: Run test with coverage
         run: npm run coverage
 
       - name: Coveralls
-        uses: coverallsapp/github-action@master
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+        uses: coverallsapp/github-action@v2
