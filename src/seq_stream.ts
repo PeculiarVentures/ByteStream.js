@@ -1,5 +1,5 @@
-import {
-  ByteStream,
+import { ByteStream } from "./byte_stream";
+import type {
   FindFirstNotInResult,
   FindFirstSequenceResult,
   FindPairedArraysResult,

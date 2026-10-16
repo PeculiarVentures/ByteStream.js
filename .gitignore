@@ -1,11 +1,4 @@
-.idea
-.vscode
-**/node_modules
-build
-
-# nyc
-.nyc_output
 coverage
-
-# MacOS
+node_modules
+build
 .DS_Store

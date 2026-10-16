@@ -1,6 +1,6 @@
 import { bitsToStringArray } from "./bit";
-import {
-  ByteStream,
+import { ByteStream } from "./byte_stream";
+import type {
   FindFirstInResult,
   FindFirstNotInResult,
   FindFirstSequenceResult,
