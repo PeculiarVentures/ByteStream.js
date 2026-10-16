@@ -1,6 +1,6 @@
 {
   "name": "bytestreamjs",
-  "version": "2.0.1",
+  "version": "3.0.0",
   "description": "ByteStream is a library making possible to manipulates single bytes and bits on pure JavaScript",
   "keywords": [
     "ES2015",
