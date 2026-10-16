@@ -1,11 +1,17 @@
 {
   "compilerOptions": {
-    "target": "ES2019",
-    "module": "CommonJS",
-    "moduleResolution": "node",
-    "ignoreDeprecations": "6.0",
-    "rootDir": "./src",
-    "strict": true
+    "target": "es2023",
+    "lib": ["es2023"],
+    "module": "preserve",
+    "moduleResolution": "bundler",
+    "types": [],
+    "verbatimModuleSyntax": true,
+    "isolatedModules": true,
+    "strict": true,
+    "skipLibCheck": true,
+    "noImplicitOverride": true,
+    "noErrorTruncation": true,
+    "noEmit": true
   },
-  "exclude": ["./test", "./vitest.config.ts"]
+  "include": ["src", "*.config.ts"]
 }

@@ -1,10 +1,5 @@
-import {
-  ByteStream,
-  FindFirstNotInResult,
-  FindFirstSequenceResult,
-  FindPairedArraysResult,
-  FindPairedPatternsResult,
-} from "./byte_stream";
+import { ByteStream } from "./byte_stream";
+import type { FindFirstNotInResult, FindFirstSequenceResult, FindPairedArraysResult, FindPairedPatternsResult } from "./byte_stream";
 
 export interface SeqStreamBaseParameters {
   backward?: boolean;
@@ -363,11 +358,7 @@ export class SeqStream {
    * @param gap Maximum gap between start position and position of nearest object
    * @returns
    */
-  public findFirstSequence(
-    patterns: ByteStream[],
-    length: null | number = null,
-    gap: null | number = null,
-  ): FindFirstSequenceResult {
+  public findFirstSequence(patterns: ByteStream[], length: null | number = null, gap: null | number = null): FindFirstSequenceResult {
     //#region Initial variables
     if (length == null || length > this._length) {
       length = this._length;
@@ -427,11 +418,7 @@ export class SeqStream {
    * @param gap Maximum gap between start position and position of nearest object
    * @returns
    */
-  public findPairedPatterns(
-    leftPattern: ByteStream,
-    rightPattern: ByteStream,
-    gap: null | number = null,
-  ): FindPairedPatternsResult[] {
+  public findPairedPatterns(leftPattern: ByteStream, rightPattern: ByteStream, gap: null | number = null): FindPairedPatternsResult[] {
     //#region Initial variables
     if (gap == null || gap > this.length) {
       gap = this.length;
@@ -467,11 +454,7 @@ export class SeqStream {
    * @param gap Maximum gap between start position and position of nearest object
    * @returns
    */
-  public findPairedArrays(
-    leftPatterns: ByteStream[],
-    rightPatterns: ByteStream[],
-    gap: null | number = null,
-  ): FindPairedArraysResult[] {
+  public findPairedArrays(leftPatterns: ByteStream[], rightPatterns: ByteStream[], gap: null | number = null): FindPairedArraysResult[] {
     //#region Initial variables
     if (gap == null || gap > this.length) {
       gap = this.length;
@@ -487,10 +470,7 @@ export class SeqStream {
     const result = this.stream.findPairedArrays(leftPatterns, rightPatterns, start, this.length);
     if (result.length) {
       if (this.backward) {
-        if (
-          result[0].right.position <
-          this.start - rightPatterns[result[0].right.id].length - gap
-        ) {
+        if (result[0].right.position < this.start - rightPatterns[result[0].right.id].length - gap) {
           return [];
         }
       } else {

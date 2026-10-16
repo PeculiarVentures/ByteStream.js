@@ -11,6 +11,8 @@
     "stream"
   ],
   "license": "BSD-3-Clause",
+  "type": "module",
+  "sideEffects": false,
   "author": {
     "name": "Yury Strozhevsky",
     "email": "yury@strozhevsky.com"
@@ -26,39 +28,38 @@
     "url": "https://github.com/PeculiarVentures/ByteStream.js"
   },
   "files": [
-    "build",
+    "build/",
     "README.md",
     "LICENSE"
   ],
-  "main": "./build/cjs/index.js",
-  "module": "./build/mjs/index.js",
-  "types": "./build/types/index.d.ts",
+  "main": "./build/index.js",
+  "module": "./build/index.js",
+  "types": "./build/index.d.ts",
+  "exports": {
+    ".": "./build/index.js",
+    "./package.json": "./package.json"
+  },
   "scripts": {
     "test": "vitest run",
-    "clear": "rimraf build",
-    "build": "npm run build:cjs && npm run build:mjs && npm run build:types",
-    "build:cjs": "tsc -p tsconfig.json --module commonjs --removeComments --outDir build/cjs",
-    "build:mjs": "tsc -p tsconfig.json --module es2015 --removeComments --outDir build/mjs",
-    "prebuild:types": "rimraf build/types",
-    "build:types": "tsc -p tsconfig.json --outDir build/types --declaration --emitDeclarationOnly",
-    "rebuild": "npm run clear && npm run build",
-    "lint": "oxlint .",
-    "lint:fix": "oxlint --fix .",
-    "format": "oxfmt",
-    "format:check": "oxfmt --check",
     "coverage": "vitest run --coverage",
-    "typecheck": "tsc --noEmit"
+    "build": "tsdown",
+    "prepack": "npm run build",
+    "typecheck": "tsc --noEmit",
+    "lint": "oxlint",
+    "lint:fix": "oxlint --fix",
+    "format": "oxfmt",
+    "format:check": "oxfmt --check"
   },
   "devDependencies": {
-    "@types/node": "^22.20.1",
-    "@vitest/coverage-v8": "^4.1.10",
-    "oxfmt": "^0.63.0",
-    "oxlint": "^1.78.0",
-    "rimraf": "^6.1.3",
+    "@arethetypeswrong/core": "^0.18.5",
+    "@vitest/coverage-v8": "^5.0.5",
+    "oxfmt": "^0.73.0",
+    "oxlint": "^1.88.0",
+    "tsdown": "^0.23.1",
     "typescript": "^6.0.3",
-    "vitest": "^4.1.10"
+    "vitest": "^5.0.5"
   },
   "engines": {
-    "node": ">=6.0.0"
+    "node": "^20.19.0 || >=22.12.0"
   }
 }

@@ -22,13 +22,7 @@ export interface ByteMap {
  * @param start Start position to parse from
  * @param length Length of byte block to parse from
  */
-export function parseByteMap(
-  stream: ByteStream,
-  map: ByteMap[],
-  elements: number,
-  start: null | number = null,
-  length: null | number = null,
-): Record<string, any>[] {
+export function parseByteMap(stream: ByteStream, map: ByteMap[], elements: number, start: null | number = null, length: null | number = null): Record<string, any>[] {
   /**
    * Map example:
    *
