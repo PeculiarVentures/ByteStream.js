@@ -1,6 +1,24 @@
-# ByteStream.js
+<h1 align="center">
+  ByteStream.js
+</h1>
 
-[![License](https://img.shields.io/badge/license-BSD-green.svg?style=flat)](https://github.com/PeculiarVentures/ByteStream.js/blob/master/LICENSE) [![Test](https://github.com/PeculiarVentures/ByteStream.js/actions/workflows/test.yml/badge.svg)](https://github.com/PeculiarVentures/ByteStream.js/actions/workflows/test.yml) [![Known Vulnerabilities](https://snyk.io/test/github/PeculiarVentures/ByteStream.js/badge.svg)](https://snyk.io/test/github/PeculiarVentures/ByteStream.js) [![Coverage Status](https://coveralls.io/repos/github/PeculiarVentures/ByteStream.js/badge.svg?branch=master)](https://coveralls.io/github/PeculiarVentures/ByteStream.js?branch=master)
+<div align="center">
+
+![NPM License](https://img.shields.io/npm/l/bytestreamjs)
+![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/PeculiarVentures/ByteStream.js/publish.yml?branch=master&label=publish)
+[![npm version](https://img.shields.io/npm/v/bytestreamjs.svg)](https://www.npmjs.com/package/bytestreamjs)
+![Coveralls](https://img.shields.io/coverallsCoverage/github/PeculiarVentures/ByteStream.js)
+[![npm downloads](https://img.shields.io/npm/dm/bytestreamjs.svg)](https://www.npmjs.com/package/bytestreamjs)
+
+</div>
+
+`bytestreamjs` reads, writes and searches single bytes and bits in `ArrayBuffer`/`Uint8Array` data, in Node.js and browsers.
+
+## Install
+
+```bash
+npm install bytestreamjs
+```
 
 ## ByteStream class
 
