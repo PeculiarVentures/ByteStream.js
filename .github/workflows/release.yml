@@ -47,10 +47,10 @@ jobs:
         uses: actions/setup-node@v7
         with:
           node-version: 24
-          cache: yarn
+          cache: npm
 
       - name: Install dependencies
-        run: yarn install --frozen-lockfile
+        run: npm ci
 
       - name: Bump version without git tag
         id: version
@@ -172,7 +172,7 @@ jobs:
         uses: actions/setup-node@v7
         with:
           node-version: 24
-          cache: yarn
+          cache: npm
 
       - name: Download release package
         uses: actions/download-artifact@v7
