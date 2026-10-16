@@ -8,11 +8,7 @@ const data = new Uint8Array([0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x0
 function compareWithData(variable: ByteStream, name: string, testData = data, length = 10) {
   assert.strictEqual(variable.length, length, `${name}: Incorrect byteLength for _buffer value`);
   for (let i = 0; i < length; i++) {
-    assert.strictEqual(
-      variable.view[i],
-      testData[i],
-      `${name}: Incorrect value at index ${i} for view`,
-    );
+    assert.strictEqual(variable.view[i], testData[i], `${name}: Incorrect value at index ${i} for view`);
   }
 }
 //#endregion
@@ -137,54 +133,26 @@ describe("SeqStream class", () => {
     let result: any = seqStreamData.findPattern(new ByteStream({ view: new Uint8Array([0x21]) }));
 
     assert.strictEqual(result, 3, "Incorrect result after SeqStream findPattern #1");
-    assert.strictEqual(
-      seqStreamData.start,
-      3,
-      "Incorrect start value after SeqStream findPattern #1",
-    );
-    assert.strictEqual(
-      seqStreamData.length,
-      3,
-      "Incorrect length value after SeqStream findPattern #1",
-    );
+    assert.strictEqual(seqStreamData.start, 3, "Incorrect start value after SeqStream findPattern #1");
+    assert.strictEqual(seqStreamData.length, 3, "Incorrect length value after SeqStream findPattern #1");
 
     result = seqStreamData.findFirstNotIn([separatorStream2, separatorStream3]);
 
-    assert.strictEqual(
-      result.value.toHexString(),
-      "22",
-      "Incorrect result after SeqStream findFirstNotIn #1",
-    );
-    assert.strictEqual(
-      seqStreamData.start,
-      5,
-      "Incorrect start value after SeqStream findPattern #1",
-    );
-    assert.strictEqual(
-      seqStreamData.length,
-      1,
-      "Incorrect length value after SeqStream findPattern #1",
-    );
+    assert.strictEqual(result.value.toHexString(), "22", "Incorrect result after SeqStream findFirstNotIn #1");
+    assert.strictEqual(seqStreamData.start, 5, "Incorrect start value after SeqStream findPattern #1");
+    assert.strictEqual(seqStreamData.length, 1, "Incorrect length value after SeqStream findPattern #1");
 
     seqStreamData.start = 0;
     seqStreamData.length = dataStream.length;
 
     result = dataStream.findFirstNotIn([separatorStream, separatorStream2]);
-    assert.strictEqual(
-      result.value.toHexString(),
-      "2122",
-      "Incorrect result for SeqStream findFirstNotIn #1",
-    );
+    assert.strictEqual(result.value.toHexString(), "2122", "Incorrect result for SeqStream findFirstNotIn #1");
 
     seqStreamData.start = 0;
     seqStreamData.length = dataStream.length;
 
     result = dataStream.findFirstNotIn([separatorStream]);
-    assert.strictEqual(
-      result.value.toHexString(),
-      "21222325",
-      "Incorrect result for SeqStream findFirstNotIn #2",
-    );
+    assert.strictEqual(result.value.toHexString(), "21222325", "Incorrect result for SeqStream findFirstNotIn #2");
 
     seqStreamData.start = 0;
     seqStreamData.length = dataStream.length;
@@ -214,11 +182,7 @@ describe("SeqStream class", () => {
     seqStreamData.length = dataStream.length;
 
     result = dataStream.findFirstNotIn([separatorStream, separatorStream2, separatorStream3]);
-    assert.strictEqual(
-      result.value.toHexString(),
-      "2122",
-      "Incorrect result for SeqStream findFirstNotIn #2",
-    );
+    assert.strictEqual(result.value.toHexString(), "2122", "Incorrect result for SeqStream findFirstNotIn #2");
 
     const string =
       "startxref123a\n\
@@ -297,11 +261,7 @@ describe("SeqStream class", () => {
       digits_9_stream,
     ]);
 
-    assert.strictEqual(
-      result.value.toHexString(),
-      "313233",
-      "Incorrect value for findFirstSequence #1",
-    );
+    assert.strictEqual(result.value.toHexString(), "313233", "Incorrect value for findFirstSequence #1");
 
     seqStreamBuffer.start = 0;
     seqStreamBuffer.length = bufferStream.length;
@@ -320,16 +280,8 @@ describe("SeqStream class", () => {
     ]);
 
     assert.strictEqual(result.length, 2, "Incorrect length for result of findAllSequences #1");
-    assert.strictEqual(
-      result[0].value.toHexString(),
-      "313233",
-      "Incorrect value[0] for result of findAllSequences #1",
-    );
-    assert.strictEqual(
-      result[1].value.toHexString(),
-      "31393038",
-      "Incorrect value[1] for result of findAllSequences #1",
-    );
+    assert.strictEqual(result[0].value.toHexString(), "313233", "Incorrect value[0] for result of findAllSequences #1");
+    assert.strictEqual(result[1].value.toHexString(), "31393038", "Incorrect value[1] for result of findAllSequences #1");
 
     seqStreamBuffer.start = 0;
     seqStreamBuffer.length = bufferStream.length;
@@ -349,47 +301,19 @@ describe("SeqStream class", () => {
 
     assert.strictEqual(result.length, 7, "Incorrect length for result of findAllIn #1");
     assert.strictEqual(result[0].id, 1, "Incorrect id[0] for result of findAllIn #1");
-    assert.strictEqual(
-      result[0].position,
-      10,
-      "Incorrect position[0] for result of findAllIn #1",
-    );
+    assert.strictEqual(result[0].position, 10, "Incorrect position[0] for result of findAllIn #1");
     assert.strictEqual(result[1].id, 2, "Incorrect id[1] for result of findAllIn #1");
-    assert.strictEqual(
-      result[1].position,
-      11,
-      "Incorrect position[1] for result of findAllIn #1",
-    );
+    assert.strictEqual(result[1].position, 11, "Incorrect position[1] for result of findAllIn #1");
     assert.strictEqual(result[2].id, 3, "Incorrect id[2] for result of findAllIn #1");
-    assert.strictEqual(
-      result[2].position,
-      12,
-      "Incorrect position[2] for result of findAllIn #1",
-    );
+    assert.strictEqual(result[2].position, 12, "Incorrect position[2] for result of findAllIn #1");
     assert.strictEqual(result[3].id, 1, "Incorrect id[3] for result of findAllIn #1");
-    assert.strictEqual(
-      result[3].position,
-      15,
-      "Incorrect position[3] for result of findAllIn #1",
-    );
+    assert.strictEqual(result[3].position, 15, "Incorrect position[3] for result of findAllIn #1");
     assert.strictEqual(result[4].id, 9, "Incorrect id[4] for result of findAllIn #1");
-    assert.strictEqual(
-      result[4].position,
-      16,
-      "Incorrect position[4] for result of findAllIn #1",
-    );
+    assert.strictEqual(result[4].position, 16, "Incorrect position[4] for result of findAllIn #1");
     assert.strictEqual(result[5].id, 0, "Incorrect id[5] for result of findAllIn #1");
-    assert.strictEqual(
-      result[5].position,
-      17,
-      "Incorrect position[5] for result of findAllIn #1",
-    );
+    assert.strictEqual(result[5].position, 17, "Incorrect position[5] for result of findAllIn #1");
     assert.strictEqual(result[6].id, 8, "Incorrect id[6] for result of findAllIn #1");
-    assert.strictEqual(
-      result[6].position,
-      18,
-      "Incorrect position[6] for result of findAllIn #1",
-    );
+    assert.strictEqual(result[6].position, 18, "Incorrect position[6] for result of findAllIn #1");
 
     seqStreamBuffer.start = 0;
     seqStreamBuffer.length = bufferStream.length;
@@ -407,21 +331,9 @@ describe("SeqStream class", () => {
       digits_9_stream,
     ]);
 
-    assert.strictEqual(
-      result[0].value.toHexString(),
-      "737461727478726566",
-      "Incorrect value[0] for result of findAllNotIn #1",
-    );
-    assert.strictEqual(
-      result[1].value.toHexString(),
-      "610A",
-      "Incorrect value[1] for result of findAllNotIn #1",
-    );
-    assert.strictEqual(
-      result[2].value.toHexString(),
-      "0A2525454F46",
-      "Incorrect value[2] for result of findAllNotIn #1",
-    );
+    assert.strictEqual(result[0].value.toHexString(), "737461727478726566", "Incorrect value[0] for result of findAllNotIn #1");
+    assert.strictEqual(result[1].value.toHexString(), "610A", "Incorrect value[1] for result of findAllNotIn #1");
+    assert.strictEqual(result[2].value.toHexString(), "0A2525454F46", "Incorrect value[2] for result of findAllNotIn #1");
   });
 });
 
@@ -475,10 +387,7 @@ describe("SeqStream", () => {
         view: new Uint8Array([1, 2, 3, 4, 5, 6, 7, 8, 0]),
       });
 
-      const res = seqStream.findFirstIn([
-        new ByteStream({ view: new Uint8Array([7]) }),
-        new ByteStream({ view: new Uint8Array([3]) }),
-      ]);
+      const res = seqStream.findFirstIn([new ByteStream({ view: new Uint8Array([7]) }), new ByteStream({ view: new Uint8Array([3]) })]);
       assert.strictEqual(res.id, 1);
       assert.strictEqual(res.position, 3);
     });
@@ -488,10 +397,7 @@ describe("SeqStream", () => {
         view: new Uint8Array([1, 2, 3, 4, 5, 6, 7, 8, 0]),
       });
 
-      const res = seqStream.findFirstIn([
-        new ByteStream({ view: new Uint8Array([10]) }),
-        new ByteStream({ view: new Uint8Array([11]) }),
-      ]);
+      const res = seqStream.findFirstIn([new ByteStream({ view: new Uint8Array([10]) }), new ByteStream({ view: new Uint8Array([11]) })]);
       assert.strictEqual(res.id, -1);
     });
 
@@ -500,13 +406,7 @@ describe("SeqStream", () => {
         view: new Uint8Array([1, 2, 3, 4, 5, 6, 7, 8, 0]),
       });
 
-      const res = seqStream.findFirstIn(
-        [
-          new ByteStream({ view: new Uint8Array([7]) }),
-          new ByteStream({ view: new Uint8Array([3]) }),
-        ],
-        1,
-      );
+      const res = seqStream.findFirstIn([new ByteStream({ view: new Uint8Array([7]) }), new ByteStream({ view: new Uint8Array([3]) })], 1);
       assert.strictEqual(res.id, -1);
     });
 
@@ -516,13 +416,7 @@ describe("SeqStream", () => {
         backward: true,
       });
 
-      const res = seqStream.findFirstIn(
-        [
-          new ByteStream({ view: new Uint8Array([5]) }),
-          new ByteStream({ view: new Uint8Array([3]) }),
-        ],
-        3,
-      );
+      const res = seqStream.findFirstIn([new ByteStream({ view: new Uint8Array([5]) }), new ByteStream({ view: new Uint8Array([3]) })], 3);
       assert.strictEqual(res.id, -1);
     });
   });
@@ -533,11 +427,7 @@ describe("SeqStream", () => {
         view: new Uint8Array([1, 2, 3, 4, 5, 6, 7, 8, 0]),
       });
 
-      const res = seqStream.findFirstNotIn([
-        new ByteStream({ view: new Uint8Array([1]) }),
-        new ByteStream({ view: new Uint8Array([2]) }),
-        new ByteStream({ view: new Uint8Array([3]) }),
-      ]);
+      const res = seqStream.findFirstNotIn([new ByteStream({ view: new Uint8Array([1]) }), new ByteStream({ view: new Uint8Array([2]) }), new ByteStream({ view: new Uint8Array([3]) })]);
       assert.deepStrictEqual(res.right, {
         id: -1,
         length: 0,
@@ -556,11 +446,7 @@ describe("SeqStream", () => {
         view: new Uint8Array([1, 2, 3]),
       });
 
-      const res = seqStream.findFirstNotIn([
-        new ByteStream({ view: new Uint8Array([1]) }),
-        new ByteStream({ view: new Uint8Array([2]) }),
-        new ByteStream({ view: new Uint8Array([3]) }),
-      ]);
+      const res = seqStream.findFirstNotIn([new ByteStream({ view: new Uint8Array([1]) }), new ByteStream({ view: new Uint8Array([2]) }), new ByteStream({ view: new Uint8Array([3]) })]);
       assert.deepStrictEqual(res.right, {
         id: 2,
         length: 1,
@@ -579,14 +465,7 @@ describe("SeqStream", () => {
         view: new Uint8Array([1, 2, 3, 4, 5, 6, 7, 8, 0]),
       });
 
-      const res = seqStream.findFirstNotIn(
-        [
-          new ByteStream({ view: new Uint8Array([1]) }),
-          new ByteStream({ view: new Uint8Array([2]) }),
-          new ByteStream({ view: new Uint8Array([3]) }),
-        ],
-        5,
-      );
+      const res = seqStream.findFirstNotIn([new ByteStream({ view: new Uint8Array([1]) }), new ByteStream({ view: new Uint8Array([2]) }), new ByteStream({ view: new Uint8Array([3]) })], 5);
       assert.deepStrictEqual(res.right, {
         id: -1,
         length: 0,
@@ -606,13 +485,7 @@ describe("SeqStream", () => {
         backward: true,
       });
 
-      const res = seqStream.findFirstNotIn(
-        [
-          new ByteStream({ view: new Uint8Array([5]) }),
-          new ByteStream({ view: new Uint8Array([3]) }),
-        ],
-        10,
-      );
+      const res = seqStream.findFirstNotIn([new ByteStream({ view: new Uint8Array([5]) }), new ByteStream({ view: new Uint8Array([3]) })], 10);
       assert.deepStrictEqual(res.right, {
         id: -1,
         // TODO 'length' does not present

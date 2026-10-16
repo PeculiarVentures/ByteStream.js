@@ -379,10 +379,7 @@ describe("BitStream class tests", () => {
 
     it("default", () => {
       const bitStream = new BitStream({ string: bits });
-      const res = bitStream.findFirstNotIn([
-        new BitStream({ string: "101" }),
-        new BitStream({ string: "00" }),
-      ]);
+      const res = bitStream.findFirstNotIn([new BitStream({ string: "101" }), new BitStream({ string: "00" })]);
       assert.deepStrictEqual(res.left, {
         id: 0,
         length: 3,
@@ -398,11 +395,7 @@ describe("BitStream class tests", () => {
 
     it("start + length", () => {
       const bitStream = new BitStream({ string: bits });
-      const res = bitStream.findFirstNotIn(
-        [new BitStream({ string: "01110" }), new BitStream({ string: "00" })],
-        6,
-        14,
-      );
+      const res = bitStream.findFirstNotIn([new BitStream({ string: "01110" }), new BitStream({ string: "00" })], 6, 14);
       assert.deepStrictEqual(res.left, {
         id: 0,
         length: 5,
@@ -418,11 +411,7 @@ describe("BitStream class tests", () => {
 
     it("not found", () => {
       const bitStream = new BitStream({ string: bits });
-      const res = bitStream.findFirstNotIn(
-        [new BitStream({ string: "000" }), new BitStream({ string: "00100" })],
-        6,
-        14,
-      );
+      const res = bitStream.findFirstNotIn([new BitStream({ string: "000" }), new BitStream({ string: "00100" })], 6, 14);
       assert.deepStrictEqual(res.left, {
         id: -1,
         position: 6,
@@ -485,11 +474,9 @@ describe("BitStream class tests", () => {
     });
 
     it("default", () => {
-      const res = bitStream
-        .findAllSequences([new BitStream({ string: "10" }), new BitStream({ string: "01" })])
-        .map((o) => {
-          return { position: o.position, value: o.value.toString() };
-        });
+      const res = bitStream.findAllSequences([new BitStream({ string: "10" }), new BitStream({ string: "01" })]).map((o) => {
+        return { position: o.position, value: o.value.toString() };
+      });
       assert.deepStrictEqual(res, [
         { position: 6, value: "010110" },
         { position: 10, value: "10" },
@@ -498,28 +485,16 @@ describe("BitStream class tests", () => {
     });
 
     it("start + length", () => {
-      const res = bitStream
-        .findAllSequences(
-          [new BitStream({ string: "10" }), new BitStream({ string: "01" })],
-          2,
-          6,
-        )
-        .map((o) => {
-          return { position: o.position, value: o.value.toString() };
-        });
+      const res = bitStream.findAllSequences([new BitStream({ string: "10" }), new BitStream({ string: "01" })], 2, 6).map((o) => {
+        return { position: o.position, value: o.value.toString() };
+      });
       assert.deepStrictEqual(res, [{ position: 6, value: "0110" }]);
     });
 
     it("not found", () => {
-      const res = bitStream
-        .findAllSequences(
-          [new BitStream({ string: "000" }), new BitStream({ string: "00" })],
-          2,
-          6,
-        )
-        .map((o) => {
-          return { position: o.position, value: o.value.toString() };
-        });
+      const res = bitStream.findAllSequences([new BitStream({ string: "000" }), new BitStream({ string: "00" })], 2, 6).map((o) => {
+        return { position: o.position, value: o.value.toString() };
+      });
       assert.deepStrictEqual(res, []);
     });
   });
@@ -528,10 +503,7 @@ describe("BitStream class tests", () => {
     it("default", () => {
       const bits = "00010000 00110000 0110".replace(/ /g, "");
       const bitStream = new BitStream({ string: bits });
-      const res = bitStream.findPairedPatterns(
-        new BitStream({ string: "01" }),
-        new BitStream({ string: "11" }),
-      );
+      const res = bitStream.findPairedPatterns(new BitStream({ string: "01" }), new BitStream({ string: "11" }));
 
       // TODO Double check result
       // Should it be '010000 0011' only?
@@ -544,12 +516,7 @@ describe("BitStream class tests", () => {
     it("start + length", () => {
       const bits = "00010000 00110000 0110".replace(/ /g, "");
       const bitStream = new BitStream({ string: bits });
-      const res = bitStream.findPairedPatterns(
-        new BitStream({ string: "01" }),
-        new BitStream({ string: "11" }),
-        11,
-        8,
-      );
+      const res = bitStream.findPairedPatterns(new BitStream({ string: "01" }), new BitStream({ string: "11" }), 11, 8);
 
       assert.deepStrictEqual(res, [{ left: 18, right: 19 }]);
     });
@@ -557,10 +524,7 @@ describe("BitStream class tests", () => {
     it("not found", () => {
       const bits = "000000".replace(/ /g, "");
       const bitStream = new BitStream({ string: bits });
-      const res = bitStream.findPairedPatterns(
-        new BitStream({ string: "01" }),
-        new BitStream({ string: "11" }),
-      );
+      const res = bitStream.findPairedPatterns(new BitStream({ string: "01" }), new BitStream({ string: "11" }));
 
       assert.deepStrictEqual(res, []);
     });
@@ -570,10 +534,7 @@ describe("BitStream class tests", () => {
     it("default", () => {
       const bits = "00110000 001010".replace(/ /g, "");
       const bitStream = new BitStream({ string: bits });
-      const res = bitStream.findPairedArrays(
-        [new BitStream({ string: "111" }), new BitStream({ string: "11" })],
-        [new BitStream({ string: "1001" }), new BitStream({ string: "101" })],
-      );
+      const res = bitStream.findPairedArrays([new BitStream({ string: "111" }), new BitStream({ string: "11" })], [new BitStream({ string: "1001" }), new BitStream({ string: "101" })]);
 
       assert.deepStrictEqual(res, [
         {
@@ -592,12 +553,7 @@ describe("BitStream class tests", () => {
     it("start + length", () => {
       const bits = "00110000 00101000 00110000 00101000 0011".replace(/ /g, "");
       const bitStream = new BitStream({ string: bits });
-      const res = bitStream.findPairedArrays(
-        [new BitStream({ string: "111" }), new BitStream({ string: "11" })],
-        [new BitStream({ string: "1001" }), new BitStream({ string: "101" })],
-        16,
-        16,
-      );
+      const res = bitStream.findPairedArrays([new BitStream({ string: "111" }), new BitStream({ string: "11" })], [new BitStream({ string: "1001" }), new BitStream({ string: "101" })], 16, 16);
 
       assert.deepStrictEqual(res, [
         {
@@ -616,10 +572,7 @@ describe("BitStream class tests", () => {
     it("not found", () => {
       const bits = "00110000 001010".replace(/ /g, "");
       const bitStream = new BitStream({ string: bits });
-      const res = bitStream.findPairedArrays(
-        [new BitStream({ string: "1111" }), new BitStream({ string: "111" })],
-        [new BitStream({ string: "1001" }), new BitStream({ string: "10001" })],
-      );
+      const res = bitStream.findPairedArrays([new BitStream({ string: "1111" }), new BitStream({ string: "111" })], [new BitStream({ string: "1001" }), new BitStream({ string: "10001" })]);
 
       assert.deepStrictEqual(res, []);
     });
@@ -629,10 +582,7 @@ describe("BitStream class tests", () => {
     it("default", () => {
       const bits = "00110000 00110".replace(/ /g, "");
       const bitStream = new BitStream({ string: bits });
-      const res = bitStream.replacePattern(
-        new BitStream({ string: "11" }),
-        new BitStream({ string: "00" }),
-      );
+      const res = bitStream.replacePattern(new BitStream({ string: "11" }), new BitStream({ string: "00" }));
 
       assert.strictEqual(res, true);
       assert.strictEqual(bitStream.toString(), "00000000 00000".replace(/ /g, ""));
@@ -641,12 +591,7 @@ describe("BitStream class tests", () => {
     it("start + length", () => {
       const bits = "00110000 00110".replace(/ /g, "");
       const bitStream = new BitStream({ string: bits });
-      const res = bitStream.replacePattern(
-        new BitStream({ string: "11" }),
-        new BitStream({ string: "00" }),
-        4,
-        8,
-      );
+      const res = bitStream.replacePattern(new BitStream({ string: "11" }), new BitStream({ string: "00" }), 4, 8);
 
       assert.strictEqual(res, true);
       assert.strictEqual(bitStream.toString(), "00110000 00000".replace(/ /g, ""));
@@ -655,10 +600,7 @@ describe("BitStream class tests", () => {
     it("not found", () => {
       const bits = "00110000 00110".replace(/ /g, "");
       const bitStream = new BitStream({ string: bits });
-      const res = bitStream.replacePattern(
-        new BitStream({ string: "111" }),
-        new BitStream({ string: "000" }),
-      );
+      const res = bitStream.replacePattern(new BitStream({ string: "111" }), new BitStream({ string: "000" }));
 
       assert.strictEqual(res, true);
       // TODO Check out test result
@@ -671,10 +613,7 @@ describe("BitStream class tests", () => {
     it("default", () => {
       const bits = "010100000 01010".replace(/ /g, "");
       const bitStream = new BitStream({ string: bits });
-      const res = bitStream.skipPatterns([
-        new BitStream({ string: "01" }),
-        new BitStream({ string: "0" }),
-      ]);
+      const res = bitStream.skipPatterns([new BitStream({ string: "01" }), new BitStream({ string: "0" })]);
 
       assert.strictEqual(res, 14);
     });
@@ -682,12 +621,7 @@ describe("BitStream class tests", () => {
     it("backward", () => {
       const bits = "110100000 01010".replace(/ /g, "");
       const bitStream = new BitStream({ string: bits });
-      const res = bitStream.skipPatterns(
-        [new BitStream({ string: "01" }), new BitStream({ string: "0" })],
-        null,
-        null,
-        true,
-      );
+      const res = bitStream.skipPatterns([new BitStream({ string: "01" }), new BitStream({ string: "0" })], null, null, true);
 
       assert.strictEqual(res, 2);
     });
@@ -695,11 +629,7 @@ describe("BitStream class tests", () => {
     it("start + length", () => {
       const bits = "010100000 011100110 010101".replace(/ /g, "");
       const bitStream = new BitStream({ string: bits });
-      const res = bitStream.skipPatterns(
-        [new BitStream({ string: "01" }), new BitStream({ string: "0" })],
-        13,
-        5,
-      );
+      const res = bitStream.skipPatterns([new BitStream({ string: "01" }), new BitStream({ string: "0" })], 13, 5);
 
       assert.strictEqual(res, 16);
     });
