@@ -20,6 +20,19 @@
 npm install bytestreamjs
 ```
 
+## Breaking Changes In v3
+
+v3 ships ESM only. The CommonJS build is removed: v2 published three parallel trees, `build/cjs/*.js` (CommonJS), `build/mjs/*.js` (ESM) and `build/types/*.d.ts`; v3 publishes ES modules in `build/`, with `build/index.js` and `build/index.d.ts` as the entry point, behind an `exports` map.
+
+- **Node.js `^20.19.0 || >=22.12.0` is required** (previously `>=6.0.0`). These versions support `require()` of ES modules, so CommonJS code can keep using `require("bytestreamjs")` without changes. Node.js 22.0–22.11 is not supported: it can't `require()` ESM.
+- **TypeScript projects that compile to CommonJS** need `"module": "node20"` or `"nodenext"` (TypeScript 5.9+). With `"module": "node16"` the compiler reports TS1479.
+- **ESM and bundler setups** (`"module": "preserve"`, `"moduleResolution": "bundler"`) work without changes.
+- **Legacy `"moduleResolution": "node"` (node10)** resolves the package through `types`; bytestreamjs has no subpath exports, so nothing else changes.
+- **Jest in CommonJS mode** can't load ESM packages. Use Jest's ESM mode, add `bytestreamjs` to the `transformIgnorePatterns` exceptions, or switch to Vitest.
+- **Deep imports are blocked.** The `exports` map allows only `bytestreamjs` and `bytestreamjs/package.json`. Imports of `bytestreamjs/build/cjs/...`, `bytestreamjs/build/mjs/...` or `bytestreamjs/build/types/...` must change to `bytestreamjs`. Import maps and other setups that point at `node_modules/bytestreamjs/build/mjs/index.js` must use `build/index.js`.
+
+The public API is unchanged; only packaging and runtime requirements changed.
+
 ## ByteStream class
 
 _ByteStream_ class is the major class for all others. It provides many useful function for making search for patterns and data transformation. Optimized for fast as possible data processing.
@@ -178,6 +191,10 @@ let map = [
   },
 ];
 ```
+
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for development setup, commit conventions and the release flow.
 
 ## License
 
