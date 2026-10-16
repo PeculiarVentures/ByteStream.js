@@ -46,7 +46,8 @@
     "lint:fix": "oxlint --fix .",
     "format": "oxfmt",
     "format:check": "oxfmt --check",
-    "coverage": "vitest run --coverage"
+    "coverage": "vitest run --coverage",
+    "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
     "@types/node": "^22.20.1",
